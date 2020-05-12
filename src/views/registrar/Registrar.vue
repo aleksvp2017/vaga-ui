@@ -71,11 +71,6 @@
                 tipoAlerta: 'error'
             }
         },
-        asyncComputed: {
-            ufs(){
-                return obterUfs()
-            }
-        },
         methods: {
             registrarUsuario(){
                 let formValid = this.$refs.form.validate()
@@ -100,11 +95,7 @@
                 this.$refs.form.reset()
             }
         }
-    }
-
-    function obterUfs(){
-        return listarUfs()
-    }    
+    }  
 </script>
 
 <style>

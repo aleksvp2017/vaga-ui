@@ -1,4 +1,4 @@
-const BASE_BACKEND_URL='http://localhost:3001/'
+const BASE_BACKEND_URL='https://vagas-backend.herokuapp.com/'
 const FALE_CONOSCO_EMAIL='aleksvp@gmail.com'
 const ERROR_SESSION_EXPIRED=440
 const MESSAGE='message'

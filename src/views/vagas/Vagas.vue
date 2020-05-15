@@ -1,36 +1,57 @@
 <template>
 <v-card>
-
     <v-alert :type="typeAlert" dense text dismissible v-model="showAlert">
         {{alertMessage}}
     </v-alert> 
     <v-card-title>
       <v-spacer></v-spacer>
-      <v-text-field
+      <!-- <v-text-field
         v-model="searchKey"
         append-icon="mdi-magnify"
         label="Buscar"
         single-line
         hide-details
-      ></v-text-field>
+      ></v-text-field> -->
+     <v-container grid-list-lg>
+      <v-layout row wrap>
+          <v-flex xs2>
+              <v-select
+                    v-model="columnToSearch"
+                    :items="tableColumns"
+                    label="Filtrar por"
+                ></v-select>
+          </v-flex>
+          <v-flex xs2>
+            <v-text-field
+            v-model="searchKey"
+            append-icon="mdi-magnify"
+            label="Valor"
+            single-line
+            hide-details
+            ></v-text-field>
+          </v-flex>
+      </v-layout>
+     </v-container>
     </v-card-title>
-    
+
     <v-data-table
         show-select
+        ref="vagasTable"
         v-model="selected"
-        class="mt-10"
+        class="elevation-1"
         :loading="loading"
-      :headers="tableColumns"
-      :items="items"
-      item-key="vagaid"
-      :footer-props="{
-        showFirstLastPage: true,
-        firstIcon: 'mdi-arrow-collapse-left',
-        lastIcon: 'mdi-arrow-collapse-right',
-        prevIcon: 'mdi-arrow-left',
-        nextIcon: 'mdi-arrow-right'}"
-      :search="searchKey">
-        <!-- IMPORTAR -->
+        :headers="tableColumns"
+        :items="items"
+        item-key="vagaid"
+        :footer-props="{
+            itemsPerPageOptions: [10,20, 50, 100],
+            showFirstLastPage: true,
+            firstIcon: 'mdi-arrow-collapse-left',
+            lastIcon: 'mdi-arrow-collapse-right',
+            prevIcon: 'mdi-arrow-left',
+            nextIcon: 'mdi-arrow-right'}"
+        :custom-filter="customSearch"
+        :search="searchKey">
         <template v-slot:top>
         <v-toolbar flat color="white">
             <v-divider
@@ -40,9 +61,10 @@
             ></v-divider>
             <v-spacer></v-spacer>
             <v-btn color="primary" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn>
-            <v-dialog v-model="dialog" max-width="800px" height="1000px" scrollable>
+            <!-- IMPORTAR -->
+            <v-dialog v-model="dialogImportar" max-width="800px" height="1000px" scrollable>
                 <template v-slot:activator="{ on }">
-                    <v-btn color="primary" dark class="ma-2" v-on="on" @click="initiateDialog">Importar</v-btn>
+                    <v-btn color="primary" dark class="ma-2" v-on="on" @click="initiateDialogImportar">Importar</v-btn>
                 </template>                
                 <v-card>
                     <v-card-text>
@@ -54,15 +76,39 @@
                     <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="success" @click="uploadFile()">Enviar</v-btn>
-                    <v-btn color="blue darken-1" text @click="closeDialog">Fechar</v-btn>
+                    <v-btn color="blue darken-1" text @click="closeDialogImportar">Fechar</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+            <!-- FIM IMPORTAR -->
+            <!-- CONFIGURAR COLUNAS -->
+            <v-dialog v-model="dialogColunas" max-width="800px" height="1000px" scrollable>
+                <template v-slot:activator="{ on }">
+                    <v-btn color="primary" dark class="ma-2" v-on="on" @click="initiateDialogColunas">Escolher colunas</v-btn>
+                </template>                
+                <v-card>
+                    <v-card-text>
+                        <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
+                            {{alertMessagePopup}}
+                        </v-alert>
+                                <v-chip-group column active-class="primary--text" multiple v-model="selectedColumns"> 
+                                    <v-chip v-for="column in tableConfigurableColumns" :key="column.id" filter>
+                                        {{ column.text }}
+                                    </v-chip>
+                                 </v-chip-group> 
+                    </v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="success" @click="updateColumns()">Ok</v-btn>
+                    <v-btn color="blue darken-1" text @click="closeDialogColunas">Fechar</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <!-- FIM DO CONFIGURAR COLUNAS -->            
         </v-toolbar>
         </template>      
-        <!-- FIM IMPORTAR -->
         <!-- ANO -->
-        <template #item.ano="{item}">
+        <template #item.ano="{item}" class="d-flex">
             <v-edit-dialog
                 :return-value.sync="item.ano"
                 @save="saveItem(item)"
@@ -109,12 +155,14 @@
                 @close="closeEditField"
                 > {{ item.saldo.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) }}
                 <template v-slot:input>
-                    <v-text-field
+                    <!-- <v-text-field
                     v-model="item.saldo"
                     label="Edit"
                     single-line
                     counter
-                    ></v-text-field>
+                    ></v-text-field> -->
+                    <v-currency-field 
+                        v-model="item.saldo"/>                    
                 </template>
             </v-edit-dialog>
         </template>    
@@ -238,7 +286,31 @@
         <template #item.actions="{item}">
             <!--<v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>-->
             <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
-        </template>        
+        </template>     
+        <template slot="body.append">
+            <td><b>Totais</b></td>
+            <td></td>
+            <td></td>            
+            <td>
+                {{ this.sum('saldo').toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) }}
+            </td>
+            <td>
+                {{ this.sum('valoraprovado').toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) }}
+            </td>
+            <td>
+                {{ this.sum('aprovada') }}
+            </td>            
+            <td>
+                {{ this.sum('homologada') }}
+            </td>            
+            <td>
+                {{ this.sum('matricularealizada') }}
+            </td> 
+            <td></td>
+            <td></td>            
+            <td></td>
+            <td></td>            
+        </template>   
     </v-data-table>    
 </v-card>
 
@@ -252,10 +324,15 @@ import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
 export default {
     data() {
         return {
+            vagasTable: {},
+            rate: 0,
+            errors: {},            
+            columnToSearch: null,
             selected: [],
             loading: true,
             searchKey:'',
-            dialog: false,
+            dialogImportar: false,
+            dialogColunas: false,
             items:[],
             fileuploaded: null,
             showAlert: false,
@@ -263,18 +340,58 @@ export default {
             typeAlert: 'success',
             showAlertPopup: false,
             alertMessagePopup: '',
-            typeAlertPopup: 'error',            
+            typeAlertPopup: 'error',  
+            selectedColumns:[],
+            tableColumns:[],
         }
     },
     created () {
         this.updateItens();
+        this.selectedColumns = this.tableConfigurableColumns.map((column, index) => {
+            if (column.selected){
+                return index
+            }
+        })
+        this.tableColumns = columns()
     },
     computed: {
-        tableColumns(){
-            return columns()
-        }
+        tableConfigurableColumns(){
+            return columns().filter(column => column.value !== 'actions')
+        },
     },
     methods: {
+        updateColumns(){
+            this.selectedColumns = this.selectedColumns.sort()
+            var updatedColumns = []
+            for (var selectedColumn in this.selectedColumns){
+                //console.log(selectedColumn)
+                updatedColumns.push(this.tableConfigurableColumns[this.selectedColumns[selectedColumn]])
+            }
+            this.tableColumns = updatedColumns
+            this.closeDialogColunas()
+        },
+        customSearch (value, search, item) {
+            if (this.columnToSearch !== null){
+                return item[this.columnToSearch].toString().indexOf(search) !== -1
+            }
+            else{
+                return  value != null &&
+                    search != null &&
+                    value.toString().indexOf(search) !== -1
+            }
+        },        
+        sum(column){
+            let total = 0;
+            if (this.$refs.vagasTable){
+                var items = this.$refs.vagasTable.selectableItems
+                items.map( item => {
+                    if (item[column] !== null){
+                        total += parseInt(item[column]) 
+                    }
+                })
+            }
+            return total
+        },
         updateItens() {
             list().then((response) => {
                     this.items = response.data.vagas
@@ -303,11 +420,18 @@ export default {
                 displayMessagePopup(this, true, error.body.error, 'error')
             })
         },
-        closeDialog () {
-            this.dialog = false
+        closeDialogImportar () {
+            this.dialogImportar = false
             this.fileuploaded = null
         },
-        initiateDialog(){
+        closeDialogColunas () {
+            this.dialogColunas = false
+        },
+        initiateDialogImportar(){
+            displayMessage(this, false, '', 'error')
+            displayMessagePopup(this, false, '','error')
+        },
+        initiateDialogColunas(){
             displayMessage(this, false, '', 'error')
             displayMessagePopup(this, false, '','error')
         },

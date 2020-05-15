@@ -10,7 +10,16 @@ import VueResource from 'vue-resource' //chamada de apis, poderia ser o axios
 import store from './store' //vuex, gerenciamento global de estado
 import AsyncComputed from 'vue-async-computed' //Para permtir computed properties assíncronas
 import {router, routes} from './routes.js' //vuerouter navegacao no lado do cliente
-import {ERROR} from './services/Constantes.js' 
+import VCurrencyField from 'v-currency-field'
+
+Vue.use(VCurrencyField, { 
+	locale: 'pt-BR',
+	decimalLength: 2,
+	autoDecimalMode: true,
+	min: null,
+	max: null,
+	defaultValue: 0
+})
 
 //Vue.use(BootstrapVue)
 Vue.use(VueResource)

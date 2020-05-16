@@ -81,8 +81,8 @@
                     this.alerta = response.body.message + '. Clique em entrar para acessar a plataforma.'
                     this.mostrarAlerta = true
                     this.tipoAlerta = 'info'   
-                    enviarMensagem('Registro na Plataforma do Quinto Itinerário', 
-                        'Esse e-mail foi utilizado para registro na plataforma do 5º Itinerário.'+
+                    enviarMensagem('Registro no sistema Vagas', 
+                        'Esse e-mail foi utilizado para registro no Vagas.'+
                         'Caso não tenha sido você, responda esse email com a palavra cancelar.', this.usuario.email)                 
                 }).catch(error => {
                     this.alerta = error.body.error

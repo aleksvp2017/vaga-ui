@@ -37,7 +37,7 @@
     <v-data-table
         show-select
         ref="vagasTable"
-        v-model="selected"
+        v-model="rowsSelected"
         class="elevation-1"
         :loading="loading"
         :headers="tableColumns"
@@ -60,6 +60,7 @@
             vertical
             ></v-divider>
             <v-spacer></v-spacer>
+            <v-btn color="primary" dark class="ma-2" @click="exportSheet">Exportar</v-btn>
             <v-btn color="primary" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn>
             <!-- IMPORTAR -->
             <v-dialog v-model="dialogImportar" max-width="800px" height="1000px" scrollable>
@@ -320,15 +321,18 @@
 import {upload, list, columns, remove, save} from '../../services/Vagas.js'
 import moment  from 'moment'
 import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
+import XLSX from 'xlsx'
 
 export default {
     data() {
         return {
+            data: ["SheetJS".split(""), "1234567".split("")],
+            actionColumn: {},
             vagasTable: {},
             rate: 0,
             errors: {},            
             columnToSearch: null,
-            selected: [],
+            rowsSelected: [],
             loading: true,
             searchKey:'',
             dialogImportar: false,
@@ -353,6 +357,8 @@ export default {
             }
         })
         this.tableColumns = columns()
+        this.actionColumn = this.tableColumns.filter(item => item.value === 'actions')[0]
+        console.log(this.actionColumn)
     },
     computed: {
         tableConfigurableColumns(){
@@ -360,12 +366,32 @@ export default {
         },
     },
     methods: {
+        exportSheet(){
+            let header = this.tableColumns.filter(element => element.value !== 'actions')
+            header = header.map(element => element.value)
+            
+            var dataRows = []
+            this.rowsSelected.map( row => {
+                var dataRow = []
+                
+                header.map(column => {
+                    dataRow.push(row[column])
+                })
+                dataRows.push(dataRow)
+            })
+            console.log(dataRows)
+            const ws = XLSX.utils.aoa_to_sheet([header,... dataRows])
+			const wb = XLSX.utils.book_new()
+			XLSX.utils.book_append_sheet(wb, ws, "Vagas")
+			XLSX.writeFile(wb, "vagas.xlsx")
+        },
         updateColumns(){
             this.selectedColumns = this.selectedColumns.sort()
             var updatedColumns = []
             for (var selectedColumn in this.selectedColumns){
                 updatedColumns.push(this.tableConfigurableColumns[this.selectedColumns[selectedColumn]])
             }
+            updatedColumns.push(this.actionColumn)
             this.tableColumns = updatedColumns
             this.closeDialogColunas()
         },
@@ -435,13 +461,13 @@ export default {
             displayMessagePopup(this, false, '','error')
         },
         deleteSelectedItens(){
-            if (this.selected.length == 0){
+            if (this.rowsSelected.length == 0){
                 displayMessage(this, true, 'Selecione alguma linha', 'info')
                 return
             }
-            confirm('Tem certeza que deseja excluir essa(s) ' + this.selected.length + ' linha(s)?') && 
-            remove(this.selected).then((response) => {
-                this.selected = []
+            confirm('Tem certeza que deseja excluir essa(s) ' + this.rowsSelected.length + ' linha(s)?') && 
+            remove(this.rowsSelected).then((response) => {
+                this.rowsSelected = []
                 displayMessage(this, true, response.body.message, 'success')
                 this.updateItens()
             }).catch(error => {

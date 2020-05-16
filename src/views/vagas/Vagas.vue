@@ -364,7 +364,6 @@ export default {
             this.selectedColumns = this.selectedColumns.sort()
             var updatedColumns = []
             for (var selectedColumn in this.selectedColumns){
-                //console.log(selectedColumn)
                 updatedColumns.push(this.tableConfigurableColumns[this.selectedColumns[selectedColumn]])
             }
             this.tableColumns = updatedColumns
@@ -442,6 +441,7 @@ export default {
             }
             confirm('Tem certeza que deseja excluir essa(s) ' + this.selected.length + ' linha(s)?') && 
             remove(this.selected).then((response) => {
+                this.selected = []
                 displayMessage(this, true, response.body.message, 'success')
                 this.updateItens()
             }).catch(error => {
@@ -460,13 +460,14 @@ export default {
             })               
         }, 
         saveItem (item) {
-            var itemToSave = item
-            delete itemToSave.datapublicacaoformatada
-            save(itemToSave).then((response) => {
+            save(item).then((response) => {
+                let itemSaved = response.body.vaga
+                item.datapublicacaoformatada = moment(itemSaved.datapublicacao).format("HH:mm:SS DD/MM/YYYY")
                 displayMessage(this, true, response.body.message, 'success')
             }).catch(error => {
+                console.log('Error ao atualizar item:', error)
                 displayMessage(this, true, error.body.error, 'error')
-            })               
+            })                                
         },        
         editField(){
         },
@@ -487,6 +488,5 @@ function displayMessagePopup(owner, showAlert, message, tipo){
     owner.alertMessagePopup = message
     owner.typeAlertPopup = tipo
 }
-
 
 </script>

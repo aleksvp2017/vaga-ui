@@ -5,13 +5,6 @@
     </v-alert> 
     <v-card-title>
       <v-spacer></v-spacer>
-      <!-- <v-text-field
-        v-model="searchKey"
-        append-icon="mdi-magnify"
-        label="Buscar"
-        single-line
-        hide-details
-      ></v-text-field> -->
      <v-container grid-list-lg>
       <v-layout row wrap>
           <v-flex xs2>
@@ -177,12 +170,8 @@
                 @close="closeEditField"
                 > {{ item.valoraprovado.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) }}
                 <template v-slot:input>
-                    <v-text-field
-                    v-model="item.valoraprovado"
-                    label="Edit"
-                    single-line
-                    counter
-                    ></v-text-field>
+                    <v-currency-field 
+                        v-model="item.valoraprovado"/>  
                 </template>
             </v-edit-dialog>
         </template>  
@@ -318,7 +307,7 @@
 </template>
 
 <script>
-import {upload, list, columns, remove, save} from '../../services/Vagas.js'
+import {upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality} from '../../services/Vagas.js'
 import moment  from 'moment'
 import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
 import XLSX from 'xlsx'
@@ -338,6 +327,7 @@ export default {
             dialogImportar: false,
             dialogColunas: false,
             items:[],
+            originalItems:[],
             fileuploaded: null,
             showAlert: false,
             alertMessage: '',
@@ -358,7 +348,6 @@ export default {
         })
         this.tableColumns = columns()
         this.actionColumn = this.tableColumns.filter(item => item.value === 'actions')[0]
-        console.log(this.actionColumn)
     },
     computed: {
         tableConfigurableColumns(){
@@ -379,7 +368,6 @@ export default {
                 })
                 dataRows.push(dataRow)
             })
-            console.log(dataRows)
             const ws = XLSX.utils.aoa_to_sheet([header,... dataRows])
 			const wb = XLSX.utils.book_new()
 			XLSX.utils.book_append_sheet(wb, ws, "Vagas")
@@ -394,6 +382,16 @@ export default {
             updatedColumns.push(this.actionColumn)
             this.tableColumns = updatedColumns
             this.closeDialogColunas()
+            this.groupIdenticalItens()
+        },
+        groupIdenticalItens(){
+            console.log('Items:', this.items)
+            console.log('Original:', this.originalItems)
+            var {itemsWithIdenticalPairs, itemsWithoutIdenticalPairs} = 
+                separateIdenticalAndNoIdenticalItems(this.originalItems, this.tableColumns, fieldsToDetermineEquality)
+            var identicalItemsGrouped = sumItems(fieldsToSum, itemsWithIdenticalPairs)
+            this.items = []
+            this.items.push(...itemsWithoutIdenticalPairs,...identicalItemsGrouped)
         },
         customSearch (value, search, item) {
             if (this.columnToSearch !== null){
@@ -422,6 +420,7 @@ export default {
                     this.items = response.data.vagas
                     this.items = this.items.map((item) => 
                             ({...item, datapublicacaoformatada: moment(item.datapublicacao).format("HH:mm:SS DD/MM/YYYY")}))
+                    this.originalItems = this.items.slice(0)
                     this.loading = false
                 }).catch((error) => {
                     this.loading = false
@@ -481,15 +480,18 @@ export default {
                 displayMessage(this, true, response.body.message, 'success')
                 let index = this.items.indexOf(item)
                 this.items.splice(index, 1)
+                this.originalItems = this.items.slice(0)
             }).catch(error => {
                 displayMessage(this, true, error.body.error, 'error')
             })               
         }, 
         saveItem (item) {
             save(item).then((response) => {
+                console.log(response)
                 let itemSaved = response.body.vaga
                 item.datapublicacaoformatada = moment(itemSaved.datapublicacao).format("HH:mm:SS DD/MM/YYYY")
                 displayMessage(this, true, response.body.message, 'success')
+                this.originalItems = this.items.slice(0)
             }).catch(error => {
                 console.log('Error ao atualizar item:', error)
                 displayMessage(this, true, error.body.error, 'error')
@@ -502,6 +504,78 @@ export default {
         cancelEditField(){
         },      
     },
+}
+
+function separateIdenticalAndNoIdenticalItems(items, tableColumns, fieldsToDetermineEquality){
+    var itemsWithIdenticalPairs = []
+    var itemsWithoutIdenticalPairs = []
+    items.map((itemA, indexItemA) => {
+        if (!isContainItem(itemsWithoutIdenticalPairs, itemsWithIdenticalPairs, itemA)){
+            let subItens = items.slice(indexItemA)
+            let identicosAoItemA = []
+            subItens.map(itemB => {
+                if (itemB !== itemA){
+                    if (isIdentical(itemA, itemB, tableColumns, fieldsToDetermineEquality)){
+                        identicosAoItemA.push(itemB)
+                    }
+                }
+            })
+            if (identicosAoItemA.length > 0){
+                identicosAoItemA.push(itemA)
+                itemsWithIdenticalPairs.push(identicosAoItemA)
+            }
+            else{
+                itemsWithoutIdenticalPairs.push(itemA)
+            }
+        }
+    })
+    return {itemsWithoutIdenticalPairs, itemsWithIdenticalPairs}
+}
+
+function isIdentical(itemA, itemB, tableColumns, fieldsToDetermineEquality){
+    var identical = true
+    var columns = tableColumns.map( tableColumn => tableColumn.value)
+    fieldsToDetermineEquality.map(field => {
+        if (columns.indexOf(field) > -1){
+            if (itemA[field] !== itemB[field]){
+                identical = false
+            }
+        }
+    })
+    return identical
+}
+
+function isContainItem(vetor, matriz, item){
+    if (vetor.indexOf(item) > -1){
+        return true
+    }
+    var contem = false
+    matriz.map(itens => {
+        if (itens.indexOf(item) > -1){
+            contem = true
+        }
+    })
+    return contem
+}
+
+function sumItems(fieldsToSum, itemsWithIdenticalPairs){
+    var identicalItemsGrouped = []
+    itemsWithIdenticalPairs.map( (items => {
+        var groupedItem = {}
+        Object.assign(groupedItem, items[0])
+        //to ensure it is a new object, with a new and invalid id
+        groupedItem.vagaid = groupedItem.vagaid * -1 
+        
+        items.map((item, index) => {
+            fieldsToSum.map(fieldToSum => {
+                if (index !== 0){
+                    groupedItem[fieldToSum] = parseInt(groupedItem[fieldToSum]) + parseInt(item[fieldToSum])
+                }
+            })
+        })
+        identicalItemsGrouped.push(groupedItem)
+    }))
+    return identicalItemsGrouped
 }
 
 function displayMessage(owner, showAlert, message, tipo){

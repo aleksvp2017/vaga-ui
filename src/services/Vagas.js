@@ -25,6 +25,10 @@ async function save(vaga){
     return http.post(BASE_BACKEND_URL + 'vagas/' + (vaga.vagaid ? (':' + vaga.vagaid) : ''), {vaga})
 }
 
+const fieldsToSum = ['saldo', 'valoraprovado', 'aprovada', 'homologada',  'matricularealizada']
+
+const fieldsToDetermineEquality = ['ano', 'uf', 'tipo', 'modalidade']
+
 function columns(){
     return [  
         {
@@ -103,5 +107,5 @@ function columns(){
 }
 
 export {
-    upload, list, columns, remove, save
+    upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality
 }

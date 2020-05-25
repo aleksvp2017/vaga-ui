@@ -25,8 +25,6 @@ async function save(vaga){
     return http.post(BASE_BACKEND_URL + 'vagas/' + (vaga.vagaid ? (':' + vaga.vagaid) : ''), {vaga})
 }
 
-const fieldsToSum = ['saldo', 'valoraprovado', 'aprovada', 'homologada',  'matricularealizada']
-
 const fieldsToDetermineEquality = ['ano', 'uf', 'tipo', 'modalidade']
 
 function columns(){
@@ -37,46 +35,14 @@ function columns(){
             value: 'ano',
             width: '80px',
             selected: true,
+            summable: false,
         },           
         {
             id: 2,
             text: 'UF',
             value: 'uf',
             selected: true,
-        },
-        {
-            id: 3,
-            text: 'SALDO',
-            value: 'saldo',
-            selected: true,
-        },
-        {
-            id: 4,
-            text: 'VALOR APROVADO',
-            value: 'valoraprovado',
-            width: '200px',
-            selected: true,
-        },
-        {
-            id: 5,
-            text: 'APROVADA',
-            value: 'aprovada',
-            width: '120px',
-            selected: true,
-        },
-        {
-            id: 6,
-            text: 'HOMOLOGADA',
-            value: 'homologada',
-            width: '140px' ,
-            selected: true,           
-        },
-        {
-            id: 7,
-            text: 'REALIZADA',
-            value: 'matricularealizada',
-            width: '120px',
-            selected: true,           
+            summable: false,
         },
         {
             id: 8,
@@ -84,26 +50,94 @@ function columns(){
             value: 'modalidade',
             width: '130px',
             selected: true,            
+            summable: false,
         },
         {
             id: 9,
             text: 'TIPO',
             value: 'tipo',
             selected: true,
+            summable: false,
+        },        
+        {
+            id: 3,
+            text: 'SALDO',
+            value: 'saldo',
+            selected: true,
+            summable: true,
+            format: (item) => {
+                return item.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' })
+            },
+        },
+        {
+            id: 4,
+            text: 'VALOR APROVADO',
+            value: 'valoraprovado',
+            width: '200px',
+            selected: true,
+            summable: true,
+            format: (item) => {
+                return item.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' })
+            },
+        },
+        {
+            id: 5,
+            text: 'APROVADA',
+            value: 'aprovada',
+            width: '120px',
+            selected: true,
+            summable: true,
+            format: (item) => {
+                return item
+            },
+        },
+        {
+            id: 6,
+            text: 'HOMOLOGADA',
+            value: 'homologada',
+            width: '140px' ,
+            selected: true,           
+            summable: true,
+            format: (item) => {
+                return item
+            },
+        },
+        {
+            id: 7,
+            text: 'REALIZADA',
+            value: 'matricularealizada',
+            width: '120px',
+            selected: true,   
+            summable: true, 
+            format: (item) => {
+                return item
+            },
         },
         {
             id: 10,
             text: 'DATA',
             value: 'datapublicacao',
             selected: true,
+            summable: false,
         },
         {
             id: 11,
             text: '',
             value: 'actions', 
-            sortable: false
+            sortable: false,
+            summable: false,
         }        
       ]
+}
+
+const fieldsToSum = () => {
+    var fields = []
+    columns().map(column => {
+        if (column.summable){
+            fields.push(column.value)
+        }
+    })
+    return fields
 }
 
 export {

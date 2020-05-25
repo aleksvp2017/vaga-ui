@@ -7,22 +7,31 @@
       <v-spacer></v-spacer>
      <v-container grid-list-lg>
       <v-layout row wrap>
-          <v-flex xs2>
-              <v-select
-                    v-model="columnToSearch"
-                    :items="tableColumns"
-                    label="Filtrar por"
-                ></v-select>
-          </v-flex>
-          <v-flex xs2>
-            <v-text-field
-            v-model="searchKey"
-            append-icon="mdi-magnify"
-            label="Valor"
-            single-line
-            hide-details
-            ></v-text-field>
-          </v-flex>
+        <v-flex xs2>
+            <v-select
+                v-model="columnToSearch"
+                :items="tableColumns"
+                label="Filtrar por"
+            ></v-select>
+        </v-flex>
+        <v-flex xs2>
+        <v-text-field
+        @keydown.enter="addSearchPair"
+        @keyup="customSearch"
+        v-model="searchKey"
+        append-icon="mdi-magnify"
+        label="Valor"
+        single-line
+        hide-details
+        ></v-text-field>
+        </v-flex>
+        <v-card-text>            
+            {{ isSearchPairsFilled()? 'Filtrando por' : ''}}
+            <v-chip v-for="searchPair in searchPairs" :key="searchPair.field" close
+                v-show="searchPair.show" @click:close="removePair(searchPair)">
+                {{ searchPair.field + ":" + searchPair.key}}
+            </v-chip>
+        </v-card-text>
       </v-layout>
      </v-container>
     </v-card-title>
@@ -42,9 +51,7 @@
             firstIcon: 'mdi-arrow-collapse-left',
             lastIcon: 'mdi-arrow-collapse-right',
             prevIcon: 'mdi-arrow-left',
-            nextIcon: 'mdi-arrow-right'}"
-        :custom-filter="customSearch"
-        :search="searchKey">
+            nextIcon: 'mdi-arrow-right'}">
         <template v-slot:top>
         <v-toolbar flat color="white">
             <v-divider
@@ -279,7 +286,10 @@
         </template>     
         <template slot="body.append">
             <td><b>Totais</b></td>
-            <td></td>
+            <td v-for="column in tableColumns" :key="column.id">
+                {{ column.summable? column.format(sum(column.value)) : '' }}
+            </td>
+            <!-- <td></td>
             <td></td>            
             <td>
                 {{ this.sum('saldo').toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) }}
@@ -299,7 +309,7 @@
             <td></td>
             <td></td>            
             <td></td>
-            <td></td>            
+            <td></td>             -->
         </template>   
     </v-data-table>    
 </v-card>
@@ -337,6 +347,7 @@ export default {
             typeAlertPopup: 'error',  
             selectedColumns:[],
             tableColumns:[],
+            searchPairs:[],
         }
     },
     created () {
@@ -385,24 +396,87 @@ export default {
             this.groupIdenticalItens()
         },
         groupIdenticalItens(){
-            console.log('Items:', this.items)
-            console.log('Original:', this.originalItems)
             var {itemsWithIdenticalPairs, itemsWithoutIdenticalPairs} = 
                 separateIdenticalAndNoIdenticalItems(this.originalItems, this.tableColumns, fieldsToDetermineEquality)
-            var identicalItemsGrouped = sumItems(fieldsToSum, itemsWithIdenticalPairs)
+            var identicalItemsGrouped = sumItems(fieldsToSum(), itemsWithIdenticalPairs)
             this.items = []
             this.items.push(...itemsWithoutIdenticalPairs,...identicalItemsGrouped)
         },
-        customSearch (value, search, item) {
-            if (this.columnToSearch !== null){
-                return item[this.columnToSearch].toString().indexOf(search) !== -1
+        removePair(searchPair){
+            searchPair.show = false
+            this.customSearch()
+        },
+        addSearchPair(){
+            if (this.columnToSearch !== null && this.searchKey != ''){
+                var item = this.searchPairs.filter(searchPair => searchPair.field === this.columnToSearch)
+                if (item.length > 0){
+                    item = item[0]
+                    item.key = this.searchKey
+                    item.show = true
+                }
+                else {
+                    item = {field: this.columnToSearch, key: this.searchKey, show: true}
+                    this.searchPairs.push(item)
+                }
             }
-            else{
-                return  value != null &&
-                    search != null &&
-                    value.toString().indexOf(search) !== -1
+            this.searchKey = ''
+        },        
+        customSearch () {
+            if (this.isSearchPairsFilled(this.searchPairs)){
+                console.log('Procurar por pares')
+                var itemsToSearch = this.originalItems
+                var filteredItems = []
+                itemsToSearch.map((item, index) => {
+                    console.log('Linha ', index)
+                    var includeItem = true
+                    this.searchPairs.map(searchPair => {
+                        if (searchPair.show && item[searchPair.field].toString().indexOf(searchPair.key) === -1){
+                            includeItem = false
+                        }
+                    })
+                    console.log(item)
+                    if (includeItem){
+                        filteredItems.push(item)
+                    }
+                })
+                //console.log('Filtered:', filteredItems)
+                this.items = filteredItems.slice(0)                
+                //console.log(items)
+            } else{
+                console.log('procurar por chave')
+                this.searchCellsForKey()
             }
         },        
+        searchCellsForKey(){
+            console.log('Key:', this.searchKey)
+            var filteredItems = []
+            this.originalItems.map((item, index) => {
+                console.log('Original items')
+                var includeItem = false
+                //Search for specific column
+                if (this.columnToSearch !== null){
+                    console.log('aqui', this.searchKey === '')
+                    includeItem = item[this.columnToSearch].toString().indexOf(this.searchKey) !== -1
+                        || this.searchKey === ''
+                }
+                //Search all columns
+                else{
+                    console.log('Item:',item)
+                    Object.entries(item).map(cell => {                            
+                        if ((cell[1] != null &&
+                        this.searchKey != null &&
+                        cell[1].toString().indexOf(this.searchKey) !== -1) || this.searchKey === ''){
+                            console.log('Match no campo', cell[0], ':', cell[1])
+                            includeItem = true
+                        }
+                    })
+                }
+                if (includeItem){
+                    filteredItems.push(item)
+                }
+            })
+            this.items = filteredItems            
+        },
         sum(column){
             let total = 0;
             if (this.$refs.vagasTable){
@@ -487,7 +561,6 @@ export default {
         }, 
         saveItem (item) {
             save(item).then((response) => {
-                console.log(response)
                 let itemSaved = response.body.vaga
                 item.datapublicacaoformatada = moment(itemSaved.datapublicacao).format("HH:mm:SS DD/MM/YYYY")
                 displayMessage(this, true, response.body.message, 'success')
@@ -502,7 +575,20 @@ export default {
         closeEditField(){
         },
         cancelEditField(){
-        },      
+        }, 
+        isSearchPairsFilled(){
+            if (this.searchPairs.length > 0){
+                var searchPairFilled = false
+                this.searchPairs.map( searchPair => {
+                    if (searchPair.show){
+                        searchPairFilled = true
+                    }
+                })
+                return searchPairFilled
+            }
+
+            return false
+        },            
     },
 }
 
@@ -531,6 +617,8 @@ function separateIdenticalAndNoIdenticalItems(items, tableColumns, fieldsToDeter
     })
     return {itemsWithoutIdenticalPairs, itemsWithIdenticalPairs}
 }
+
+
 
 function isIdentical(itemA, itemB, tableColumns, fieldsToDetermineEquality){
     var identical = true

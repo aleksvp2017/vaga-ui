@@ -2,6 +2,9 @@
   "name": "vagas-ui",
   "description": "Vagas",
   "version": "1.0.0",
+  "engines": {
+    "node": "12.16.x"
+  },  
   "author": "Aleksander Velozo Pascoal",
   "license": "MIT",
   "private": true,

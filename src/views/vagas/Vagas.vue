@@ -678,3 +678,26 @@ function displayMessagePopup(owner, showAlert, message, tipo){
 }
 
 </script>
+
+<style>
+  tbody tr:nth-of-type(even) {
+    background-color: rgba(236, 237, 237);
+  }
+
+  tbody tr:nth-of-type(odd) {
+    background-color: rgb(250 ,250, 250);
+  }
+
+  .v-data-table-header {
+    background-color: rgba(182, 183, 187);
+    color: white;
+  }
+
+  .v-data-footer {
+    background-color: rgb(250 ,250, 250);
+  }
+
+  .theme--light.v-data-table thead tr th {
+    color: white;
+  }
+</style>

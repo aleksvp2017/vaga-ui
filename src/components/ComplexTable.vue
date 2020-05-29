@@ -67,12 +67,12 @@
                 vertical
                 ></v-divider>
                 <v-spacer></v-spacer>
-                <v-btn color="success" dark class="ma-2" @click="exportSheet">Exportar</v-btn>
-                <v-btn color="success" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn>
+                <v-btn color="primary" dark class="ma-2" @click="exportSheet">Exportar</v-btn>
+                <v-btn color="primary" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn>
                 <!-- IMPORTAR -->
                 <v-dialog v-model="dialogImportar" max-width="800px" height="1000px" scrollable>
                     <template v-slot:activator="{ on }">
-                        <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogImportar">Importar</v-btn>
+                        <v-btn color="primary" dark class="ma-2" v-on="on" @click="initiateDialogImportar">Importar</v-btn>
                     </template>                
                     <v-card>
                         <v-card-text>
@@ -92,7 +92,7 @@
                 <!-- CONFIGURAR COLUNAS -->
                 <v-dialog v-model="dialogColunas" max-width="800px" height="1000px" scrollable>
                     <template v-slot:activator="{ on }">
-                        <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogColunas">Escolher colunas</v-btn>
+                        <v-btn color="primary" dark class="ma-2" v-on="on" @click="initiateDialogColunas">Escolher colunas</v-btn>
                     </template>                
                     <v-card>
                         <v-card-text>
@@ -301,10 +301,7 @@
       </v-tab-item>
       <!-- GRAFICO -->
       <v-tab-item key="grafico">
-        <mychart :metrics='tableColumns.filter(tableColumn => tableColumn.summable)'
-                 :dimensions="tableColumns.filter(tableColumn => !tableColumn.summable && tableColumn.text 
-                    && tableColumn.value != 'datapublicacao')"
-                 :items='items'/>
+        <mychart :metric='[1,2,3,4,5,6]' :dimension="['jan', 'fev', 'mar', 'abr', 'maio', 'jun']" metriclegend='Nº vagas'/>
       </v-tab-item>
       <!-- FIM DO GRAFICO -->
     </v-tabs>
@@ -430,6 +427,7 @@ export default {
                 var itemsToSearch = this.originalItems
                 var filteredItems = []
                 itemsToSearch.map((item, index) => {
+                    console.log('Linha ', index)
                     var includeItem = true
                     this.searchPairs.map(searchPair => {
                         if (searchPair.show && item[searchPair.field].toString().indexOf(searchPair.key) === -1){
@@ -450,6 +448,7 @@ export default {
             }
         },        
         searchCellsForKey(){
+            console.log('Key:', this.searchKey)
             var filteredItems = []
             this.originalItems.map((item, index) => {
                 console.log('Original items')

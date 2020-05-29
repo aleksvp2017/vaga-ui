@@ -33,6 +33,8 @@
         height="200"/>
       <linechart :metric='metric' :dimension='dimension' :metriclegend='metriclegend' :key="chartKey" v-if='showTypeBar.showLine'
        height="200"/>
+      <polarchart :metric='metric' :dimension='dimension' :metriclegend='metriclegend' :key="chartKey" v-if='showTypeBar.showPolar'
+       height="200"/>       
     </v-card-text>
   </v-card>
 </template>
@@ -41,6 +43,7 @@
 import PieChart from './PieChart.vue'
 import BarChart from './BarChart.vue'
 import LineChart from './LineChart.vue'
+import PolarAreaChart from './PolarAreaChart.vue'
 
 
 export default {
@@ -69,12 +72,17 @@ export default {
         {
           text: 'Pizza',
           value: 'showPie',
-        },                
+        }, 
+        {
+          text: 'Polar',
+          value: 'showPolar',
+        },                        
       ],
       showTypeBar: {
         showBar: false,
         showLine: false,
         showPie: false,
+        showPolar: false,
       },
     }
   },
@@ -82,6 +90,7 @@ export default {
     'piechart': PieChart,
     'barchart': BarChart,
     'linechart': LineChart,
+    'polarchart': PolarAreaChart,
   }, 
   props:['items', 'metrics', 'dimensions'],
   methods: {

@@ -266,18 +266,18 @@
                     </template>
                 </v-edit-dialog>
             </template>                         
-            <!-- TIPO -->         
-            <template #item.tipo="{item}">
+            <!-- ACAO -->         
+            <template #item.acao="{item}">
                 <v-edit-dialog
-                    :return-value.sync="item.tipo"
+                    :return-value.sync="item.acao"
                     @save="saveItem(item)"
                     @cancel="cancelEditField"
                     @open="editField"
                     @close="closeEditField"
-                    > {{ item.tipo }}
+                    > {{ item.acao }}
                     <template v-slot:input>
                         <v-text-field
-                        v-model="item.tipo"
+                        v-model="item.acao"
                         label="Edit"
                         single-line
                         counter
@@ -680,15 +680,15 @@ function sumItems(fieldsToSum, itemsWithIdenticalPairs){
     return identicalItemsGrouped
 }
 
-function displayMessage(owner, showAlert, message, tipo){
+function displayMessage(owner, showAlert, message, type){
     owner.showAlert = showAlert
     owner.alertMessage = message
-    owner.typeAlert = tipo
+    owner.typeAlert = type
 }
-function displayMessagePopup(owner, showAlert, message, tipo){
+function displayMessagePopup(owner, showAlert, message, type){
     owner.showAlertPopup = showAlert
     owner.alertMessagePopup = message
-    owner.typeAlertPopup = tipo
+    owner.typeAlertPopup = type
 }
 
 </script>

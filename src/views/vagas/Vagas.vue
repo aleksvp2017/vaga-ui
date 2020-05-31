@@ -526,7 +526,8 @@ export default {
         sum(column){
             let total = 0;
             if (this.$refs.vagasTable){
-                var items = this.$refs.vagasTable.selectableItems
+                //var items = this.$refs.vagasTable.selectableItems
+                var items = this.items
                 items.map( item => {
                     if (item[column] !== null){
                         total += parseInt(item[column]) 

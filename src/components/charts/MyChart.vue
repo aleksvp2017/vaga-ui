@@ -3,8 +3,8 @@
     <v-alert :type="typeAlert" dense text dismissible v-model="showAlert">
             {{alertMessage}}
     </v-alert> 
-    <v-card-actions>
-      <v-container grid-list-lg>
+    <v-card-actions class="mb-0">
+      <v-container grid-list-lg class="mb-0">
         <v-layout row wrap>
           <v-flex xs2>
             <v-select
@@ -20,23 +20,22 @@
                 label="Tipo de gráfico"
             ></v-select>
           </v-flex>         
-          <v-flex xs2>
+          <v-flex xs2 >
             <v-btn color="success" @click="generateChart()">Gerar gráfico</v-btn>
           </v-flex>
         </v-layout>
-        
-        <p class="font-weight-light"><v-icon>mdi-head-lightbulb</v-icon> As dimensões do gráfico são as colunas não numéricas da tabela</p>
+        <p class="font-weight-light mb-0"><v-icon>mdi-head-lightbulb</v-icon> As dimensões do gráfico são as colunas não numéricas da tabela</p>
     </v-container>
     </v-card-actions>
-    <v-card-text v-if='showChart'>
+    <v-card-text v-if='showChart' >
       <piechart :metric='metric' :dimension='dimension' :metriclegend='metriclegend' :key="chartKey" v-if='showTypeBar.showPie'
-        height="200"/>
+        :height="140"/>
       <barchart :metric='metric' :dimension='dimension' :metriclegend='metriclegend' :key="chartKey" v-if='showTypeBar.showBar'
-        height="200"/>
+        :height="140"/>
       <linechart :metric='metric' :dimension='dimension' :metriclegend='metriclegend' :key="chartKey" v-if='showTypeBar.showLine'
-       height="200"/>
+       :height="140"/>
       <polarchart :metric='metric' :dimension='dimension' :metriclegend='metriclegend' :key="chartKey" v-if='showTypeBar.showPolar'
-       height="200"/>       
+       :height="140"/>       
     </v-card-text>
   </v-card>
 </template>

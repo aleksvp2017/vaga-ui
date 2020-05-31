@@ -307,10 +307,12 @@
                     && tableColumn.value != 'datapublicacao')"
                  :items='items'/>
       </v-tab-item>
+      <!-- FIM DO GRAFICO -->
+      <!-- MAPA -->
       <v-tab-item key="mapa">
         <mymap :items='items' :metrics='tableColumns.filter(tableColumn => tableColumn.summable)'/>
       </v-tab-item>
-      <!-- FIM DO GRAFICO -->
+      <!-- FIM DO MAPA -->
     </v-tabs>
 
   

@@ -104,6 +104,7 @@ export default {
         displayMessage(this, true, 'Selecione um tipo de gráfico', 'warning')
         return
       }    
+      //Mostra o tipo de gráfico correto
       Object.keys(this.showTypeBar).map(item => {
         if (item === this.chartType){
           this.showTypeBar[item] = true
@@ -123,7 +124,9 @@ export default {
         this.metric.push(item[this.selectedMetric])
         var itemDimension = ''
         this.dimensions.map(dimension => {
-          itemDimension += ' ' + item[dimension.value]
+          if (item[dimension.value] != null){
+            itemDimension += ' ' + item[dimension.value]
+          }
         })
         this.dimension.push(itemDimension)
       })

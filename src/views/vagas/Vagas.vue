@@ -154,6 +154,63 @@
                     </template>
                 </v-edit-dialog>
             </template>  
+        <!-- MODALIDADE -->        
+            <template #item.modalidade="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.modalidade"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.modalidade }}
+                    <template v-slot:input>
+                        <v-text-field
+                        v-model="item.modalidade"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>                         
+            <!-- ACAO -->         
+            <template #item.acao="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.acao"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.acao }}
+                    <template v-slot:input>
+                        <v-text-field
+                        v-model="item.acao"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>     
+            <!-- TIPO DE REDE -->         
+            <template #item.tiporede="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.tiporede"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.tiporede }}
+                    <template v-slot:input>
+                        <v-text-field
+                        v-model="item.tiporede"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>                         
             <!-- SALDO -->        
             <template #item.saldo="{item}">
                 <v-edit-dialog
@@ -246,45 +303,7 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>      
-        <!-- MODALIDADE -->        
-            <template #item.modalidade="{item}">
-                <v-edit-dialog
-                    :return-value.sync="item.modalidade"
-                    @save="saveItem(item)"
-                    @cancel="cancelEditField"
-                    @open="editField"
-                    @close="closeEditField"
-                    > {{ item.modalidade }}
-                    <template v-slot:input>
-                        <v-text-field
-                        v-model="item.modalidade"
-                        label="Edit"
-                        single-line
-                        counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>                         
-            <!-- ACAO -->         
-            <template #item.acao="{item}">
-                <v-edit-dialog
-                    :return-value.sync="item.acao"
-                    @save="saveItem(item)"
-                    @cancel="cancelEditField"
-                    @open="editField"
-                    @close="closeEditField"
-                    > {{ item.acao }}
-                    <template v-slot:input>
-                        <v-text-field
-                        v-model="item.acao"
-                        label="Edit"
-                        single-line
-                        counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>         
+            </template>            
             <template #item.datapublicacao="{item}">
                 {{item.datapublicacaoformatada}}
             </template>            
@@ -460,17 +479,16 @@ export default {
         searchCellsForKey(){
             var filteredItems = []
             this.originalItems.map((item, index) => {
-                console.log('Original items')
                 var includeItem = false
                 //Search for specific column
                 if (this.columnToSearch !== null){
-                    console.log('aqui', this.searchKey === '')
-                    includeItem = item[this.columnToSearch].toString().indexOf(this.searchKey) !== -1
-                        || this.searchKey === ''
+                    if (item[this.columnToSearch] != null){
+                        includeItem = item[this.columnToSearch].toString().indexOf(this.searchKey) !== -1
+                           || this.searchKey === ''
+                    }
                 }
                 //Search all columns
                 else{
-                    console.log('Item:',item)
                     Object.entries(item).map(cell => {                            
                         if ((cell[1] != null &&
                         this.searchKey != null &&

@@ -25,7 +25,7 @@ async function save(vaga){
     return http.post(BASE_BACKEND_URL + 'vagas/' + (vaga.vagaid ? (':' + vaga.vagaid) : ''), {vaga})
 }
 
-const fieldsToDetermineEquality = ['ano', 'uf', 'acao', 'modalidade']
+const fieldsToDetermineEquality = ['ano', 'uf', 'acao', 'modalidade', 'tiporede']
 
 function columns(){
     return [  
@@ -58,7 +58,14 @@ function columns(){
             value: 'acao',
             selected: true,
             summable: false,
-        },        
+        },  
+        {
+            id: 12,
+            text: 'TIPO DE REDE',
+            value: 'tiporede',
+            selected: true,
+            summable: false,
+        },                
         {
             id: 3,
             text: 'SALDO',

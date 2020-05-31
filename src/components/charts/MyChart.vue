@@ -24,6 +24,8 @@
             <v-btn color="success" @click="generateChart()">Gerar gráfico</v-btn>
           </v-flex>
         </v-layout>
+        
+        <p class="font-weight-light"><v-icon>mdi-head-lightbulb</v-icon> As dimensões do gráfico são as colunas não numéricas da tabela</p>
     </v-container>
     </v-card-actions>
     <v-card-text v-if='showChart'>
@@ -49,9 +51,9 @@ import PolarAreaChart from './PolarAreaChart.vue'
 export default {
   data() {
     return {
-      typeAlert: 'info',
-      showAlert: true,
-      alertMessage: 'As dimensões do gráfico são as colunas da tabela',
+      typeAlert: 'error',
+      showAlert: false,
+      alertMessage: '',
       metric:[],
       dimension:[],  
       metriclegend:'',

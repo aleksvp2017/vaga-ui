@@ -6,6 +6,7 @@
       >
       <v-tab>Tabela</v-tab>
       <v-tab>Gráfico</v-tab>
+      <v-tab>Mapa</v-tab>
 
       <v-tab-item key="tabela">
         <v-alert :type="typeAlert" dense text dismissible v-model="showAlert">
@@ -306,6 +307,9 @@
                     && tableColumn.value != 'datapublicacao')"
                  :items='items'/>
       </v-tab-item>
+      <v-tab-item key="mapa">
+        <mymap :items='items' :metrics='tableColumns.filter(tableColumn => tableColumn.summable)'/>
+      </v-tab-item>
       <!-- FIM DO GRAFICO -->
     </v-tabs>
 
@@ -319,11 +323,13 @@ import {upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEqual
 import moment  from 'moment'
 import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
 import XLSX from 'xlsx'
-import MyChart from '../../components/MyChart.vue'
+import MyChart from '../../components/charts/MyChart.vue'
+import MyMap from '../../components/maps/MyMap.vue'
 
 export default {
     components: {
-      'mychart': MyChart
+      'mychart': MyChart,
+      'mymap': MyMap,
     }, 
     data() {
         return {

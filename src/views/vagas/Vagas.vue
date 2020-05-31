@@ -210,7 +210,26 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>                         
+            </template>  
+            <!-- TED -->         
+            <template #item.ted="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.ted"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.ted }}
+                    <template v-slot:input>
+                        <v-text-field
+                        v-model="item.ted"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>                                    
             <!-- SALDO -->        
             <template #item.saldo="{item}">
                 <v-edit-dialog

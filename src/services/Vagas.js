@@ -65,7 +65,14 @@ function columns(){
             value: 'tiporede',
             selected: true,
             summable: false,
-        },                
+        },   
+        {
+            id: 13,
+            text: 'TED',
+            value: 'ted',
+            selected: true,
+            summable: false,
+        },                       
         {
             id: 3,
             text: 'SALDO',

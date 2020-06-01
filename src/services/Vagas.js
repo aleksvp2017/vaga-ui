@@ -33,7 +33,6 @@ function columns(){
             id: 1,
             text: 'ANO',
             value: 'ano',
-            width: '80px',
             selected: true,
             summable: false,
         },           
@@ -48,7 +47,6 @@ function columns(){
             id: 8,
             text: 'MODALIDADE',
             value: 'modalidade',
-            width: '130px',
             selected: true,            
             summable: false,
         },
@@ -87,7 +85,6 @@ function columns(){
             id: 4,
             text: 'VALOR APROVADO',
             value: 'valoraprovado',
-            width: '200px',
             selected: true,
             summable: true,
             format: (item) => {
@@ -98,7 +95,6 @@ function columns(){
             id: 5,
             text: 'APROVADA',
             value: 'aprovada',
-            width: '120px',
             selected: true,
             summable: true,
             format: (item) => {
@@ -109,7 +105,6 @@ function columns(){
             id: 6,
             text: 'HOMOLOGADA',
             value: 'homologada',
-            width: '140px' ,
             selected: true,           
             summable: true,
             format: (item) => {
@@ -120,7 +115,6 @@ function columns(){
             id: 7,
             text: 'REALIZADA',
             value: 'matricularealizada',
-            width: '120px',
             selected: true,   
             summable: true, 
             format: (item) => {

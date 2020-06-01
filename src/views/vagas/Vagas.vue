@@ -113,7 +113,8 @@
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
-                <!-- FIM DO CONFIGURAR COLUNAS -->                       
+                <!-- FIM DO CONFIGURAR COLUNAS -->    
+                <v-btn color="success" dark class="ma-2" @click="reset">Limpar</v-btn>                   
             </v-toolbar>
             </template>      
             <!-- ANO -->
@@ -640,7 +641,13 @@ export default {
             }
 
             return false
-        },            
+        },     
+        reset(){
+            this.items = this.originalItems
+            this.columnToSearch = ''
+            this.searchPairs = []
+            this.tableColumns = columns()
+        }       
     },
 }
 

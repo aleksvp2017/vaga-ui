@@ -435,7 +435,15 @@ export default {
 			XLSX.writeFile(wb, "vagas.xlsx")
         },
         updateColumns(){
-            this.selectedColumns = this.selectedColumns.sort()
+            this.selectedColumns = this.selectedColumns.sort((a, b) => {
+                if (a.id > b.id){
+                    return 1
+                }
+                else if (a.id === b.id){
+                    return 0
+                }
+                return -1
+            })
             var updatedColumns = []
             for (var selectedColumn in this.selectedColumns){
                 updatedColumns.push(this.tableConfigurableColumns[this.selectedColumns[selectedColumn]])

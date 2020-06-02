@@ -8,6 +8,9 @@ export default{
         return state.userCookieName
     },
     menu(state){
-        return state.user.menu
+        if (state.user){
+            return state.user.menu
+        }
+        return []
     }
 }

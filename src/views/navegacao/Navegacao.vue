@@ -83,6 +83,9 @@
             }
         },
         computed: {
+            temAcesso(){
+
+            },
             links (){
                 return routes.filter(route => route.menuItem)
             },

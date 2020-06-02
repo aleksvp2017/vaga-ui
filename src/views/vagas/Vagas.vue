@@ -401,14 +401,7 @@ export default {
         }
     },
     created () {
-        this.updateItens();
-        this.selectedColumns = this.tableConfigurableColumns.map((column, index) => {
-            if (column.selected){
-                return index
-            }
-        })
-        this.tableColumns = columns()
-        this.actionColumn = this.tableColumns.filter(item => item.value === 'actions')[0]
+        initialize(this)
     },
     computed: {
         tableConfigurableColumns(){
@@ -651,12 +644,23 @@ export default {
             return false
         },     
         reset(){
-            this.items = this.originalItems
-            this.columnToSearch = ''
             this.searchPairs = []
-            this.tableColumns = columns()
+            this.searchKey = ''
+            this.columnToSearch = null
+            initialize(this)
         }       
     },
+}
+
+function initialize(owner){
+    owner.updateItens();
+    owner.selectedColumns = owner.tableConfigurableColumns.map((column, index) => {
+        if (column.selected){
+            return index
+        }
+    })
+    owner.tableColumns = columns()
+    owner.actionColumn = owner.tableColumns.filter(item => item.value === 'actions')[0]
 }
 
 function separateIdenticalAndNoIdenticalItems(items, tableColumns, fieldsToDetermineEquality){

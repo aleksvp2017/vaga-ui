@@ -58,7 +58,7 @@ export default {
             selectedMetric:'',
             selectedDimension:'',
             showMap: false,
-            mapKey: 1,
+            mapkey: 1,
         }
     },
     methods: {
@@ -84,8 +84,9 @@ export default {
       })
       this.stateData = {}
       metricsPorUF.map(item => this.stateData['BR-' + item.uf] = item.metric)
+      console.log(this.stateData)
       this.showMap = true
-      this.mapKey = this.mapKey + 1
+      this.mapkey = this.mapkey + 1
     }
   },
 }

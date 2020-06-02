@@ -24,7 +24,7 @@
                 ></v-select>
             </v-flex>
             <v-flex xs2>
-            <v-text-field
+            <v-text-field 
             @keydown.enter="addSearchPair"
             @keyup="customSearch"
             v-model="searchKey"
@@ -105,6 +105,7 @@
                                             {{ column.text }}
                                         </v-chip>
                                     </v-chip-group> 
+                                    <p class="font-weight-light mb-0"><v-icon>mdi-head-lightbulb</v-icon> A edição em tela ficará desabilita enquanto qualquer das colunas estiver desabilitada</p>
                         </v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
@@ -128,6 +129,7 @@
                     > {{ item.ano }}
                     <template v-slot:input>
                         <v-text-field
+                        :disabled="editDisabled"
                         v-model="item.ano"
                         label="Edit"
                         single-line
@@ -146,7 +148,7 @@
                     @close="closeEditField"
                     > {{ item.uf }}
                     <template v-slot:input>
-                        <v-text-field
+                        <v-text-field :disabled="editDisabled"
                         v-model="item.uf"
                         label="Edit"
                         single-line
@@ -165,7 +167,7 @@
                     @close="closeEditField"
                     > {{ item.modalidade }}
                     <template v-slot:input>
-                        <v-text-field
+                        <v-text-field :disabled="editDisabled"
                         v-model="item.modalidade"
                         label="Edit"
                         single-line
@@ -184,7 +186,7 @@
                     @close="closeEditField"
                     > {{ item.acao }}
                     <template v-slot:input>
-                        <v-text-field
+                        <v-text-field :disabled="editDisabled"
                         v-model="item.acao"
                         label="Edit"
                         single-line
@@ -203,7 +205,7 @@
                     @close="closeEditField"
                     > {{ item.tiporede }}
                     <template v-slot:input>
-                        <v-text-field
+                        <v-text-field :disabled="editDisabled"
                         v-model="item.tiporede"
                         label="Edit"
                         single-line
@@ -222,7 +224,7 @@
                     @close="closeEditField"
                     > {{ item.ted }}
                     <template v-slot:input>
-                        <v-text-field
+                        <v-text-field :disabled="editDisabled"
                         v-model="item.ted"
                         label="Edit"
                         single-line
@@ -241,13 +243,14 @@
                     @close="closeEditField"
                     > {{ item.saldo.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) }}
                     <template v-slot:input>
-                        <!-- <v-text-field
+                        <!-- <v-text-field :disabled="editDisabled"
                         v-model="item.saldo"
                         label="Edit"
                         single-line
                         counter
                         ></v-text-field> -->
                         <v-currency-field 
+                            :disabled="editDisabled"
                             v-model="item.saldo"/>                    
                     </template>
                 </v-edit-dialog>
@@ -263,6 +266,7 @@
                     > {{ item.valoraprovado.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) }}
                     <template v-slot:input>
                         <v-currency-field 
+                            :disabled="editDisabled"
                             v-model="item.valoraprovado"/>  
                     </template>
                 </v-edit-dialog>
@@ -277,7 +281,7 @@
                     @close="closeEditField"
                     > {{ item.aprovada }}
                     <template v-slot:input>
-                        <v-text-field
+                        <v-text-field :disabled="editDisabled"
                         v-model="item.aprovada"
                         label="Edit"
                         single-line
@@ -296,7 +300,7 @@
                     @close="closeEditField"
                     > {{ item.homologada }}
                     <template v-slot:input>
-                        <v-text-field
+                        <v-text-field :disabled="editDisabled"
                         v-model="item.homologada"
                         label="Edit"
                         single-line
@@ -315,7 +319,7 @@
                     @close="closeEditField"
                     > {{ item.matricularealizada }}
                     <template v-slot:input>
-                        <v-text-field
+                        <v-text-field :disabled="editDisabled"
                         v-model="item.matricularealizada"
                         label="Edit"
                         single-line
@@ -407,6 +411,9 @@ export default {
         tableConfigurableColumns(){
             return columns().filter(column => column.value !== 'actions')
         },
+        editDisabled(){
+            return this.tableColumns.length !== columns().length
+        }
     },
     methods: {
         exportSheet(){
@@ -428,15 +435,7 @@ export default {
 			XLSX.writeFile(wb, "vagas.xlsx")
         },
         updateColumns(){
-            this.selectedColumns = this.selectedColumns.sort((a, b) => {
-                if (a.id > b.id){
-                    return 1
-                }
-                else if (a.id === b.id){
-                    return 0
-                }
-                return -1
-            })
+            this.selectedColumns = this.selectedColumns.sort()
             var updatedColumns = []
             for (var selectedColumn in this.selectedColumns){
                 updatedColumns.push(this.tableConfigurableColumns[this.selectedColumns[selectedColumn]])

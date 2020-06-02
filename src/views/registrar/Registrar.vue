@@ -46,6 +46,7 @@
     import {registrar} from '../../services/Usuario'
     import {enviarMensagem} from '../../services/Mensagem'
     import Validator from 'validator'
+    import {FALE_CONOSCO_EMAIL} from '../../services/Constantes.js'
 
     export default {
         data(){
@@ -78,12 +79,12 @@
                     return
                 }
                 registrar(this.usuario).then((response) => {
-                    this.alerta = response.body.message + '. Clique em entrar para acessar a plataforma.'
+                    this.alerta = response.body.message + '. Você receberá uma mensagem no e-mail registrado quando seu cadastro for aprovado.'
                     this.mostrarAlerta = true
                     this.tipoAlerta = 'info'   
-                    enviarMensagem('Registro no sistema Vagas', 
+                    enviarMensagem('Registro no sistema Vagas de ' + this.usuario.email, 
                         'Esse e-mail foi utilizado para registro no Vagas.'+
-                        'Caso não tenha sido você, responda esse email com a palavra cancelar.', this.usuario.email)                 
+                        'Caso não tenha sido você, responda esse email com a palavra cancelar.', FALE_CONOSCO_EMAIL)                 
                 }).catch(error => {
                     this.alerta = error.body.error
                     this.mostrarAlerta = true

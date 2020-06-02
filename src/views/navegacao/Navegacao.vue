@@ -47,7 +47,7 @@
                         
                         <v-list>
                             <v-list-item>
-                                <v-btn text rounded  v-show="loggedIn"  :to="rotaUsuario">Dados pessoais</v-btn>
+                                <v-btn text rounded  v-show="loggedIn"  :to="rotaDadosPessoais">Dados pessoais</v-btn>
                             </v-list-item>
                             <v-list-item>
                                 <v-btn text rounded  v-show="loggedIn"  :to="rotaSenha">Alterar Senha</v-btn>
@@ -87,8 +87,8 @@
             rotaHome(){
                 return routes.filter(route => route.name == 'Início')[0]
             },            
-            rotaUsuario(){
-                return routes.filter(route => route.name == 'Usuário')[0]
+            rotaDadosPessoais(){
+                return routes.filter(route => route.name == 'Dados Pessoais')[0]
             },
             rotaSenha(){
                 return routes.filter(route => route.name == 'Alterar Senha')[0]

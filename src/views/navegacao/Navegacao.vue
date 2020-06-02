@@ -12,7 +12,9 @@
             <v-spacer></v-spacer>
             <v-btn text rounded v-for="(link, index) in links" :key="index"
                 :to="link.path"
-                v-show="(!link.requireAuth && !loggedIn) || (loggedIn && link.requireAuth) || link.alwaysShow"> {{link.name}} </v-btn>
+                v-show="(!link.requireAuth && !loggedIn) 
+                    || (loggedIn && link.requireAuth && menu.indexOf(link.name) > -1) 
+                    || link.alwaysShow"> {{link.name}} </v-btn>
             
             <!-- USER MENU -->
             <v-menu offset-y
@@ -94,7 +96,7 @@
                 return routes.filter(route => route.name == 'Alterar Senha')[0]
             },            
             ...
-            mapGetters(['loggedIn']),
+            mapGetters(['loggedIn', 'menu']),
             ...
             mapState(['user'])
         },

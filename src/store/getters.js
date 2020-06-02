@@ -6,5 +6,8 @@ export default{
     //nome do cookie para guardar os dados do usuario
     cookieName(state){
         return state.userCookieName
+    },
+    menu(state){
+        return state.user.menu
     }
 }

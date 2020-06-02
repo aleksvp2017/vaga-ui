@@ -9,7 +9,8 @@ import Senha from './views/usuario/Senha.vue'
 import Vagas from './views/vagas/Vagas.vue'
 import Usuarios from './views/usuario/Usuarios.vue'
 
-const routes = [
+
+var routes = [
 
    { path: '/', name: 'Início', component: Bemvindo, menuItem: false, alwaysShow: false},
    { path: '/entrar', name: 'Entrar', component: Login, menuItem: true },
@@ -17,8 +18,8 @@ const routes = [
    { path: '/dadospessoais', name: 'Dados Pessoais', component: DadosPessoais, requireAuth: true, menuItem: false},
    { path: '/faleconosco', name: 'Fale Conosco', component: FaleConosco, requireAuth: true, menuItem: true},
    { path: '/alterarsenha', name: 'Alterar Senha', component: Senha, requireAuth: true, menuItem: false},
-   { path: '/vagas', name: 'Vagas', component: Vagas, requireAuth:true, menuItem: true }
-//    { path: '/usuarios', name: 'Usuarios', component: Usuarios, requireAuth:true, menuItem: true },
+   { path: '/vagas', name: 'Vagas', component: Vagas, requireAuth:true, menuItem: true },
+   { path: '/usuarios', name: 'Usuarios', component: Usuarios, requireAuth:true, menuItem: true },
 ];
 
 Vue.use(VueRouter)

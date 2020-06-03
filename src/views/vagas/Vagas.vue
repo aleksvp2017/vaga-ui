@@ -328,18 +328,18 @@
                     </template>
                 </v-edit-dialog>
             </template>  
-        <!-- MATRICULA REALIZADA -->        
-            <template #item.matricularealizada="{item}">
+        <!-- MATRICULA -->        
+            <template #item.matricula="{item}">
                 <v-edit-dialog
-                    :return-value.sync="item.matricularealizada"
+                    :return-value.sync="item.matricula"
                     @save="saveItem(item)"
                     @cancel="cancelEditField"
                     @open="editField"
                     @close="closeEditField"
-                    > {{ item.matricularealizada }}
+                    > {{ item.matricula }}
                     <template v-slot:input>
                         <v-text-field :disabled="editDisabled"
-                        v-model="item.matricularealizada"
+                        v-model="item.matricula"
                         label="Edit"
                         single-line
                         counter

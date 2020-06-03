@@ -121,8 +121,8 @@ function columns(){
         },
         {
             id: itemId++,
-            text: 'REALIZADA',
-            value: 'matricularealizada',
+            text: 'MATRICULA',
+            value: 'matricula',
             selected: true,   
             summable: true, 
             format: (item) => {

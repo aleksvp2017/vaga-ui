@@ -25,7 +25,7 @@ async function save(vaga){
     return http.post(BASE_BACKEND_URL + 'vagas/' + (vaga.vagaid ? (':' + vaga.vagaid) : ''), {vaga})
 }
 
-const fieldsToDetermineEquality = ['ano', 'uf', 'acao', 'modalidade', 'tiporede']
+const fieldsToDetermineEquality = ['ano', 'uf', 'tipocurso', 'modalidade', 'acao', 'tiporede', 'ted']
 
 function columns(){
     var itemId = 0

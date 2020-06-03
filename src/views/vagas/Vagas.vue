@@ -754,7 +754,15 @@ function sumItems(fieldsToSum, itemsWithIdenticalPairs){
         items.map((item, index) => {
             fieldsToSum.map(fieldToSum => {
                 if (index !== 0){
-                    groupedItem[fieldToSum] = parseInt(groupedItem[fieldToSum]) + parseInt(item[fieldToSum])
+                    let itemA = parseInt(groupedItem[fieldToSum])
+                    let itemB = parseInt(item[fieldToSum])
+                    if (Number.isNaN(itemA)){
+                        itemA = 0
+                    }
+                    if (Number.isNaN(itemB)){
+                        itemB = 0
+                    }                    
+                    groupedItem[fieldToSum] = itemA + itemB
                 }
             })
         })

@@ -157,7 +157,26 @@
                     </template>
                 </v-edit-dialog>
             </template>  
-        <!-- MODALIDADE -->        
+            <!-- TIPO DE CURSO -->        
+            <template #item.tipocurso="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.tipocurso"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.tipocurso }} 
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.tipocurso"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template> 
+            <!-- MODALIDADE -->        
             <template #item.modalidade="{item}">
                 <v-edit-dialog
                     :return-value.sync="item.modalidade"
@@ -175,7 +194,7 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>                         
+            </template>                                     
             <!-- ACAO -->         
             <template #item.acao="{item}">
                 <v-edit-dialog
@@ -408,6 +427,7 @@ export default {
         initialize(this)
     },
     computed: {
+        //todas as colunas exceto a de actions
         tableConfigurableColumns(){
             return columns().filter(column => column.value !== 'actions')
         },
@@ -435,7 +455,14 @@ export default {
 			XLSX.writeFile(wb, "vagas.xlsx")
         },
         updateColumns(){
-            this.selectedColumns = this.selectedColumns.sort()
+            this.selectedColumns = this.selectedColumns.sort((a, b) => {
+                if (parseInt(a) > parseInt(b)){
+                    return 1
+                }
+                else if (parseInt(a) === parseInt(b)){
+                    return 0
+                }
+                return -1})
             var updatedColumns = []
             for (var selectedColumn in this.selectedColumns){
                 updatedColumns.push(this.tableConfigurableColumns[this.selectedColumns[selectedColumn]])
@@ -653,9 +680,9 @@ export default {
 
 function initialize(owner){
     owner.updateItens();
-    owner.selectedColumns = owner.tableConfigurableColumns.map((column, index) => {
+    owner.selectedColumns = owner.tableConfigurableColumns.map(column => {
         if (column.selected){
-            return index
+            return column.id
         }
     })
     owner.tableColumns = columns()

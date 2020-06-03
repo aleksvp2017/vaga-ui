@@ -130,6 +130,15 @@ export default {
         })
         this.dimension.push(itemDimension)
       })
+      
+      this.metric = [100, 80, 50, 110, 60, 30, 90, 80, 25,
+                    90, 80, 50, 90, 80, 30, 90, 80, 40]
+      this.dimension = ['DF Aprovada', 'DF Homologada', 'DF Realizada', 
+                        'MG Aprovada', 'MG Homologada', 'MG Realizada',
+                        'RJ Aprovada', 'RJ Homologada', 'RJ Realizada',
+                        'PA Aprovada', 'PA Homologada', 'PA Realizada',
+                        'MA Aprovada', 'MA Homologada', 'MA Realizada',
+                        'RS Aprovada', 'RS Homologada', 'RS Realizada']
       this.chartKey = this.chartKey + 1
       this.showChart = true
     }

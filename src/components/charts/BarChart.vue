@@ -3,7 +3,16 @@ import { Bar } from 'vue-chartjs'
 
 export default {
   props:['metric', 'dimension', 'metriclegend'],
-  options:{},
+  options:{
+    scales: {
+      xAxes: [{
+        stacked: true
+      }],
+      yAxes: [{
+        stacked: true
+      }]
+    }    
+  },
   extends: Bar,
   computed: {
     backgroundColor(){
@@ -26,6 +35,8 @@ export default {
           cores.push(cor)
           color.push(`rgba(${cor.red}, ${cor.green}, ${cor.blue}, 0.2)`)
       })
+      color = []
+      color.push('cornflowerblue', 'darkolivegreen', 'goldenrod','cornflowerblue', 'darkolivegreen', 'goldenrod','cornflowerblue', 'darkolivegreen', 'goldenrod','cornflowerblue', 'darkolivegreen', 'goldenrod','cornflowerblue', 'darkolivegreen', 'goldenrod','cornflowerblue', 'darkolivegreen', 'goldenrod')
       return color
     },
     borderColor(){
@@ -34,13 +45,22 @@ export default {
   },
   mounted () {
     this.renderChart({
-        labels: this.dimension,
+        labels: ['DF', 'MG','PA'],
         datasets: [{
-            label: this.metriclegend,
-            data: this.metric,
+            label: 'Aprovada',
+            data: [100,200,300],
             backgroundColor: this.backgroundColor,
             borderColor: this.borderColor,
-            borderWidth: 1
+            borderWidth: 1,
+            stack: 'aleks'
+        },
+        {
+            label: 'Homologada',
+            data: [100,80,200],
+            backgroundColor: this.backgroundColor,
+            borderColor: this.borderColor,
+            borderWidth: 1,
+            stack: 'aleksander'
         }]
     }, this.options)
   }

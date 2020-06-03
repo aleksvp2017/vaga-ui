@@ -28,51 +28,59 @@ async function save(vaga){
 const fieldsToDetermineEquality = ['ano', 'uf', 'acao', 'modalidade', 'tiporede']
 
 function columns(){
+    var itemId = 0
     return [  
         {
-            id: 1,
+            id: itemId++,
             text: 'ANO',
             value: 'ano',
             selected: true,
             summable: false,
         },           
         {
-            id: 2,
+            id: itemId++,
             text: 'UF',
             value: 'uf',
             selected: true,
             summable: false,
         },
         {
-            id: 3,
+            id: itemId++,
+            text: 'TIPO DE CURSO',
+            value: 'tipocurso',
+            selected: true,            
+            summable: false,
+        },        
+        {
+            id: itemId++,
             text: 'MODALIDADE',
             value: 'modalidade',
             selected: true,            
             summable: false,
         },
         {
-            id: 4,
+            id: itemId++,
             text: 'AÇÃO',
             value: 'acao',
             selected: true,
             summable: false,
         },  
         {
-            id: 5,
+            id: itemId++,
             text: 'TIPO DE REDE',
             value: 'tiporede',
             selected: true,
             summable: false,
         },   
         {
-            id: 6,
+            id: itemId++,
             text: 'TED',
             value: 'ted',
             selected: true,
             summable: false,
         },                       
         {
-            id: 7,
+            id: itemId++,
             text: 'SALDO',
             value: 'saldo',
             selected: true,
@@ -82,7 +90,7 @@ function columns(){
             },
         },
         {
-            id: 8,
+            id: itemId++,
             text: 'VALOR APROVADO',
             value: 'valoraprovado',
             selected: true,
@@ -92,7 +100,7 @@ function columns(){
             },
         },
         {
-            id: 9,
+            id: itemId++,
             text: 'APROVADA',
             value: 'aprovada',
             selected: true,
@@ -102,7 +110,7 @@ function columns(){
             },
         },
         {
-            id: 10,
+            id: itemId++,
             text: 'HOMOLOGADA',
             value: 'homologada',
             selected: true,           
@@ -112,7 +120,7 @@ function columns(){
             },
         },
         {
-            id: 11,
+            id: itemId++,
             text: 'REALIZADA',
             value: 'matricularealizada',
             selected: true,   
@@ -122,14 +130,14 @@ function columns(){
             },
         },
         {
-            id: 12,
+            id: itemId++,
             text: 'DATA',
             value: 'datapublicacao',
             selected: true,
             summable: false,
         },
         {
-            id: 13,
+            id: itemId++,
             text: '',
             value: 'actions', 
             sortable: false,

@@ -233,6 +233,25 @@
                     </template>
                 </v-edit-dialog>
             </template>  
+            <!-- PARCEIRO -->         
+            <template #item.parceiro="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.parceiro"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.parceiro }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.parceiro"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>             
             <!-- TED -->         
             <template #item.ted="{item}">
                 <v-edit-dialog

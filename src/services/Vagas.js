@@ -64,7 +64,7 @@ function columns(){
             value: 'acao',
             selected: true,
             summable: false,
-        },  
+        }, 
         {
             id: itemId++,
             text: 'TIPO DE REDE',
@@ -72,6 +72,13 @@ function columns(){
             selected: true,
             summable: false,
         },   
+        {
+            id: itemId++,
+            text: 'PARCEIRO',
+            value: 'parceiro',
+            selected: true,
+            summable: false,
+        },         
         {
             id: itemId++,
             text: 'TED',

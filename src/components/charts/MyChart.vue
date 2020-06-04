@@ -6,16 +6,25 @@
     <v-card-actions class="mb-0">
       <v-container grid-list-lg class="mb-0">
         <v-layout row wrap>
-          <v-flex xs2>
+            <v-col cols="10" sm="5">
             <v-select
-                v-model="selectedMetric"
-                :items="metrics"
-                label="Métrica"
+              v-model="selectedMetrics"
+              :items="metrics"
+              label="Métrica"
+              multiple
+              chips
+              deletable-chips
+              dense
+              full-width
+              hint="Métricas para gerar gráfico"
+              persistent-hint
             ></v-select>
-          </v-flex>
+            </v-col>
           <v-flex xs2>
             <v-select
-                v-model="chartType"
+                dense
+                height="44"
+                v-model="selectedChartTypes"
                 :items="chartTypes"
                 label="Tipo de gráfico"
             ></v-select>
@@ -28,13 +37,16 @@
     </v-container>
     </v-card-actions>
     <v-card-text v-if='showChart' >
-      <piechart :metric='metric' :dimension='dimension' :metriclegend='metriclegend' :key="chartKey" v-if='showTypeBar.showPie'
+      <piechart :metric='metric' :dimension='dimension' :metriclegend='metriclegends' :key="chartKey" v-if='showTypeChart.showPie'
         :height="140"/>
-      <barchart :metric='metric' :dimension='dimension' :metriclegend='metriclegend' :key="chartKey" v-if='showTypeBar.showBar'
+      <barchart :metric='metric' :dimension='dimension' :metriclegend='metriclegends' :key="chartKey" v-if='showTypeChart.showBar'
         :height="140"/>
-      <linechart :metric='metric' :dimension='dimension' :metriclegend='metriclegend' :key="chartKey" v-if='showTypeBar.showLine'
+      <linechart :metric='metric' :dimension='dimension' :metriclegend='metriclegends' :key="chartKey" v-if='showTypeChart.showLine'
        :height="140"/>
-      <polarchart :metric='metric' :dimension='dimension' :metriclegend='metriclegend' :key="chartKey" v-if='showTypeBar.showPolar'
+      <polarchart :metric='metric' :dimension='dimension' :metriclegend='metriclegends' :key="chartKey" v-if='showTypeChart.showPolar'
+       :height="140"/>       
+      <multiplebarchart :metrics='metric' :dimensions='dimension' :metriclegends='metriclegends' :key="chartKey" 
+        v-if='showTypeChart.showMultiple'
        :height="140"/>       
     </v-card-text>
   </v-card>
@@ -45,6 +57,7 @@ import PieChart from './PieChart.vue'
 import BarChart from './BarChart.vue'
 import LineChart from './LineChart.vue'
 import PolarAreaChart from './PolarAreaChart.vue'
+import MultipleMetricBarChar from './MultipleMetricBarChart.vue'
 
 
 export default {
@@ -55,11 +68,11 @@ export default {
       alertMessage: '',
       metric:[],
       dimension:[],  
-      selectedMetric:'',
+      selectedMetrics:[],
       selectedDimension:'',
       showChart: false,
       chartKey: 1,
-      chartType: '',
+      selectedChartTypes: '',
       chartTypes: [
         {
           text: 'Barra',
@@ -76,14 +89,16 @@ export default {
         {
           text: 'Polar',
           value: 'showPolar',
-        },                        
+        },                              
       ],
-      showTypeBar: {
+      showTypeChart: {
         showBar: false,
         showLine: false,
         showPie: false,
         showPolar: false,
+        showMultiple: false,
       },
+      metriclegends:[],
     }
   },
   components: {
@@ -91,13 +106,14 @@ export default {
     'barchart': BarChart,
     'linechart': LineChart,
     'polarchart': PolarAreaChart,
+    'multiplebarchart': MultipleMetricBarChar,
   }, 
   props:['items', 'metrics', 'dimensions'],
   computed: {
     metriclegend(){
       var legenda = ''
       this.metrics.map(item => {
-        if (item.value === this.selectedMetric){
+        if (item.value === this.selectedMetrics){
           legenda = item.text
         }
       })
@@ -106,45 +122,113 @@ export default {
   },
   methods: {
     generateChart(){
-      
-      if (!this.selectedMetric){
-        displayMessage(this, true, 'Selecione uma métrica', 'warning')
-        return
-      }
-      if (!this.chartType){
-        displayMessage(this, true, 'Selecione um tipo de gráfico', 'warning')
-        return
-      }    
-      //Mostra o tipo de gráfico correto
-      Object.keys(this.showTypeBar).map(item => {
-        if (item === this.chartType){
-          this.showTypeBar[item] = true
+      try{
+        validaSelecao(this.selectedMetrics, this.selectedChartTypes)
+        exibirGrafico(this.showTypeChart, this.selectedChartTypes)
+        
+        displayMessage(this, false)
+        this.metric = []
+        this.dimension = []
+        this.metriclegends = []
+
+        if (this.selectedMetrics.length > 1){
+          generateChartWithMultipleMetrics(this.showTypeChart, this.dimensions, this.metric, this.metriclegends, this.items,
+            this.dimension, this.selectedMetrics, this.metrics)
+            console.log('M:',this.metric)
+            console.log('L:', this.metriclegends)
         }
         else{
-          this.showTypeBar[item] = false
+          generateChartWithSingleMetric(this.items, this.metric, this.dimensions, this.dimension, this.selectedMetrics,
+            this.metriclegends, this.metrics)
         }
-      })
-      /*if (!this.selectedDimension){
-        displayMessage(this, true, 'Selecione uma dimensão', 'warning')
-        return
-      }*/
-      displayMessage(this, false)
-      this.metric = []
-      this.dimension = []
-      this.items.map((item, index) =>{
-        this.metric.push(item[this.selectedMetric])
-        var itemDimension = ''
-        this.dimensions.map(dimension => {
-          if (item[dimension.value] != null){
-            itemDimension += ' ' + item[dimension.value]
-          }
-        })
-        this.dimension.push(itemDimension)
-      })
-      this.chartKey = this.chartKey + 1
-      this.showChart = true
+        //Para forçar renderização do gráfico depois de alguma alteração
+        this.chartKey = this.chartKey + 1
+        this.showChart = true
+      }
+      catch (error){
+        displayMessage(this, true, error, 'warning')
+      }
+
+      
     }
   },
+}
+
+function generateChartWithMultipleMetrics(showTypeChart, dimensions, metric, metriclegends, items, dimension, 
+  selectedMetrics, metrics){
+  showTypeChart.showBar = false
+  showTypeChart.showMultiple = true
+  var metricsGroup = []
+  selectedMetrics.map( () => metricsGroup.push([]))
+  items.map((item, index) =>{
+    selectedMetrics.map( (selectedMetric, index) => {
+      metricsGroup[index].push(item[selectedMetric])
+    })
+    //this.metric.push(item[this.selectedMetrics])
+    var itemDimension = ''
+    dimensions.map(dimension => {
+      if (item[dimension.value] != null){
+        itemDimension += ' ' + item[dimension.value]
+      }
+    })
+    dimension.push(itemDimension)
+  })
+  metricsGroup.map(metricGroup => {
+    metric.push(metricGroup)
+  })
+  console.log('MetricsGroup:', metric)
+
+  metrics.map(item => {
+    selectedMetrics.map(selectedMetric =>{
+      if (item.value === selectedMetric){
+        metriclegends.push(item.text)
+      }
+    })
+  })
+  console.log('MetricsLegends:', metriclegends)
+}
+
+function generateChartWithSingleMetric(items, metric, dimensions, dimension, selectedMetrics, metriclegends, metrics){
+  metrics.map(item => {
+    if (item.value === selectedMetrics[0]){
+      metriclegends.push(item.text)
+    }
+  })
+
+  items.map((item, index) =>{
+    metric.push(item[selectedMetrics[0]])
+    var itemDimension = ''
+    dimensions.map(dimension => {
+      if (item[dimension.value] != null){
+        itemDimension += ' ' + item[dimension.value]
+      }
+    })
+    dimension.push(itemDimension)
+  })  
+}
+
+function validaSelecao(selectedMetrics, selectedChartTypes){
+      if (selectedMetrics.length == 0){
+        throw 'Selecione uma métrica'
+      }
+      if (!selectedChartTypes){
+        throw 'Selecione um tipo de gráfico'
+      }   
+      if (selectedMetrics.length > 1 && selectedChartTypes !== 'showBar'){
+        throw 'Seleção de mais de uma métrica só é possível no gráfico de barras'
+      }  
+}
+
+function exibirGrafico(showTypeChart, selectedChartTypes){
+  //Mostra o tipo de gráfico correto
+  Object.keys(showTypeChart).map(item => {
+    if (item === selectedChartTypes){
+      showTypeChart[item] = true
+    }
+    else{
+      showTypeChart[item] = false
+    }
+  })
 }
 
 function displayMessage(owner, showAlert, message, tipo){

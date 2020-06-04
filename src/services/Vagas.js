@@ -85,7 +85,14 @@ function columns(){
             value: 'ted',
             selected: true,
             summable: false,
-        },                       
+        }, 
+        {
+            id: itemId++,
+            text: 'PRONATEC',
+            value: 'pronatec',
+            selected: true,
+            summable: false,
+        },                               
         {
             id: itemId++,
             text: 'SALDO',

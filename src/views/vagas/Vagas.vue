@@ -270,7 +270,26 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>                                    
+            </template>  
+            <!-- PRONATEC -->         
+            <template #item.pronatec="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.pronatec"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.pronatec }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.pronatec"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>                                                
             <!-- SALDO -->        
             <template #item.saldo="{item}">
                 <v-edit-dialog

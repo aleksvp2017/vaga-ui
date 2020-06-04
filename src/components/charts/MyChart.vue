@@ -55,7 +55,6 @@ export default {
       alertMessage: '',
       metric:[],
       dimension:[],  
-      metriclegend:'',
       selectedMetric:'',
       selectedDimension:'',
       showChart: false,
@@ -94,8 +93,20 @@ export default {
     'polarchart': PolarAreaChart,
   }, 
   props:['items', 'metrics', 'dimensions'],
+  computed: {
+    metriclegend(){
+      var legenda = ''
+      this.metrics.map(item => {
+        if (item.value === this.selectedMetric){
+          legenda = item.text
+        }
+      })
+      return legenda
+    }
+  },
   methods: {
     generateChart(){
+      
       if (!this.selectedMetric){
         displayMessage(this, true, 'Selecione uma métrica', 'warning')
         return

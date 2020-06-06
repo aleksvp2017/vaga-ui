@@ -152,7 +152,7 @@ function columns(){
         },
         {
             id: itemId++,
-            text: '',
+            text: 'Action',
             value: 'actions', 
             sortable: false,
             summable: false,

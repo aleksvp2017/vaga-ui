@@ -39,8 +39,11 @@ function obterUsuario(){
 }
 
 function list(){
-    console.log('listando usuarios')
     return http.get(BASE_BACKEND_URL + 'usuarios')
+}
+
+async function incluir(usuario){
+    return  http.post(BASE_BACKEND_URL + 'usuarios/incluir', {usuario})
 }
 
 function columns(){
@@ -66,9 +69,15 @@ function columns(){
             text: 'ATIVO',
             value: 'snativo',
         },    
+        {
+            id: itemId++,
+            text:'',
+            value: 'actions', 
+            sortable: false,
+        },          
       ]
 }
 
 export {
-    obterUsuario, alterarUsuario, excluirUsuario, alterarSenha, registrar, columns, list, excluirUsuarios
+    obterUsuario, alterarUsuario, excluirUsuario, alterarSenha, registrar, columns, list, excluirUsuarios, incluir
 }

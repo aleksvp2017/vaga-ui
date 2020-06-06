@@ -1,14 +1,14 @@
 <<template>
     <v-card>
-        <v-alert :type="typeAlert" dense text dismissible v-model="showAlert">
-            {{alertMessage}}
+        <v-alert :type="tipoAlerta" dense text dismissible v-model="mostraAlerta">
+            {{mensagemAlerta}}
         </v-alert>         
         <v-data-table
             show-select
-            v-model="rowsSelected"
+            v-model="linhasSelecionadas"
             class="elevation-1"
-            :loading="loading"
-            :headers="tableColumns"
+            :carregando="carregando"
+            :headers="colunasDaTabela"
             :items="items"
             item-key="usuarioid"
             :footer-props="{
@@ -27,31 +27,31 @@
                     ></v-divider>
                     <v-spacer></v-spacer> 
                     <v-btn color="success" dark class="ma-2" @click="gerarNovaSenha">Gerar nova senha</v-btn> 
-                    <v-btn color="success" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn> 
+                    <v-btn color="success" dark class="ma-2" @click="apagarItensSelecionados">Excluir</v-btn> 
                     <!-- IMPORTAR -->
-                    <v-dialog v-model="dialogEdit" max-width="800px" height="1000px" scrollable>
+                    <v-dialog v-model="mostrarPopupEdicao" max-width="800px" height="1000px" scrollable>
                         <template v-slot:activator="{ on }">
-                            <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialog">Adicionar</v-btn>
+                            <v-btn color="success" dark class="ma-2" v-on="on" @click="inicializarPopupCadastro">Adicionar</v-btn>
                         </template>                
                         <v-card>
                             <v-card-text>
-                                <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
-                                    {{alertMessagePopup}}
+                                <v-alert :type="tipoAlertaPopup" dense text dismissible v-model="mostraPopupAlerta">
+                                    {{mensagemAlertaPopup}}
                                 </v-alert>
                                 <v-row>
                                     <v-col>
-                                        <v-form ref="form">
+                                        <v-form ref="formulario">
                                             <v-text-field 
                                             label="Nome"
                                             v-model="usuario.nome"
-                                            @keypress.enter="saveItem"
+                                            @keypress.enter="salvarItem"
                                             :rules="regrasNome"
                                             type="text"/>
                                             <v-text-field 
                                             label="E-mail"
                                             v-model="usuario.email"
                                             type="email"
-                                            @keypress.enter="saveItem"
+                                            @keypress.enter="salvarItem"
                                             :rules="regrasEmail"
                                             />
                                             <v-switch
@@ -65,8 +65,8 @@
                             </v-card-text>
                             <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="primary" @click="saveItem">Salvar</v-btn>
-                            <v-btn color="blue darken-1" text @click="closeDialog">Fechar</v-btn>
+                            <v-btn color="primary" @click="salvarItem">Salvar</v-btn>
+                            <v-btn color="blue darken-1" text @click="fecharPopupCadastro">Fechar</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
@@ -74,32 +74,32 @@
                 </v-toolbar>
             </template>  
             <template #item.actions="{item}">
-                <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+                <v-icon small class="mr-2" @click="editarItem(item)">mdi-pencil</v-icon>
             </template>                   
         </v-data-table>  
     </v-card>
 </template>
 
 <script>
-    import {columns, list, excluirUsuarios, incluir, alterarUsuario} from '../../services/Usuario.js'
+    import {colunas, listarUsuarios, excluirUsuarios, incluirUsuarios, alterarUsuario} from '../../services/Usuario.js'
     import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
     import {recuperarSenha} from '../../services/Autenticador.js'
 
     export default {
         data() {
             return {
-                showAlert: false,
-                alertMessage: '',
-                typeAlert: 'success',
-                showAlertPopup: false,
-                alertMessagePopup: '',
-                typeAlertPopup: 'success',
-                rowsSelected:[],
-                loading: true,
-                tableColumns: [],
+                mostraAlerta: false,
+                mensagemAlerta: '',
+                tipoAlerta: 'success',
+                mostraPopupAlerta: false,
+                mensagemAlertaPopup: '',
+                tipoAlertaPopup: 'success',
+                linhasSelecionadas:[],
+                carregando: true,
+                colunasDaTabela: [],
                 items:[],
                 usuario:{},
-                dialogEdit: false,
+                mostrarPopupEdicao: false,
                 regrasNome: [
                     valor => !!valor || 'Nome deve ser preenchido'
                 ],
@@ -109,87 +109,85 @@
             }
         },  
         created () {
-            this.updateItens()
-            this.tableColumns = columns()
-            console.log(this.tableColumns)
+            this.colunasDaTabela = colunas()
+            this.atualizarItens()
         },
         methods: {
-            initiateDialog(){
+            inicializarPopupCadastro(){
                 this.usuario = {}
-                displayMessagePopup(this, false)
-                if (this.$refs.form){
-                    this.$refs.form.reset()
+                atualizarMensagemPopup(this, false)
+                if (this.$refs.formulario){
+                    this.$refs.formulario.reset()
                 }
             },
-            editItem(item){
+            editarItem(item){
                 this.usuario = item
-                displayMessagePopup(this, false)
-                this.dialogEdit = true
+                atualizarMensagemPopup(this, false)
+                this.mostrarPopupEdicao = true
             },
-            saveItem(){
-                let formValid = this.$refs.form.validate()
-                if (!formValid){ 
+            salvarItem(){
+                let formularioValido = this.$refs.formulario.validate()
+                if (!formularioValido){ 
                     return
                 }
-                console.log(this.usuario)
                 if (this.usuario.usuarioid == null){
-                    incluir(this.usuario).then((response) => {
-                        displayMessagePopup(this, true, response.body.mensagem, 'success')
+                    incluirUsuarios(this.usuario).then((response) => {
+                        console.log(response.body)
+                        atualizarMensagemPopup(this, true, response.body.mensagem, 'success')
                         this.usuario = response.body.usuario
-                        this.updateItens()
+                        this.atualizarItens()
                     }).catch(error => {
-                        displayMessagePopup(this, true, error.body.error, 'error')
+                        atualizarMensagemPopup(this, true, error.body.error, 'error')
                     })  
                 }
                 else{
-                    console.log('Alterando usuario')
                    alterarUsuario(this.usuario).then((response) => {
-                        displayMessagePopup(this, true, response.body.mensagem, 'success')
-                        console.log(response.body.usuario)
-                        this.updateItens()
+                        atualizarMensagemPopup(this, true, response.body.mensagem, 'success')
+                        this.atualizarItens()
                     }).catch(error => {
-                        displayMessagePopup(this, true, error.body.error, 'error')
+                        atualizarMensagemPopup(this, true, error.body.error, 'error')
                     })   
                 }
             },
-            closeDialog(){
-                this.dialogEdit = false
+            fecharPopupCadastro(){
+                this.mostrarPopupEdicao = false
             },   
             gerarNovaSenha(){
-                if (this.rowsSelected.length !== 1){
-                    displayMessage(this, true, 'Selecione um item', 'info')
+                if (this.linhasSelecionadas.length !== 1){
+                    atualizarMensagem(this, true, 'Selecione um item', 'info')
                     return
                 }
-                recuperarSenha(this.rowsSelected[0].email).then((response) => {
-                    this.rowsSelected = []
-                    displayMessage(this, true, response.body.mensagem, 'success')
-                    this.updateItens()
+                recuperarSenha(this.linhasSelecionadas[0].email).then((response) => {
+                    this.linhasSelecionadas = []
+                    atualizarMensagem(this, true, response.body.mensagem, 'success')
+                    this.atualizarItens()
                 }).catch(error => {
-                    displayMessage(this, true, error.body.error, 'error')
+                    atualizarMensagem(this, true, error.body.error, 'error')
                 })  
             },              
-            deleteSelectedItens(){
-                if (this.rowsSelected.length == 0){
-                    displayMessage(this, true, 'Selecione algum item', 'info')
+            apagarItensSelecionados(){
+                if (this.linhasSelecionadas.length == 0){
+                    atualizarMensagem(this, true, 'Selecione algum item', 'info')
                     return
                 }
-                confirm('Tem certeza que deseja excluir esse(s) ' + this.rowsSelected.length + ' item(s)?') && 
-                excluirUsuarios(this.rowsSelected).then((response) => {
-                    this.rowsSelected = []
-                    displayMessage(this, true, response.body.mensagem, 'success')
-                    this.updateItens()
+                confirm('Tem certeza que deseja excluir esse(s) ' + this.linhasSelecionadas.length + ' item(s)?') && 
+                excluirUsuarios(this.linhasSelecionadas).then((response) => {
+                    this.linhasSelecionadas = []
+                    atualizarMensagem(this, true, response.body.mensagem, 'success')
+                    this.atualizarItens()
                 }).catch(error => {
-                    displayMessage(this, true, error.body.error, 'error')
+                    atualizarMensagem(this, true, error.body.error, 'error')
                 })  
             },
-            updateItens() {
-                list().then((response) => {
+            atualizarItens() {
+                console.log('atualizarItens')
+                listarUsuarios().then((response) => {
+                        console.log(response.data.usuarios)
                         this.items = response.data.usuarios
-                        this.loading = false
+                        this.carregando = false
                     }).catch((error) => {
-                        this.loading = false
-                        console.log('Deu pala', error)
-                        displayMessage(this, true, error.body.error, 'error')
+                        this.carregando = false
+                        atualizarMensagem(this, true, error.body.error, 'error')
                         if (error.status === ERROR_SESSION_EXPIRED){
                             this.$store.dispatch('ActionLogout')
                         }                
@@ -198,16 +196,16 @@
         },  
     }
 
-function displayMessage(owner, showAlert, message, type){
-    owner.showAlert = showAlert
-    owner.alertMessage = message
-    owner.typeAlert = type
+function atualizarMensagem(owner, mostraAlerta, message, type){
+    owner.mostraAlerta = mostraAlerta
+    owner.mensagemAlerta = message
+    owner.tipoAlerta = type
 }
 
-function displayMessagePopup(owner, showAlert, message, type){
-    owner.showAlertPopup = showAlert
-    owner.alertMessagePopup = message
-    owner.typeAlertPopup = type
+function atualizarMensagemPopup(owner, mostraAlerta, message, type){
+    owner.mostraPopupAlerta = mostraAlerta
+    owner.mensagemAlertaPopup = message
+    owner.tipoAlertaPopup = type
 }
 
 </script>

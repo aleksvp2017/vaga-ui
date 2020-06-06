@@ -30,11 +30,11 @@
                     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     @click:append="showPassword = !showPassword"/>
                     <v-checkbox label="Concordo com os termos e condições" v-model="termos" :rules="regrasTermos"/>
-                    <v-btn color="primary" @click="registrarUsuario">Enviar</v-btn>
+                    <v-btn color="primary" @click="registrar">Enviar</v-btn>
                     <v-btn color="warning" @click="limpar">Limpar</v-btn>
                     <v-spacer></v-spacer>
                     <v-alert :type="tipoAlerta" class="mt-10" dense outlined dismissible v-model="mostrarAlerta">
-                        {{alerta}}
+                        {{mensagemAlerta}}
                     </v-alert>
                 </v-form>
             </v-col>
@@ -43,10 +43,8 @@
 </template>
 
 <script>
-    import {registrar} from '../../services/Usuario'
-    import {enviarMensagem} from '../../services/Mensagem'
+    import {registrarUsuario} from '../../services/Usuario'
     import Validator from 'validator'
-    import {FALE_CONOSCO_EMAIL} from '../../services/Constantes.js'
 
     export default {
         data(){
@@ -68,25 +66,22 @@
                     valor => !!valor || 'Senha deve ser preenchida'
                 ],
                 mostrarAlerta: false,
-                alerta: '',
+                mensagemAlerta: '',
                 tipoAlerta: 'error'
             }
         },
         methods: {
-            registrarUsuario(){
-                let formValid = this.$refs.form.validate()
-                if (!formValid){ 
+            registrar(){
+                let formularioValido = this.$refs.form.validate()
+                if (!formularioValido){ 
                     return
                 }
-                registrar(this.usuario).then((response) => {
-                    this.alerta = response.body.message + '. Você receberá uma mensagem no e-mail registrado quando seu cadastro for aprovado.'
+                registrarUsuario(this.usuario).then((response) => {
+                    this.mensagemAlerta = response.body.mensagem + '. Você receberá uma mensagem no e-mail registrado quando seu cadastro for aprovado.'
                     this.mostrarAlerta = true
                     this.tipoAlerta = 'info'   
-                    enviarMensagem('Registro no sistema Vagas de ' + this.usuario.email, 
-                        'Esse e-mail foi utilizado para registro no Vagas.'+
-                        'Caso não tenha sido você, responda esse email com a palavra cancelar.', FALE_CONOSCO_EMAIL)                 
                 }).catch(error => {
-                    this.alerta = error.body.error
+                    this.mensagemAlerta = error.body.error
                     this.mostrarAlerta = true
                     this.tipoAlerta = 'error'
                     console.log('Error:', error)

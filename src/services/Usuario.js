@@ -9,7 +9,6 @@ const http = Vue.http
 
 
 async function alterarSenha(usuario, senhaNova){
-    console.log('alterar senha', usuario, senhaNova)
     return  http.post(BASE_BACKEND_URL + 'alterarSenha', 
                 {
                     usuario: {...usuario, senha: encripta(usuario.senha)}, 
@@ -30,7 +29,7 @@ async function excluirUsuarios(usuarios){
 }
 
 
-async function registrar(usuario){
+async function registrarUsuario(usuario){
     return  http.post(BASE_BACKEND_URL + 'usuarios', {usuario: {...usuario, senha: encripta(usuario.senha)}})
 }
 
@@ -38,15 +37,15 @@ function obterUsuario(){
     return store.state.user
 }
 
-function list(){
+function listarUsuarios(){
     return http.get(BASE_BACKEND_URL + 'usuarios')
 }
 
-async function incluir(usuario){
+async function incluirUsuarios(usuario){
     return  http.post(BASE_BACKEND_URL + 'usuarios/incluir', {usuario})
 }
 
-function columns(){
+function colunas(){
     var itemId = 0
     return [  
         {
@@ -79,5 +78,5 @@ function columns(){
 }
 
 export {
-    obterUsuario, alterarUsuario, excluirUsuario, alterarSenha, registrar, columns, list, excluirUsuarios, incluir
+    obterUsuario, alterarUsuario, excluirUsuario, alterarSenha, registrarUsuario, colunas, listarUsuarios, excluirUsuarios, incluirUsuarios
 }

@@ -75,7 +75,7 @@
                     return 
                 }
                 alterarSenha(this.usuario, this.senhaNova).then((response) => {
-                    this.alerta = response.body.message
+                    this.alerta = response.body.mensagem
                     this.mostrarAlerta = true
                     this.tipoAlerta = 'info'                    
                 }).catch(error => {

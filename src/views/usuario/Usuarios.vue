@@ -26,6 +26,7 @@
                     vertical
                     ></v-divider>
                     <v-spacer></v-spacer> 
+                    <v-btn color="success" dark class="ma-2" @click="gerarNovaSenha">Gerar nova senha</v-btn> 
                     <v-btn color="success" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn> 
                     <!-- IMPORTAR -->
                     <v-dialog v-model="dialogEdit" max-width="800px" height="1000px" scrollable>
@@ -43,12 +44,14 @@
                                             <v-text-field 
                                             label="Nome"
                                             v-model="usuario.nome"
+                                            @keypress.enter="saveItem"
                                             :rules="regrasNome"
                                             type="text"/>
                                             <v-text-field 
                                             label="E-mail"
                                             v-model="usuario.email"
                                             type="email"
+                                            @keypress.enter="saveItem"
                                             :rules="regrasEmail"
                                             />
                                             <v-switch
@@ -80,6 +83,7 @@
 <script>
     import {columns, list, excluirUsuarios, incluir, alterarUsuario} from '../../services/Usuario.js'
     import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
+    import {recuperarSenha} from '../../services/Autenticador.js'
 
     export default {
         data() {
@@ -130,7 +134,7 @@
                 console.log(this.usuario)
                 if (this.usuario.usuarioid == null){
                     incluir(this.usuario).then((response) => {
-                        displayMessagePopup(this, true, response.body.message, 'success')
+                        displayMessagePopup(this, true, response.body.mensagem, 'success')
                         this.usuario = response.body.usuario
                         this.updateItens()
                     }).catch(error => {
@@ -140,7 +144,7 @@
                 else{
                     console.log('Alterando usuario')
                    alterarUsuario(this.usuario).then((response) => {
-                        displayMessagePopup(this, true, response.body.message, 'success')
+                        displayMessagePopup(this, true, response.body.mensagem, 'success')
                         console.log(response.body.usuario)
                         this.updateItens()
                     }).catch(error => {
@@ -150,7 +154,20 @@
             },
             closeDialog(){
                 this.dialogEdit = false
-            },     
+            },   
+            gerarNovaSenha(){
+                if (this.rowsSelected.length !== 1){
+                    displayMessage(this, true, 'Selecione um item', 'info')
+                    return
+                }
+                recuperarSenha(this.rowsSelected[0].email).then((response) => {
+                    this.rowsSelected = []
+                    displayMessage(this, true, response.body.mensagem, 'success')
+                    this.updateItens()
+                }).catch(error => {
+                    displayMessage(this, true, error.body.error, 'error')
+                })  
+            },              
             deleteSelectedItens(){
                 if (this.rowsSelected.length == 0){
                     displayMessage(this, true, 'Selecione algum item', 'info')
@@ -159,7 +176,7 @@
                 confirm('Tem certeza que deseja excluir esse(s) ' + this.rowsSelected.length + ' item(s)?') && 
                 excluirUsuarios(this.rowsSelected).then((response) => {
                     this.rowsSelected = []
-                    displayMessage(this, true, response.body.message, 'success')
+                    displayMessage(this, true, response.body.mensagem, 'success')
                     this.updateItens()
                 }).catch(error => {
                     displayMessage(this, true, error.body.error, 'error')

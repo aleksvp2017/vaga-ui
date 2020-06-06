@@ -435,7 +435,6 @@ export default {
     }, 
     data() {
         return {
-            data: ["SheetJS".split(""), "1234567".split("")],
             actionColumn: {},
             vagasTable: {},
             rate: 0,

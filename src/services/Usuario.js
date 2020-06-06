@@ -22,19 +22,53 @@ async function alterarUsuario(usuario){
 }
 
 async function excluirUsuario(usuario){
-    return  http.delete(BASE_BACKEND_URL + 'usuarios/' + usuario.usuarioid)
+    return  excluirUsuarios([usuario])
 }
+
+async function excluirUsuarios(usuarios){
+    return  http.delete(BASE_BACKEND_URL + 'usuarios/', {body:{usuarios}})
+}
+
 
 async function registrar(usuario){
     return  http.post(BASE_BACKEND_URL + 'usuarios', {usuario: {...usuario, senha: encripta(usuario.senha)}})
 }
 
-
-
 function obterUsuario(){
     return store.state.user
 }
 
+function list(){
+    console.log('listando usuarios')
+    return http.get(BASE_BACKEND_URL + 'usuarios')
+}
+
+function columns(){
+    var itemId = 0
+    return [  
+        {
+            id: itemId++,
+            text: 'USUARIOID',
+            value: 'usuarioid',
+        },           
+        {
+            id: itemId++,
+            text: 'NOME',
+            value: 'nome',
+        },
+        {
+            id: itemId++,
+            text: 'EMAIL',
+            value: 'email',
+        },        
+        {
+            id: itemId++,
+            text: 'ATIVO',
+            value: 'snativo',
+        },    
+      ]
+}
+
 export {
-    obterUsuario, alterarUsuario, excluirUsuario, alterarSenha, registrar
+    obterUsuario, alterarUsuario, excluirUsuario, alterarSenha, registrar, columns, list, excluirUsuarios
 }

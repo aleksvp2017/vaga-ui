@@ -25,7 +25,8 @@ async function save(vaga){
     return http.post(BASE_BACKEND_URL + 'vagas/' + (vaga.vagaid ? (':' + vaga.vagaid) : ''), {vaga})
 }
 
-const fieldsToDetermineEquality = ['ano', 'uf', 'tipocurso', 'modalidade', 'acao', 'tiporede', 'ted', 'pronatec']
+const fieldsToDetermineEquality = ['ano', 'uf', 'tipocurso', 'modalidade', 'acao', 'tiporede', 'ted', 'pronatec',
+    'municipio']
 
 function columns(){
     var itemId = 0
@@ -44,6 +45,13 @@ function columns(){
             selected: true,
             summable: false,
         },
+        {
+            id: itemId++,
+            text: 'MUNICÍPIO',
+            value: 'municipio',
+            selected: true,
+            summable: false,
+        },        
         {
             id: itemId++,
             text: 'TIPO DE CURSO',

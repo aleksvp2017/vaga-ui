@@ -157,6 +157,25 @@
                     </template>
                 </v-edit-dialog>
             </template>  
+            <!--MUNICIPIO-->
+            <template #item.municipio="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.municipio"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.municipio }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.municipio"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>             
             <!-- TIPO DE CURSO -->        
             <template #item.tipocurso="{item}">
                 <v-edit-dialog

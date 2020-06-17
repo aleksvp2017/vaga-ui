@@ -61,7 +61,7 @@ function columns(){
         },        
         {
             id: itemId++,
-            text: 'MODALIDADE',
+            text: 'MODALIDADE EDUCACIONAL',
             value: 'modalidade',
             selected: true,            
             summable: false,
@@ -100,7 +100,14 @@ function columns(){
             value: 'pronatec',
             selected: true,
             summable: false,
-        },                               
+        },     
+        {
+            id: itemId++,
+            text: 'TURMA',
+            value: 'turma',
+            selected: true,
+            summable: false,
+        },                                   
         {
             id: itemId++,
             text: 'SALDO',

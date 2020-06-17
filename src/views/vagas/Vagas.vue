@@ -308,7 +308,26 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>                                                
+            </template>   
+            <!-- TURMA -->         
+            <template #item.turma="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.turma"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.turma }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.turma"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>                                                           
             <!-- SALDO -->        
             <template #item.saldo="{item}">
                 <v-edit-dialog

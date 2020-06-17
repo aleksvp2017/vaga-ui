@@ -287,7 +287,6 @@
                         single-line
                         counter
                         ></v-text-field>
-                        
                     </template>
                 </v-edit-dialog>
             </template>  

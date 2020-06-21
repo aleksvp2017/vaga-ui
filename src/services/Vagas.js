@@ -175,6 +175,16 @@ function columns(){
       ]
 }
 
+const obterIdColuna = (valor) => {
+    var id = ''
+    columns().map(coluna => {
+        if (coluna.value === valor){
+            id = coluna.id
+        }
+    })
+    return id
+}
+
 const fieldsToSum = () => {
     var fields = []
     columns().map(column => {
@@ -186,5 +196,5 @@ const fieldsToSum = () => {
 }
 
 export {
-    upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality
+    upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality, obterIdColuna
 }

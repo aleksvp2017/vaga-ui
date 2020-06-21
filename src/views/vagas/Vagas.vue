@@ -19,7 +19,7 @@
             <v-flex xs2>
                 <v-select
                     v-model="columnToSearch"
-                    :items="tableConfigurableColumns"
+                    :items="colunasFiltraveis"
                     label="Filtrar por"
                 ></v-select>
             </v-flex>
@@ -458,7 +458,7 @@
 </template>
 
 <script>
-import {upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality} from '../../services/Vagas.js'
+import {upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality, obterIdColuna} from '../../services/Vagas.js'
 import moment  from 'moment'
 import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
 import XLSX from 'xlsx'
@@ -505,6 +505,15 @@ export default {
         tableConfigurableColumns(){
             return columns().filter(column => column.value !== 'actions')
         },
+        colunasFiltraveis(){
+            let colunas = []
+            this.tableConfigurableColumns.map((tableConfigurableColumn, index) => {
+                if (this.selectedColumns.indexOf(index) != -1) {
+                    colunas.push(tableConfigurableColumn)
+                }
+            })
+            return colunas
+        },
         editDisabled(){
             return this.tableColumns.length !== columns().length
         }
@@ -544,6 +553,7 @@ export default {
             updatedColumns.push(this.actionColumn)
             this.tableColumns = updatedColumns
             this.closeDialogColunas()
+            this.searchKey = ''
             this.groupIdenticalItens()
         },
         groupIdenticalItens(){
@@ -574,7 +584,6 @@ export default {
         },        
         customSearch () {
             if (this.isSearchPairsFilled(this.searchPairs)){
-                console.log('Procurar por pares')
                 var itemsToSearch = this.originalItems
                 var filteredItems = []
                 itemsToSearch.map((item, index) => {
@@ -584,7 +593,6 @@ export default {
                             includeItem = false
                         }
                     })
-                    console.log(item)
                     if (includeItem){
                         filteredItems.push(item)
                     }
@@ -593,7 +601,6 @@ export default {
                 this.items = filteredItems.slice(0)                
                 //console.log(items)
             } else{
-                console.log('procurar por chave')
                 this.searchCellsForKey()
             }
         },        
@@ -610,12 +617,15 @@ export default {
                 }
                 //Search all columns
                 else{
-                    Object.entries(item).map(cell => {                            
-                        if ((cell[1] != null &&
-                        this.searchKey != null &&
-                        cell[1].toString().indexOf(this.searchKey) !== -1) || this.searchKey === ''){
-                            console.log('Match no campo', cell[0], ':', cell[1])
-                            includeItem = true
+                    Object.entries(item).map((cell, index) => {   
+                        var id = obterIdColuna(cell[0])
+                        //Verifica se está nas colunas selecionadas                         
+                        if (this.selectedColumns.indexOf(id) != -1){
+                            if ((cell[1] != null &&
+                            this.searchKey != null &&
+                            cell[1].toString().indexOf(this.searchKey) !== -1) || this.searchKey === ''){
+                                includeItem = true
+                            }
                         }
                     })
                 }

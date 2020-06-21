@@ -19,7 +19,7 @@
             <v-flex xs2>
                 <v-select
                     v-model="columnToSearch"
-                    :items="tableColumns"
+                    :items="tableConfigurableColumns"
                     label="Filtrar por"
                 ></v-select>
             </v-flex>

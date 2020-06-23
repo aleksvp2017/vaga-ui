@@ -589,7 +589,7 @@ export default {
                 itemsToSearch.map((item, index) => {
                     var includeItem = true
                     this.searchPairs.map(searchPair => {
-                        if (searchPair.show && item[searchPair.field].toString().indexOf(searchPair.key) === -1){
+                        if (searchPair.show && (item[searchPair.field] == null || !isContem(item[searchPair.field].toString(), searchPair.key))){
                             includeItem = false
                         }
                     })
@@ -611,8 +611,7 @@ export default {
                 //Search for specific column
                 if (this.columnToSearch !== null){
                     if (item[this.columnToSearch] != null){
-                        includeItem = item[this.columnToSearch].toString().indexOf(this.searchKey) !== -1
-                           || this.searchKey === ''
+                        includeItem = isContem(item[this.columnToSearch].toString(), this.searchKey) || this.searchKey === ''
                     }
                 }
                 //Search all columns
@@ -623,7 +622,7 @@ export default {
                         if (this.selectedColumns.indexOf(id) != -1){
                             if ((cell[1] != null &&
                             this.searchKey != null &&
-                            cell[1].toString().indexOf(this.searchKey) !== -1) || this.searchKey === ''){
+                            isContem(cell[1].toString(), this.searchKey)) || this.searchKey === ''){
                                 includeItem = true
                             }
                         }
@@ -760,6 +759,12 @@ export default {
             initialize(this)
         }       
     },
+}
+
+function isContem(texto, chave){
+    const parsedTexto = texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    const parsedChave = chave.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return parsedTexto.toUpperCase().indexOf(parsedChave.toUpperCase()) > -1
 }
 
 function initialize(owner){

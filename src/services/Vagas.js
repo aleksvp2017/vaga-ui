@@ -25,7 +25,7 @@ async function save(vaga){
     return http.post(BASE_BACKEND_URL + 'vagas/' + (vaga.vagaid ? (':' + vaga.vagaid) : ''), {vaga})
 }
 
-const fieldsToDetermineEquality = ['ano', 'uf', 'tipocurso', 'modalidade', 'acao', 'tiporede', 'ted', 'pronatec',
+const fieldsToDetermineEquality = ['ano', 'uf', 'tipocurso', 'modalidade', 'acao', 'tiporede', 'ted', 'tipodeconta',
     'municipio']
 
 function columns(){
@@ -96,8 +96,8 @@ function columns(){
         }, 
         {
             id: itemId++,
-            text: 'PRONATEC',
-            value: 'pronatec',
+            text: 'TIPO DE CONTA',
+            value: 'tipodeconta',
             selected: true,
             summable: false,
         },     

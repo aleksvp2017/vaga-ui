@@ -290,18 +290,18 @@
                     </template>
                 </v-edit-dialog>
             </template>  
-            <!-- PRONATEC -->         
-            <template #item.pronatec="{item}">
+            <!-- TIPO DE CONTA -->         
+            <template #item.tipodeconta="{item}">
                 <v-edit-dialog
-                    :return-value.sync="item.pronatec"
+                    :return-value.sync="item.tipodeconta"
                     @save="saveItem(item)"
                     @cancel="cancelEditField"
                     @open="editField"
                     @close="closeEditField"
-                    > {{ item.pronatec }}
+                    > {{ item.tipodeconta }}
                     <template v-slot:input>
                         <v-text-field :disabled="editDisabled"
-                        v-model="item.pronatec"
+                        v-model="item.tipodeconta"
                         label="Edit"
                         single-line
                         counter

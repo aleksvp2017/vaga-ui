@@ -26,7 +26,7 @@ async function save(vaga){
 }
 
 const fieldsToDetermineEquality = ['ano', 'uf', 'tipocurso', 'modalidade', 'acao', 'tiporede', 'ted', 'tipodeconta',
-    'municipio']
+    'municipio', 'parceiro']
 
 function columns(){
     var itemId = 0

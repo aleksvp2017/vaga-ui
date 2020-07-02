@@ -28,7 +28,7 @@
                     <v-spacer></v-spacer> 
                     <v-btn color="success" dark class="ma-2" @click="gerarNovaSenha">Gerar nova senha</v-btn> 
                     <v-btn color="success" dark class="ma-2" @click="apagarItensSelecionados">Excluir</v-btn> 
-                    <!-- IMPORTAR -->
+                    <!-- POPUP EDICAO -->
                     <v-dialog v-model="mostrarPopupEdicao" max-width="800px" height="1000px" scrollable>
                         <template v-slot:activator="{ on }">
                             <v-btn color="success" dark class="ma-2" v-on="on" @click="inicializarPopupCadastro">Adicionar</v-btn>
@@ -70,7 +70,7 @@
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
-                    <!-- FIM IMPORTAR -->                                  
+                    <!-- FIM POPUP EDICAO -->                                  
                 </v-toolbar>
             </template>  
             <template #item.actions="{item}">
@@ -132,7 +132,6 @@
                 }
                 if (this.usuario.usuarioid == null){
                     incluirUsuarios(this.usuario).then((response) => {
-                        console.log(response.body)
                         atualizarMensagemPopup(this, true, response.body.mensagem, 'success')
                         this.usuario = response.body.usuario
                         this.atualizarItens()
@@ -180,9 +179,7 @@
                 })  
             },
             atualizarItens() {
-                console.log('atualizarItens')
                 listarUsuarios().then((response) => {
-                        console.log(response.data.usuarios)
                         this.items = response.data.usuarios
                         this.carregando = false
                     }).catch((error) => {

@@ -8,6 +8,7 @@ import FaleConosco from './views/suporte/FaleConosco.vue'
 import Senha from './views/usuario/Senha.vue'
 import Vagas from './views/vagas/Vagas.vue'
 import Usuarios from './views/usuario/Usuarios.vue'
+import Auditoria from './views/auditoria/Auditoria.vue'
 
 
 var routes = [
@@ -20,6 +21,7 @@ var routes = [
    { path: '/alterarsenha', name: 'Alterar Senha', component: Senha, requireAuth: true, menuItem: false},
    { path: '/vagas', name: 'Vagas', component: Vagas, requireAuth:true, menuItem: true },
    { path: '/usuarios', name: 'Usuarios', component: Usuarios, requireAuth:true, menuItem: true },
+   { path: '/auditoria', name: 'Auditoria', component: Auditoria, requireAuth:true, menuItem: true },
 ];
 
 Vue.use(VueRouter)

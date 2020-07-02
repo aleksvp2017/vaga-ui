@@ -2,9 +2,21 @@
     <v-card>
         <v-alert :type="tipoAlerta" dense text dismissible v-model="mostraAlerta">
             {{mensagemAlerta}}
-        </v-alert>         
+        </v-alert> 
+        <v-card-title>
+        Registros de auditoria
+        <v-spacer></v-spacer>
+        <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+        ></v-text-field>
+        </v-card-title>
         <v-data-table
             v-model="linhasSelecionadas"
+            :search="search"
             class="elevation-1"
             :carregando="carregando"
             :headers="colunasDaTabela"
@@ -27,6 +39,9 @@
                     <v-spacer></v-spacer>                                  
                 </v-toolbar>
             </template>  
+            <template #item.datahora="{item}">
+                {{item.datahoraformatada}}
+            </template>             
         </v-data-table>  
     </v-card>
 </template>
@@ -34,10 +49,12 @@
 <script>
     import {colunas, listarRegistrosAuditoria} from '../../services/Auditoria.js'
     import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
+    import moment from 'moment'
 
     export default {
         data() {
             return {
+                search: '',
                 mostraAlerta: false,
                 mensagemAlerta: '',
                 tipoAlerta: 'success',
@@ -58,6 +75,8 @@
             atualizarItens() {
                 listarRegistrosAuditoria().then((response) => {
                         this.items = response.data.registrosAuditoria
+                        this.items = this.items.map((item) => 
+                            ({...item, datahoraformatada: moment(item.datahora).format("HH:mm:SS DD/MM/YYYY")}))
                         this.carregando = false
                     }).catch((error) => {
                         this.carregando = false

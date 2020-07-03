@@ -39,6 +39,10 @@
                     <v-spacer></v-spacer>                                  
                 </v-toolbar>
             </template>  
+            <template #item.mensagem="{item}">
+                {{ mensagemAMostrar(item) }}
+                <a href="#" :v-show="item.mostrarLinkMensagem" @click="mostrarMensagemCompleta(item)">...</a>
+            </template>              
             <template #item.datahora="{item}">
                 {{item.datahoraformatada}}
             </template>             
@@ -72,11 +76,25 @@
             this.atualizarItens()
         },
         methods: {
+            mostrarMensagemCompleta(item){
+                item.mostrarMensagemCompleta = !item.mostrarMensagemCompleta
+            },
+            mensagemAMostrar(item){
+                if (!item.mostrarMensagemCompleta && item.mensagem.length > 100){
+                    item.mostrarLinkMensagem = true
+                    return item.mensagem.substring(0, 100) 
+                }
+                return item.mensagem    
+            },
             atualizarItens() {
                 listarRegistrosAuditoria().then((response) => {
                         this.items = response.data.registrosAuditoria
                         this.items = this.items.map((item) => 
-                            ({...item, datahoraformatada: moment(item.datahora).format("HH:mm:SS DD/MM/YYYY")}))
+                            ({...item, 
+                                mostrarMensagemCompleta: false, 
+                                //introduz espaço em branco para quebrar linha na página
+                                mensagem: (item.mensagem? item.mensagem.split(',').join(' , ') : ''),
+                                datahoraformatada: moment(item.datahora).format("HH:mm:SS DD/MM/YYYY")}))
                         this.carregando = false
                     }).catch((error) => {
                         this.carregando = false
@@ -100,6 +118,7 @@ function atualizarMensagemPopup(owner, mostraAlerta, message, type){
     owner.mensagemAlertaPopup = message
     owner.tipoAlertaPopup = type
 }
+
 
 </script>
 

@@ -37,6 +37,7 @@ function colunas(){
             id: itemId++,
             text: 'MENSAGEM',
             value: 'mensagem',
+            width: '10%',
         },            
         {
             id: itemId++,

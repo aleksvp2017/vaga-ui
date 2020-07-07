@@ -8,8 +8,8 @@
         <v-layout row wrap>
             <v-col cols="10" sm="5">
             <v-select
-              v-model="selectedMetrics"
-              :items="metrics"
+              v-model="metricasSelecionadas"
+              :items="colunasMetricas"
               label="Métrica"
               multiple
               chips
@@ -24,30 +24,32 @@
             <v-select
                 dense
                 height="44"
-                v-model="selectedChartTypes"
-                :items="chartTypes"
+                v-model="tipoGraficoSelecionado"
+                :items="tiposGrafico"
                 label="Tipo de gráfico"
             ></v-select>
           </v-flex>         
           <v-flex xs2 >
-            <v-btn color="success" @click="generateChart()">Gerar gráfico</v-btn>
+            <v-btn color="success" @click="gerarGrafico()">Gerar gráfico</v-btn>
           </v-flex>
         </v-layout>
         <p class="font-weight-light mb-0"><v-icon>mdi-head-lightbulb</v-icon> As dimensões do gráfico são as colunas não numéricas da tabela</p>
     </v-container>
     </v-card-actions>
-    <v-card-text v-if='showChart' >
-      <piechart :metric='metric' :dimension='dimension' :metriclegend='metriclegends' :key="chartKey" v-if='showTypeChart.showPie'
+    <v-card-text v-if='mostrarGrafico'>
+      <v-card>
+      <piechart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" v-if='mostrarTipoGrafico.mostrarGraficoPizza'
         :height="140"/>
-      <barchart :metric='metric' :dimension='dimension' :metriclegend='metriclegends' :key="chartKey" v-if='showTypeChart.showBar'
+      <barchart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" v-if='mostrarTipoGrafico.mostrarGraficoBarra'
         :height="140"/>
-      <linechart :metric='metric' :dimension='dimension' :metriclegend='metriclegends' :key="chartKey" v-if='showTypeChart.showLine'
+      <linechart :metrics='metricas' :dimension='dimensoes' :key="chartKey" v-if='mostrarTipoGrafico.mostrarGraficoLinha'
        :height="140"/>
-      <polarchart :metric='metric' :dimension='dimension' :metriclegend='metriclegends' :key="chartKey" v-if='showTypeChart.showPolar'
+      <polarchart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" v-if='mostrarTipoGrafico.mostrarGraficoPolar'
        :height="140"/>       
-      <multiplebarchart :metrics='metric' :dimensions='dimension' :metriclegends='metriclegends' :key="chartKey" 
-        v-if='showTypeChart.showMultiple'
-       :height="140"/>       
+      <multiplebarchart :metrics='metricas' :dimensions='dimensoes' :metriclegends='legendas' :key="chartKey" 
+        v-if='mostrarTipoGrafico.mostrarGraficoBarraMultiplo'
+       :height="140"/>   
+      </v-card>    
     </v-card-text>
   </v-card>
 </template>
@@ -57,7 +59,7 @@ import PieChart from './PieChart.vue'
 import BarChart from './BarChart.vue'
 import LineChart from './LineChart.vue'
 import PolarAreaChart from './PolarAreaChart.vue'
-import MultipleMetricBarChar from './MultipleMetricBarChart.vue'
+import MultipleMetricBarChart from './MultipleMetricBarChart.vue'
 
 
 export default {
@@ -66,39 +68,39 @@ export default {
       typeAlert: 'error',
       showAlert: false,
       alertMessage: '',
-      metric:[],
-      dimension:[],  
-      selectedMetrics:[],
-      selectedDimension:'',
-      showChart: false,
-      chartKey: 1,
-      selectedChartTypes: '',
-      chartTypes: [
+      metricas:[],
+      dimensoes:[],  
+      metricasSelecionadas:[],
+      mostrarGrafico: false,
+      chartKey: 1, //usado para forçar a renderização do gráfico
+      tipoGraficoSelecionado: '',
+      tiposGrafico: [
         {
           text: 'Barra',
-          value: 'showBar',
+          value: 'mostrarGraficoBarra',
         },
         {
           text: 'Linha',
-          value: 'showLine',
+          value: 'mostrarGraficoLinha',
         },
         {
           text: 'Pizza',
-          value: 'showPie',
+          value: 'mostrarGraficoPizza',
         }, 
         {
           text: 'Polar',
-          value: 'showPolar',
+          value: 'mostrarGraficoPolar',
         },                              
       ],
-      showTypeChart: {
-        showBar: false,
-        showLine: false,
-        showPie: false,
-        showPolar: false,
-        showMultiple: false,
+      //tem um para cada tipo, para mostrar só um e esconder os outros de acordo com a seleção do tipo
+      mostrarTipoGrafico: {
+        mostrarGraficoBarra: false,
+        mostrarGraficoLinha: false,
+        mostrarGraficoPizza: false,
+        mostrarGraficoPolar: false,
+        mostrarGraficoBarraMultiplo: false,
       },
-      metriclegends:[],
+      legendas:[],
     }
   },
   components: {
@@ -106,127 +108,243 @@ export default {
     'barchart': BarChart,
     'linechart': LineChart,
     'polarchart': PolarAreaChart,
-    'multiplebarchart': MultipleMetricBarChar,
+    'multiplebarchart': MultipleMetricBarChart,
   }, 
-  props:['items', 'metrics', 'dimensions'],
+  props:['matrizDados', 'colunasMetricas', 'colunasDimensoes'],
   computed: {
     metriclegend(){
       var legenda = ''
-      this.metrics.map(item => {
-        if (item.value === this.selectedMetrics){
+      this.colunasMetricas.map(item => {
+        if (item.value === this.metricasSelecionadas){
           legenda = item.text
         }
       })
       return legenda
+    },
+    dimensoesTemporais(){
+      var item = []
+      this.colunasDimensoes.map(dimensao)
+      return intervalos
     }
   },
   methods: {
-    generateChart(){
+    gerarGrafico(){
       try{
-        validaSelecao(this.selectedMetrics, this.selectedChartTypes)
-        exibirGrafico(this.showTypeChart, this.selectedChartTypes)
+        validaSelecao(this.metricasSelecionadas, this.tipoGraficoSelecionado, this.colunasDimensoes)
+        exibirGrafico(this.mostrarTipoGrafico, this.tipoGraficoSelecionado)
         
         displayMessage(this, false)
-        this.metric = []
-        this.dimension = []
-        this.metriclegends = []
+        this.metricas = []
+        this.dimensoes = []
+        this.legendas = []
 
-        if (this.selectedMetrics.length > 1){
-          generateChartWithMultipleMetrics(this.showTypeChart, this.dimensions, this.metric, this.metriclegends, this.items,
-            this.dimension, this.selectedMetrics, this.metrics)
-            console.log('M:',this.metric)
-            console.log('L:', this.metriclegends)
+        if (this.metricasSelecionadas.length > 1){
+          generateChartWithMultipleMetrics(this.mostrarTipoGrafico, this.colunasDimensoes, this.metricas, this.legendas, 
+            this.matrizDados, this.dimensoes, this.metricasSelecionadas, this.colunasMetricas)
+        }
+        else if (this.tipoGraficoSelecionado === 'mostrarGraficoLinha'){
+          this.gerarDadosParaGraficoEmLinha()
         }
         else{
-          generateChartWithSingleMetric(this.items, this.metric, this.dimensions, this.dimension, this.selectedMetrics,
-            this.metriclegends, this.metrics)
+          generateChartWithSingleMetric(this.matrizDados, this.metricas, this.colunasDimensoes, this.dimensoes, this.metricasSelecionadas,
+            this.legendas, this.colunasMetricas)
         }
+
         //Para forçar renderização do gráfico depois de alguma alteração
         this.chartKey = this.chartKey + 1
-        this.showChart = true
+        this.mostrarGrafico = true
       }
       catch (error){
         displayMessage(this, true, error, 'warning')
       }
+    },
+    gerarDadosParaGraficoEmLinha(){
+      var anosMeses = gerarAnosMesesOrdenados(this.matrizDados)
 
-      
+      var dadosOrganizados = []
+      this.matrizDados.map(item => {
+        var legenda = ''
+        this.colunasDimensoes.map(dimensoes => {
+            if (item[dimensoes.value] && !dimensoes.colunatempo){
+              legenda += ' ' + item[dimensoes.value]
+            }
+        })
+
+        var legandaJaPreenchida = false
+        if (dadosOrganizados.length > 0){
+          dadosOrganizados.map(itemMetric => {
+            if (itemMetric.legenda === legenda){
+              legandaJaPreenchida = true
+              itemMetric.dados.push({
+                valor: item[this.metricasSelecionadas[0]],
+                ano: item.ano,
+                mes: item.mes,
+              })
+            } 
+          })
+        }
+        if (!legandaJaPreenchida){
+          dadosOrganizados.push({legenda, 
+            dados: [
+              {
+                valor: item[this.metricasSelecionadas[0]],
+                ano: item.ano,
+                mes: item.mes,
+              }
+            ]})
+        }
+
+      })
+
+      anosMeses.map(anoMes => {
+        this.dimensoes.push(anoMes.mes + '/' + anoMes.ano)  
+        dadosOrganizados.map(dadoOrganizado => {
+          
+          var dado = dadoOrganizado.dados.find(dadoValor => {
+            return dadoValor.ano == anoMes.ano && dadoValor.mes == anoMes.mes
+          })
+
+          var itemEncontrado = this.metricas.find(metrica => {
+            return dadoOrganizado.legenda === metrica.legenda
+          })
+          if (!itemEncontrado){
+            this.metricas.push({
+              legenda: dadoOrganizado.legenda,
+              dados: [dado? dado.valor : null]
+            })
+          }
+          else{
+            itemEncontrado.dados.push(dado? dado.valor : null)
+          }
+        })
+      })
+
+      var total = {
+        legenda: 'Total',
+        dados: []
+      }
+      this.metricas.map(metrica => {
+        metrica.dados.map((dado, index) =>{
+          if (total.dados.length < (index+1)){
+            total.dados.push(dado)
+          }
+          else{
+            total.dados[index] += dado
+          }
+          
+        })
+      })
+
+      this.metricas.push(total)
     }
   },
 }
 
-function generateChartWithMultipleMetrics(showTypeChart, dimensions, metric, metriclegends, items, dimension, 
-  selectedMetrics, metrics){
-  showTypeChart.showBar = false
-  showTypeChart.showMultiple = true
-  var metricsGroup = []
-  selectedMetrics.map( () => metricsGroup.push([]))
-  items.map((item, index) =>{
-    selectedMetrics.map( (selectedMetric, index) => {
-      metricsGroup[index].push(item[selectedMetric])
-    })
-    //this.metric.push(item[this.selectedMetrics])
-    var itemDimension = ''
-    dimensions.map(dimension => {
-      if (item[dimension.value] != null){
-        itemDimension += ' ' + item[dimension.value]
+function gerarAnosMesesOrdenados(matrizDados){
+  var anosMeses = []
+  matrizDados.map(item => {
+    var achou = false
+    anosMeses.map(anoMes => {
+      if (anoMes.mes === item.mes && anoMes.ano == item.ano){
+        achou = true
       }
     })
-    dimension.push(itemDimension)
-  })
-  metricsGroup.map(metricGroup => {
-    metric.push(metricGroup)
-  })
-  console.log('MetricsGroup:', metric)
-
-  metrics.map(item => {
-    selectedMetrics.map(selectedMetric =>{
-      if (item.value === selectedMetric){
-        metriclegends.push(item.text)
-      }
-    })
-  })
-  console.log('MetricsLegends:', metriclegends)
-}
-
-function generateChartWithSingleMetric(items, metric, dimensions, dimension, selectedMetrics, metriclegends, metrics){
-  metrics.map(item => {
-    if (item.value === selectedMetrics[0]){
-      metriclegends.push(item.text)
+    if (!achou){
+      anosMeses.push({mes:item.mes, ano: item.ano})
     }
   })
 
-  items.map((item, index) =>{
-    metric.push(item[selectedMetrics[0]])
+  anosMeses.sort((anoMesA, anoMesB) => {
+    if (anoMesA.ano > anoMesB.ano) return 1
+    if (anoMesA.ano < anoMesB.ano) return -1
+    if (anoMesA.mes > anoMesB.ano) return 1
+    if (anoMesA.mes < anoMesB.mes) return -1
+    return 0
+  })
+  
+  return anosMeses
+}
+
+function generateChartWithMultipleMetrics(mostrarTipoGrafico, colunasDimensoes, metricas, legendas, matrizDados, dimensoes, 
+  metricasSelecionadas, colunasMetricas){
+  
+  if (mostrarTipoGrafico.mostrarGraficoBarra){
+    mostrarTipoGrafico.mostrarGraficoBarra = false
+    mostrarTipoGrafico.mostrarGraficoBarraMultiplo = true
+  }
+
+  var metricsGroup = []
+  metricasSelecionadas.map( () => metricsGroup.push([]))
+  matrizDados.map((item, index) =>{
+    metricasSelecionadas.map( (selectedMetric, index) => {
+      metricsGroup[index].push(item[selectedMetric])
+    })
     var itemDimension = ''
-    dimensions.map(dimension => {
-      if (item[dimension.value] != null){
-        itemDimension += ' ' + item[dimension.value]
+    colunasDimensoes.map(dimensoes => {
+      if (item[dimensoes.value] != null){
+        itemDimension += ' ' + item[dimensoes.value]
       }
     })
-    dimension.push(itemDimension)
+    dimensoes.push(itemDimension)
+  })
+  metricsGroup.map(metricGroup => {
+    metricas.push(metricGroup)
+  })
+
+  colunasMetricas.map(item => {
+    metricasSelecionadas.map(selectedMetric =>{
+      if (item.value === selectedMetric){
+        legendas.push(item.text)
+      }
+    })
+  })
+}
+
+function generateChartWithSingleMetric(matrizDados, metricas, colunasDimensoes, dimensoes, metricasSelecionadas, legendas, colunasMetricas){
+  colunasMetricas.map(item => {
+    if (item.value === metricasSelecionadas[0]){
+      legendas.push(item.text)
+    }
+  })
+
+  matrizDados.map((item, index) =>{
+    metricas.push(item[metricasSelecionadas[0]])
+    var itemDimension = ''
+    colunasDimensoes.map(dimensoes => {
+      if (item[dimensoes.value] != null){
+        itemDimension += ' ' + item[dimensoes.value]
+      }
+    })
+    dimensoes.push(itemDimension)
   })  
 }
 
-function validaSelecao(selectedMetrics, selectedChartTypes){
-      if (selectedMetrics.length == 0){
+function validaSelecao(metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes){
+      if (metricasSelecionadas.length == 0){
         throw 'Selecione uma métrica'
       }
-      if (!selectedChartTypes){
+      if (!tipoGraficoSelecionado){
         throw 'Selecione um tipo de gráfico'
       }   
-      if (selectedMetrics.length > 1 && selectedChartTypes !== 'showBar'){
+      if (metricasSelecionadas.length > 1 && tipoGraficoSelecionado !== 'mostrarGraficoBarra'){
         throw 'Seleção de mais de uma métrica só é possível no gráfico de barras'
-      }  
+      } 
+      var dimensoesSelecionadas = []
+      colunasDimensoes.map(dimensao => dimensoesSelecionadas.push(dimensao.value))
+      if (tipoGraficoSelecionado === 'mostrarGraficoLinha' &&
+        (dimensoesSelecionadas.indexOf('ano') == -1 || dimensoesSelecionadas.indexOf('mes') == -1)){
+        throw 'Selecione apenas ano e mês como colunas da tabela para gerar gráfico de linha'
+      }
 }
 
-function exibirGrafico(showTypeChart, selectedChartTypes){
+function exibirGrafico(mostrarTipoGrafico, tipoGraficoSelecionado){
   //Mostra o tipo de gráfico correto
-  Object.keys(showTypeChart).map(item => {
-    if (item === selectedChartTypes){
-      showTypeChart[item] = true
+  Object.keys(mostrarTipoGrafico).map(item => {
+    if (item === tipoGraficoSelecionado){
+      mostrarTipoGrafico[item] = true
     }
     else{
-      showTypeChart[item] = false
+      mostrarTipoGrafico[item] = false
     }
   })
 }

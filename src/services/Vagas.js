@@ -25,7 +25,7 @@ async function save(vaga){
     return http.post(BASE_BACKEND_URL + 'vagas/' + (vaga.vagaid ? (':' + vaga.vagaid) : ''), {vaga})
 }
 
-const fieldsToDetermineEquality = ['ano', 'uf', 'tipocurso', 'modalidade', 'acao', 'tiporede', 'ted', 'tipodeconta',
+const fieldsToDetermineEquality = ['ano', 'mes', 'uf', 'tipocurso', 'modalidade', 'acao', 'tiporede', 'ted', 'tipodeconta',
     'municipio', 'parceiro']
 
 function columns(){
@@ -37,13 +37,26 @@ function columns(){
             value: 'ano',
             selected: true,
             summable: false,
-        },           
+            colunatempo: true,
+            colunadimensao: true,
+        }, 
+        {
+            id: itemId++,
+            text: 'MÊS',
+            value: 'mes',
+            selected: true,
+            summable: false,
+            colunatempo: true,
+            colunadimensao: true,
+        },                    
         {
             id: itemId++,
             text: 'UF',
             value: 'uf',
             selected: true,
             summable: false,
+            colunatempo: false,
+            colunadimensao: true,
         },
         {
             id: itemId++,
@@ -51,6 +64,8 @@ function columns(){
             value: 'municipio',
             selected: true,
             summable: false,
+            colunatempo: false,
+            colunadimensao: true,
         },        
         {
             id: itemId++,
@@ -58,6 +73,8 @@ function columns(){
             value: 'tipocurso',
             selected: true,            
             summable: false,
+            colunatempo: false,
+            colunadimensao: true,
         },        
         {
             id: itemId++,
@@ -65,6 +82,8 @@ function columns(){
             value: 'modalidade',
             selected: true,            
             summable: false,
+            colunatempo: false,
+            colunadimensao: true,
         },
         {
             id: itemId++,
@@ -72,6 +91,8 @@ function columns(){
             value: 'acao',
             selected: true,
             summable: false,
+            colunatempo: false,
+            colunadimensao: true,
         }, 
         {
             id: itemId++,
@@ -79,6 +100,8 @@ function columns(){
             value: 'tiporede',
             selected: true,
             summable: false,
+            colunatempo: false,
+            colunadimensao: true,
         },   
         {
             id: itemId++,
@@ -86,6 +109,8 @@ function columns(){
             value: 'parceiro',
             selected: true,
             summable: false,
+            colunatempo: false,
+            colunadimensao: true,
         },         
         {
             id: itemId++,
@@ -93,6 +118,8 @@ function columns(){
             value: 'ted',
             selected: true,
             summable: false,
+            colunatempo: false,
+            colunadimensao: true,
         }, 
         {
             id: itemId++,
@@ -100,6 +127,8 @@ function columns(){
             value: 'tipodeconta',
             selected: true,
             summable: false,
+            colunatempo: false,
+            colunadimensao: true,
         },     
         {
             id: itemId++,
@@ -107,6 +136,8 @@ function columns(){
             value: 'turma',
             selected: true,
             summable: false,
+            colunatempo: false,
+            colunadimensao: true,
         },                                   
         {
             id: itemId++,
@@ -114,6 +145,8 @@ function columns(){
             value: 'saldo',
             selected: true,
             summable: true,
+            colunatempo: false,
+            colunadimensao: false,
             format: (item) => {
                 return item.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' })
             },
@@ -124,6 +157,8 @@ function columns(){
             value: 'valoraprovado',
             selected: true,
             summable: true,
+            colunatempo: false,
+            colunadimensao: false,
             format: (item) => {
                 return item.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' })
             },
@@ -134,6 +169,8 @@ function columns(){
             value: 'aprovada',
             selected: true,
             summable: true,
+            colunatempo: false,
+            colunadimensao: false,
             format: (item) => {
                 return item
             },
@@ -144,6 +181,8 @@ function columns(){
             value: 'homologada',
             selected: true,           
             summable: true,
+            colunatempo: false,
+            colunadimensao: false,
             format: (item) => {
                 return item
             },
@@ -154,6 +193,8 @@ function columns(){
             value: 'matricula',
             selected: true,   
             summable: true, 
+            colunatempo: false,
+            colunadimensao: false,
             format: (item) => {
                 return item
             },
@@ -164,13 +205,17 @@ function columns(){
             value: 'datapublicacao',
             selected: true,
             summable: false,
+            colunatempo: false,
+            colunadimensao: false,
         },
         {
             id: itemId++,
-            text: 'Action',
+            text: '',
             value: 'actions', 
             sortable: false,
             summable: false,
+            colunatempo: false,
+            colunadimensao: false,
         }        
       ]
 }

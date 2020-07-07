@@ -9,6 +9,8 @@ export default {
   },
   extends: Bar,
   mounted () {
+    console.log(' Metrics:', this.metrics,
+    ' Dimensions:', this.dimensions, ' Metriclegends:', this.metriclegends)
     var datasets = []
     var colors = []
     //para cada item da legenda, gerar um vetor com o mesmo tamanho da metric tendo como todos elementos a mesma cor

@@ -137,7 +137,27 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>        
+            </template>
+            <!-- MES -->
+            <template #item.mes="{item}" class="d-flex">
+                <v-edit-dialog
+                    :return-value.sync="item.mes"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.mes }}
+                    <template v-slot:input>
+                        <v-text-field
+                        :disabled="editDisabled"
+                        v-model="item.mes"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>                    
             <!--UF-->
             <template #item.uf="{item}">
                 <v-edit-dialog
@@ -336,7 +356,7 @@
                     @cancel="cancelEditField"
                     @open="editField"
                     @close="closeEditField"
-                    > {{ item.saldo.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) }}
+                    > {{ item.saldo ? item.saldo.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) : '' }}
                     <template v-slot:input>
                         <!-- <v-text-field :disabled="editDisabled"
                         v-model="item.saldo"
@@ -358,7 +378,7 @@
                     @cancel="cancelEditField"
                     @open="editField"
                     @close="closeEditField"
-                    > {{ item.valoraprovado.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) }}
+                    > {{ item.valoraprovado? item.valoraprovado.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) : '' }}
                     <template v-slot:input>
                         <v-currency-field 
                             :disabled="editDisabled"
@@ -439,10 +459,9 @@
       </v-tab-item>
       <!-- GRAFICO -->
       <v-tab-item key="grafico">
-        <mychart :metrics='tableColumns.filter(tableColumn => tableColumn.summable)'
-                 :dimensions="tableColumns.filter(tableColumn => !tableColumn.summable && tableColumn.text 
-                    && tableColumn.value != 'datapublicacao')"
-                 :items='items'/>
+        <mychart :colunasMetricas='tableColumns.filter(tableColumn => tableColumn.summable)'
+                 :colunasDimensoes="tableColumns.filter(tableColumn => tableColumn.colunadimensao)"
+                 :matrizDados='items'/>
       </v-tab-item>
       <!-- FIM DO GRAFICO -->
       <!-- MAPA -->

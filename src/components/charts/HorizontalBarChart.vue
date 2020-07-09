@@ -10,7 +10,26 @@ export default {
   extends: Bar,
   computed: {
     backgroundColor(){
-      return generateColor()
+      var color = []
+      var red = 0
+      var green = 0
+      var blue = 0
+      var cores = []
+      this.dimension.map(item => {
+          red = getRandomInt(0,256)
+          green = getRandomInt(0,256)
+          blue = getRandomInt(0,256)
+          var cor = {red, green, blue}
+          for (;(cores.indexOf(cor) != -1);){
+            red = getRandomInt(0,256)
+            green = getRandomInt(0,256)
+            blue = getRandomInt(0,256)
+            cor = {red, green, blue}
+          }
+          cores.push(cor)
+          color.push(`rgba(${cor.red}, ${cor.green}, ${cor.blue}, 0.2)`)
+      })
+      return color
     },
     borderColor(){
       return this.backgroundColor
@@ -30,13 +49,6 @@ export default {
   }
 }
 
-function generateColor(){
-  var red = getRandomInt(0,256)
-  var green = getRandomInt(0,256)
-  var blue = getRandomInt(0,256)
-  var cor = {red, green, blue}
-  return `rgba(${cor.red}, ${cor.green}, ${cor.blue}, 0.2)`
-}
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);

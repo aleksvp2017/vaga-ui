@@ -109,6 +109,7 @@
                         </v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
+                        <v-btn color="primary" @click="desmarcarDimensoesNaoTemporais()">Desmarcar dimensões</v-btn>
                         <v-btn color="success" @click="updateColumns()">Ok</v-btn>
                         <v-btn color="blue darken-1" text @click="closeDialogColunas">Fechar</v-btn>
                         </v-card-actions>
@@ -215,18 +216,18 @@
                     </template>
                 </v-edit-dialog>
             </template> 
-            <!-- MODALIDADE -->        
-            <template #item.modalidade="{item}">
+            <!-- MODALIDADE EDUCACIONAL -->        
+            <template #item.modalidadeeducacional="{item}">
                 <v-edit-dialog
-                    :return-value.sync="item.modalidade"
+                    :return-value.sync="item.modalidadeeducacional"
                     @save="saveItem(item)"
                     @cancel="cancelEditField"
                     @open="editField"
                     @close="closeEditField"
-                    > {{ item.modalidade }}
+                    > {{ item.modalidadeeducacional }}
                     <template v-slot:input>
                         <v-text-field :disabled="editDisabled"
-                        v-model="item.modalidade"
+                        v-model="item.modalidadeeducacional"
                         label="Edit"
                         single-line
                         counter
@@ -555,6 +556,20 @@ export default {
 			const wb = XLSX.utils.book_new()
 			XLSX.utils.book_append_sheet(wb, ws, "Vagas")
 			XLSX.writeFile(wb, "vagas.xlsx")
+        },
+        desmarcarDimensoesNaoTemporais(){
+            var colunasSelecionadas = []
+            var index = 0
+            this.tableConfigurableColumns.map((coluna, index) => {
+                //console.log(this.tableConfigurableColumns[this.selectedColumns[selectedColumn]])
+                //var coluna = this.tableConfigurableColumns[this.selectedColumns[selectedColumn]]
+                //console.log(coluna.text, coluna.colunatempo, coluna.colunadimensao)
+                if (coluna.colunatempo || !coluna.colunadimensao){
+                    colunasSelecionadas.push(index)
+                }
+                index ++
+            })
+            this.selectedColumns = colunasSelecionadas
         },
         updateColumns(){
             this.selectedColumns = this.selectedColumns.sort((a, b) => {

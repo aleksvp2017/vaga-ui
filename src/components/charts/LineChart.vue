@@ -1,6 +1,6 @@
 <script>
 import { Line} from 'vue-chartjs'
-
+import  * as Helper from './HelperChart'
 
 export default {
   props:['dimension', 'metrics'],  
@@ -13,14 +13,14 @@ export default {
       var blue = 0
       var cores = []
       this.dimension.map(item => {
-          red = getRandomInt(0,256)
-          green = getRandomInt(0,256)
-          blue = getRandomInt(0,256)
+          red = Helper.generateRandomInt(0,256)
+          green = Helper.generateRandomInt(0,256)
+          blue = Helper.generateRandomInt(0,256)
           var cor = {red, green, blue}
           for (;(cores.indexOf(cor) != -1);){
-            red = getRandomInt(0,256)
-            green = getRandomInt(0,256)
-            blue = getRandomInt(0,256)
+            red = Helper.generateRandomInt(0,256)
+            green = Helper.generateRandomInt(0,256)
+            blue = Helper.generateRandomInt(0,256)
             cor = {red, green, blue}
           }
           cores.push(cor)
@@ -40,7 +40,7 @@ export default {
             label: metric.legenda,
             data: metric.dados,
             fill: false,
-            borderColor: generateColor(),
+            borderColor: Helper.generateColor(),
             borderWidth: 4
         })
       })
@@ -102,7 +102,8 @@ function getOptions(){
       datasets.forEach(function(dataset, indexDataSet) {
         const meta = chartInstance.controller.getDatasetMeta(indexDataSet)
         meta.data.forEach(function(linha, index) {
-          const label = dataset.data[index];
+          var label = dataset.data[index];
+          label = Helper.incluiSeparadorDeMilhar(label)
           //cor do tooltip/label
           let deslocamentoHorizontal = calculaDeslocamentoHorizontalDoLabel(index, meta.data.length)
           let deslocamentoVertical = obterDeslocamento(vetorCoordenadas, indexDataSet, index)
@@ -116,26 +117,23 @@ function getOptions(){
   //   enabled: true
   // },
   // responsive: true,
-  scales: {
-    xAxes: [
-      {
-        display: true,
-        gridLines: {
-          drawOnChartArea: true
-        }
-      }
-    ],
-    yAxes: [
-      {
-        display: true,
-        gridLines: {
-          drawOnChartArea: true
-        },
-        ticks: {
-          precision: 0
-        }
-      }
-    ]
+scales: {
+        xAxes: [
+          {            
+          }
+        ],
+        yAxes: [
+          {
+            display: true,
+            gridLines: {
+              drawOnChartArea: true
+            },
+            ticks: {
+              precision: 0,
+              callback: Helper.incluiSeparadorDeMilhar
+            }
+          }
+        ]
   }  
   }  
 }
@@ -223,19 +221,7 @@ function isPontosProximos(pontoA, pontoB){
   return false
 }
 
-function generateColor(){
-  var red = getRandomInt(0,256)
-  var green = getRandomInt(0,256)
-  var blue = getRandomInt(0,256)
-  var cor = {red, green, blue}
-  return `rgba(${cor.red}, ${cor.green}, ${cor.blue}, 0.2)`
-}
 
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
-}
 
 
 </script>

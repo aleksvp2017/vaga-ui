@@ -1,12 +1,9 @@
 <script>
 import { PolarArea } from 'vue-chartjs'
+import  * as Helper from './HelperChart'
 
 export default {
   props:['metric', 'dimension', 'metriclegend'],
-  options:{
-    width: 100,
-    height: 100,
-  },
   extends: PolarArea,
   computed: {
     backgroundColor(){
@@ -16,14 +13,14 @@ export default {
       var blue = 0
       var cores = []
       this.dimension.map(item => {
-          red = getRandomInt(0,256)
-          green = getRandomInt(0,256)
-          blue = getRandomInt(0,256)
+          red = Helper.generateRandomInt(0,256)
+          green = Helper.generateRandomInt(0,256)
+          blue = Helper.generateRandomInt(0,256)
           var cor = {red, green, blue}
           for (;(cores.indexOf(cor) != -1);){
-            red = getRandomInt(0,256)
-            green = getRandomInt(0,256)
-            blue = getRandomInt(0,256)
+            red = Helper.generateRandomInt(0,256)
+            green = Helper.generateRandomInt(0,256)
+            blue = Helper.generateRandomInt(0,256)
             cor = {red, green, blue}
           }
           cores.push(cor)
@@ -45,14 +42,21 @@ export default {
             borderColor: this.borderColor,
             borderWidth: 1
         }]
-    }, this.options)
+    }, getOptions())
   }
 }
 
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
+function getOptions(){
+  return {
+      scales: {
+          ticks: {
+              //callback: Helper.incluiSeparadorDeMilhar,
+              max: 500,
+              min: 0,
+              stepSize: 50              
+          },
+      }
+  }
 }
+
 </script>

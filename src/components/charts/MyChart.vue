@@ -43,13 +43,19 @@
     </v-card-actions>
     <v-card-text v-if='mostrarGrafico'>
       <v-card>
-      <piechart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" v-if='mostrarTipoGrafico.mostrarGraficoPizza'
+      <piechart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" 
+        v-if='mostrarTipoGrafico.mostrarGraficoPizza'
         :height="140"/>
-      <barchart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" v-if='mostrarTipoGrafico.mostrarGraficoBarra'
+      <barchart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" 
+        v-if='mostrarTipoGrafico.mostrarGraficoBarra'
+        :height="140"/>
+      <horizontalbarchart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" 
+        v-if='mostrarTipoGrafico.mostrarGraficoBarraHorizontal'
         :height="140"/>
       <linechart :metrics='metricas' :dimension='dimensoes' :key="chartKey" v-if='mostrarTipoGrafico.mostrarGraficoLinha'
        :height="140"/>
-      <polarchart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" v-if='mostrarTipoGrafico.mostrarGraficoPolar'
+      <polarchart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" 
+        v-if='mostrarTipoGrafico.mostrarGraficoPolar'
        :height="140"/>       
       <multiplebarchart :metrics='metricas' :dimensions='dimensoes' :metriclegends='legendas' :key="chartKey" 
         v-if='mostrarTipoGrafico.mostrarGraficoBarraMultiplo'
@@ -62,6 +68,7 @@
 <script>
 import PieChart from './PieChart.vue'
 import BarChart from './BarChart.vue'
+import HorizontalBarChart from './HorizontalBarChart.vue'
 import LineChart from './LineChart.vue'
 import PolarAreaChart from './PolarAreaChart.vue'
 import MultipleMetricBarChart from './MultipleMetricBarChart.vue'
@@ -86,6 +93,10 @@ export default {
           value: 'mostrarGraficoBarra',
         },
         {
+          text: 'Barra Horizontal',
+          value: 'mostrarGraficoBarraHorizontal',
+        },
+        {
           text: 'Linha',
           value: 'mostrarGraficoLinha',
         },
@@ -101,6 +112,7 @@ export default {
       //tem um para cada tipo, para mostrar só um e esconder os outros de acordo com a seleção do tipo
       mostrarTipoGrafico: {
         mostrarGraficoBarra: false,
+        mostrarGraficoBarraHorizontal: false,
         mostrarGraficoLinha: false,
         mostrarGraficoPizza: false,
         mostrarGraficoPolar: false,
@@ -112,6 +124,7 @@ export default {
   components: {
     'piechart': PieChart,
     'barchart': BarChart,
+    'horizontalbarchart': HorizontalBarChart,
     'linechart': LineChart,
     'polarchart': PolarAreaChart,
     'multiplebarchart': MultipleMetricBarChart,
@@ -242,26 +255,19 @@ function montaDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDime
   var dimensoesNaoTemporais = []
   colunasDimensoes.map(coluna => !coluna.colunatempo? dimensoesNaoTemporais.push(coluna): '')
   if (!dimensoesNaoTemporais || dimensoesNaoTemporais.length === 0){
-    console.log('Sem dimensões selecionadas, as dimensões serão as métricas selecionadas')
-    console.log(metricasSelecionadas)
 
     matrizDados.map((item, index) => {
       metricasSelecionadas.map(metricaSelecionada => {
-        console.log('Linha ', index, ' métrica ', metricaSelecionada)
         //Pega o texto da métrica selecionada
-        console.log('Colunas métricas:', colunasMetricas)
         var legenda = ''
         colunasMetricas.map(colunaMetrica => {
           if (metricaSelecionada === colunaMetrica.value){
             legenda = colunaMetrica.text
           }
-        })      
-        console.log('Legenda/métrica:', legenda)
-      
+        })            
       
         var legandaJaPreenchida = false
         if (dadosFormatadosPorLegendaValoresPorMesAno.length > 0){
-          console.log('Legenda já preenchida')
           dadosFormatadosPorLegendaValoresPorMesAno.map(itemMetric => {
             if (itemMetric.legenda === legenda){
               legandaJaPreenchida = true
@@ -276,7 +282,6 @@ function montaDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDime
 
         //se nao tiver, inclui no vetor
         if (!legandaJaPreenchida){
-          console.log('Legenda ainda não preenchida')
           dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
             dados: [
               {
@@ -288,7 +293,6 @@ function montaDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDime
         }
       })
     })
-    console.log('Aqui:',dadosFormatadosPorLegendaValoresPorMesAno)
 
     // dadosFormatadosPorLegendaValoresPorMesAno = [
     //   {

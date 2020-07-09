@@ -1,5 +1,7 @@
 <script>
 import { Pie } from 'vue-chartjs'
+import  * as Helper from './HelperChart'
+
 
 export default {
   props:['metric', 'dimension', 'metriclegend'],
@@ -16,14 +18,14 @@ export default {
       var blue = 0
       var cores = []
       this.dimension.map(item => {
-          red = getRandomInt(0,256)
-          green = getRandomInt(0,256)
-          blue = getRandomInt(0,256)
+          red = Helper.generateRandomInt(0,256)
+          green = Helper.generateRandomInt(0,256)
+          blue = Helper.generateRandomInt(0,256)
           var cor = {red, green, blue}
           for (;(cores.indexOf(cor) != -1);){
-            red = getRandomInt(0,256)
-            green = getRandomInt(0,256)
-            blue = getRandomInt(0,256)
+            red = Helper.generateRandomInt(0,256)
+            green = Helper.generateRandomInt(0,256)
+            blue = Helper.generateRandomInt(0,256)
             cor = {red, green, blue}
           }
           cores.push(cor)
@@ -49,10 +51,4 @@ export default {
   }
 }
 
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
-}
 </script>

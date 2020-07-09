@@ -1,5 +1,6 @@
 <script>
 import { Bar } from 'vue-chartjs'
+import  * as Helper from './HelperChart'
 
 export default {
   props:['metric', 'dimension', 'metriclegend'],
@@ -10,7 +11,7 @@ export default {
   extends: Bar,
   computed: {
     backgroundColor(){
-      return generateColor()
+      return Helper.generateColor()
     },
     borderColor(){
       return this.backgroundColor
@@ -30,17 +31,4 @@ export default {
   }
 }
 
-function generateColor(){
-  var red = getRandomInt(0,256)
-  var green = getRandomInt(0,256)
-  var blue = getRandomInt(0,256)
-  var cor = {red, green, blue}
-  return `rgba(${cor.red}, ${cor.green}, ${cor.blue}, 0.2)`
-}
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
-}
 </script>

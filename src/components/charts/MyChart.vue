@@ -38,13 +38,25 @@
             v-model="snTotal"
             label="Incluir Total"
           ></v-switch> 
+        <v-row v-if="(tipoGraficoSelecionado === 'mostrarGraficoPizza')" >
+         <v-switch
+            v-model="tipoDonut"
+            label="Donut?"
+          ></v-switch>           
+         <v-switch
+            v-model="mostrarRotulosNoGrafico"
+            label="Mostrar rótulos no gráfico?"
+          ></v-switch>           
+        </v-row>
         <p class="font-weight-light mb-0"><v-icon>mdi-head-lightbulb</v-icon> As dimensões do gráfico são as colunas não numéricas da tabela</p>
     </v-container>
     </v-card-actions>
     <v-card-text v-if='mostrarGrafico'>
       <v-card>
-      <piechart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" 
+      <piechart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' 
+        :mostrarRotulosNoGrafico='mostrarRotulosNoGrafico' :key="chartKey" 
         v-if='mostrarTipoGrafico.mostrarGraficoPizza'
+        :type="tipoDonut? 'doughnut' : 'pie'"
         :height="140"/>
       <barchart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" 
         v-if='mostrarTipoGrafico.mostrarGraficoBarra'
@@ -77,6 +89,8 @@ import MultipleMetricBarChart from './MultipleMetricBarChart.vue'
 export default {
   data() {
     return {
+      mostrarRotulosNoGrafico: false,
+      tipoDonut: false,
       snTotal: false,
       typeAlert: 'error',
       showAlert: false,
@@ -493,7 +507,7 @@ function validaSelecao(metricasSelecionadas, tipoGraficoSelecionado, colunasDime
         })
         if (metricasSelecionadas.length > 1 && temOutraDimensaoAlemDeAnoMes){
             throw 'Selecione apenas ano e mês como colunas da tabela para gerar gráfico de linha com múltiplas métricas'    
-          }
+        }
       }
       else if (metricasSelecionadas.length > 1 && tipoGraficoSelecionado !== 'mostrarGraficoBarra'){
         throw 'Seleção de mais de uma métrica só é possível no gráfico de barras'

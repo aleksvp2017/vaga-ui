@@ -1,54 +1,78 @@
+<template>
+  <div id="app">
+    <canvas id="pie-chart" height="110"></canvas>
+     </v-card>
+  </div>
+</template>
+
 <script>
-import { Pie } from 'vue-chartjs'
-import  * as Helper from './HelperChart'
+  import  * as Helper from './HelperChart'
+  import Chart from 'chart.js'
 
-
-export default {
-  props:['metric', 'dimension', 'metriclegend'],
-  options:{
-    width: 100,
-    height: 100,
+  export default {
+  data() {
+    return {
+      percentuais: []
+    }
   },
-  extends: Pie,
-  computed: {
-    backgroundColor(){
-      var color = []
-      var red = 0
-      var green = 0
-      var blue = 0
-      var cores = []
-      this.dimension.map(item => {
-          red = Helper.generateRandomInt(0,256)
-          green = Helper.generateRandomInt(0,256)
-          blue = Helper.generateRandomInt(0,256)
-          var cor = {red, green, blue}
-          for (;(cores.indexOf(cor) != -1);){
-            red = Helper.generateRandomInt(0,256)
-            green = Helper.generateRandomInt(0,256)
-            blue = Helper.generateRandomInt(0,256)
-            cor = {red, green, blue}
-          }
-          cores.push(cor)
-          color.push(`rgba(${cor.red}, ${cor.green}, ${cor.blue}, 0.2)`)
+  props:['metric', 'dimension', 'metriclegend', 'type', 'mostrarRotulosNoGrafico'],
+  mounted() {
+    this.createChart('pie-chart');
+  },
+  methods: {
+    createChart(chartId) {
+      console.log('Metric:', this.metric)
+      var total = 0
+      this.metric.map(item => {
+        total += item
       })
-      return color
-    },
-    borderColor(){
-      return this.backgroundColor
+      this.metric.map((item, index) =>{
+        this.percentuais[index] = item / total * 100
+      })
+      console.log(this.percentuais)
+
+      if (!this.mostrarRotulosNoGrafico){
+        Chart.pluginService.unregister(Helper.pluginParaMostrarRotulos)
+      }
+      else{ 
+        Chart.pluginService.register(Helper.pluginParaMostrarRotulos)
+      }
+
+      const ctx = document.getElementById(chartId)
+      const myChart = new Chart(ctx, {
+        type: this.type,
+        data: {
+          labels: this.dimension,
+          datasets: [{
+              label: this.metriclegend,
+              data: this.metric,
+              backgroundColor: Helper.backgroundColor(this.dimension),
+              borderColor: Helper.borderColor(this.dimension),
+              borderWidth: 1
+          }]
+        },
+        options: getOptions(this.percentuais),
+      })
+      myChart.chart.$plugins = []
+    }
+  }
+}
+
+function getOptions(percentuais){
+  return {
+    showAllTooltips: true,
+    tooltips: {
+      callbacks: {
+          label: function(tooltipItem, data) {
+            var label = data.labels[tooltipItem.index] + ': ' +
+              Helper.incluiSeparadorDeMilhar(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]) +
+              ' ( ' + percentuais[tooltipItem.index].toFixed(2) + '% )'
+            return label;
+          }
+      }
     }    
-  },
-  mounted () {
-    this.renderChart({
-        labels: this.dimension,
-        datasets: [{
-            label: this.metriclegend,
-            data: this.metric,
-            backgroundColor: this.backgroundColor,
-            borderColor: this.borderColor,
-            borderWidth: 1
-        }]
-    }, this.options)
   }
 }
 
 </script>
+

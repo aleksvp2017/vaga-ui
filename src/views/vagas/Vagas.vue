@@ -1,5 +1,6 @@
 <template>
 <v-card>
+    <!-- Tem linhas agrupadas? {{snLinhasAgrupadas ? 'sim' : 'não'}} -->
     <v-tabs
       background-color="white"
       color="indigo darken-2"
@@ -493,6 +494,7 @@ export default {
     data() {
         return {
             actionColumn: {},
+            snLinhasAgrupadas: false,
             vagasTable: {},
             rate: 0,
             errors: {},            
@@ -588,11 +590,19 @@ export default {
             this.tableColumns = updatedColumns
             this.closeDialogColunas()
             this.searchKey = ''
-            this.groupIdenticalItens()
+            this.agrupaLinhasIdenticas()
         },
-        groupIdenticalItens(){
+        agrupaLinhasIdenticas(){
+            var itemsAAgrupar = this.originalItems
+            if (!this.snLinhasAgrupadas){
+                itemsAAgrupar = this.items
+            }
+            console.log('Originais:', this.originalItems)
+            console.log('Itens:', this.items)
+            console.log('Items a agrupar:', itemsAAgrupar)
             var {itemsWithIdenticalPairs, itemsWithoutIdenticalPairs} = 
-                separateIdenticalAndNoIdenticalItems(this.originalItems, this.tableColumns, fieldsToDetermineEquality)
+                separateIdenticalAndNoIdenticalItems(itemsAAgrupar, this.tableColumns, fieldsToDetermineEquality)
+            this.snLinhasAgrupadas = (itemsWithIdenticalPairs.length > 0)? true : false
             var identicalItemsGrouped = sumItems(fieldsToSum(), itemsWithIdenticalPairs)
             this.items = []
             this.items.push(...itemsWithoutIdenticalPairs,...identicalItemsGrouped)

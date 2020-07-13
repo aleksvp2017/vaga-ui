@@ -33,11 +33,16 @@
             <v-btn color="success" @click="gerarGrafico()">Gerar gráfico</v-btn>
           </v-flex>
         </v-layout>
+        <v-row v-if="(tipoGraficoSelecionado === 'mostrarGraficoLinha')" >
          <v-switch
-            v-if="(tipoGraficoSelecionado === 'mostrarGraficoLinha')"
             v-model="snTotal"
             label="Incluir Total"
           ></v-switch> 
+         <v-switch
+            v-model="snAcumulados"
+            label="Mostrar dados acumulados"
+          ></v-switch> 
+        </v-row>
         <v-row v-if="(tipoGraficoSelecionado === 'mostrarGraficoPizza')" >
          <v-switch
             v-model="tipoDonut"
@@ -92,6 +97,7 @@ export default {
       mostrarRotulosNoGrafico: false,
       tipoDonut: false,
       snTotal: false,
+      snAcumulados: false,
       typeAlert: 'error',
       showAlert: false,
       alertMessage: '',
@@ -239,26 +245,46 @@ export default {
 
       //Soma o total por par <ano, mes>
       if (this.snTotal){
-        var total = {
-          legenda: 'Total',
-          dados: []
-        }
-        this.metricas.map(metrica => {
-          metrica.dados.map((dado, index) =>{
-            if (total.dados.length < (index+1)){
-              total.dados.push(dado)
-            }
-            else{
-              total.dados[index] = parseInt(total.dados[index]) + parseInt(dado)
-            }
-            
-          })
-        })
+        this.metricas.push(calcularTotal(this.metricas))
+      }
 
-        this.metricas.push(total)
+      if (this.snAcumulados){
+        acumularDados(this.metricas)
       }
     }
   },
+}
+
+function calcularTotal(metricas){
+  var total = {
+    legenda: 'Total',
+    dados: []
+  }
+  metricas.map(metrica => {
+    metrica.dados.map((dado, index) =>{
+      if (total.dados.length < (index+1)){
+        total.dados.push(dado)
+      }
+      else{
+        total.dados[index] = parseInt(total.dados[index]) + parseInt(dado)
+      }
+      
+    })
+  })
+  return total
+}
+
+function acumularDados(metricas){
+  metricas.map(metrica => {
+    metrica.dados.map((dado, index) =>{
+      if (index > 0){
+        console.log('Somando ', dado, ' com ', metrica.dados[index-1])
+        metrica.dados[index] = dado + metrica.dados[index-1]
+        console.log('Dado somado:', dado)
+      }
+    })
+  })
+  console.log(metricas)
 }
 
 function montaDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDimensoes, 

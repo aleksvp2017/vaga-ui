@@ -6,7 +6,6 @@ export default {
   props:['dimension', 'metrics'],  
   extends: Line,
   mounted () {
-      console.log('Conjunto dados do eixo Y', this.dimension)
       var datasets = []
       this.metrics.map(metric => {
         datasets.push({

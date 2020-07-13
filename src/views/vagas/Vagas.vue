@@ -798,6 +798,7 @@ export default {
         },     
         reset(){
             this.searchPairs = []
+            this.snLinhasAgrupadas = false
             this.searchKey = ''
             this.columnToSearch = null
             initialize(this)

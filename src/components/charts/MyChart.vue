@@ -372,6 +372,7 @@ function montaDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDime
     //         valor: 42811,
     //         ano: 2020,
     //         mes: '05'
+
     //       } ,
     //       {
     //         valor: 84755,

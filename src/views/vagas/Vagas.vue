@@ -597,9 +597,6 @@ export default {
             if (!this.snLinhasAgrupadas){
                 itemsAAgrupar = this.items
             }
-            console.log('Originais:', this.originalItems)
-            console.log('Itens:', this.items)
-            console.log('Items a agrupar:', itemsAAgrupar)
             var {itemsWithIdenticalPairs, itemsWithoutIdenticalPairs} = 
                 separateIdenticalAndNoIdenticalItems(itemsAAgrupar, this.tableColumns, fieldsToDetermineEquality)
             this.snLinhasAgrupadas = (itemsWithIdenticalPairs.length > 0)? true : false

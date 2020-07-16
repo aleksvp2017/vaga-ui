@@ -278,13 +278,13 @@ function acumularDados(metricas){
   metricas.map(metrica => {
     metrica.dados.map((dado, index) =>{
       if (index > 0){
-        console.log('Somando ', dado, ' com ', metrica.dados[index-1])
+        //console.log('Somando ', dado, ' com ', metrica.dados[index-1])
         metrica.dados[index] = dado + metrica.dados[index-1]
-        console.log('Dado somado:', dado)
+        //console.log('Dado somado:', dado)
       }
     })
   })
-  console.log(metricas)
+  //console.log(metricas)
 }
 
 function montaDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDimensoes, 

@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <canvas id="pie-chart" height="110"></canvas>
-     </v-card>
   </div>
 </template>
 
@@ -21,6 +20,7 @@
   },
   methods: {
     createChart(chartId) {
+      //Calcula percentuais
       var total = 0
       this.metric.map(item => {
         total += item
@@ -29,13 +29,6 @@
         this.percentuais[index] = item / total * 100
       })
       
-      if (!this.mostrarRotulosNoGrafico){
-        Chart.pluginService.unregister(Helper.pluginParaMostrarRotulos)
-      }
-      else{ 
-        Chart.pluginService.register(Helper.pluginParaMostrarRotulos)
-      }
-
       const ctx = document.getElementById(chartId)
       const myChart = new Chart(ctx, {
         type: this.type,

@@ -50,6 +50,8 @@ export default {
 //Opcoes de configuracao do gráfico
 function getOptions(){
   return {
+  //para desabilitar resposta a eventos (flick no gráfico)
+  events: [],
   animation: {
     onComplete: function() {
       const chartInstance = this.chart, ctx = chartInstance.ctx;
@@ -85,9 +87,9 @@ function getOptions(){
       })
     }
   },
-  // tooltips: {
-  //   enabled: true
-  // },
+  tooltips: {
+     enabled: false,
+  },
   // responsive: true,
   scales: {
     xAxes: [

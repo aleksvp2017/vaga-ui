@@ -11,19 +11,7 @@
   export default {
   props:['metric', 'dimension', 'metriclegend'],
   mounted() {
-    // console.log('Metric:', this.dimension)
-    // if (!isNaN(this.dimension[0])){
-    //   console.log(' É numero')
-    //   var dimensaoOrdenada = this.dimension.slice(0)
-    //   var metricaOrdenada = this.metricaOrdenada.slice(0)
-    //   var teveTroca = true
-    //   while (teveTroca){
-
-    //   }
-      
-      
-    // }
-
+    ordenarPorDimensao(this.dimension, this.metric)
     this.createChart('horizontal-bar-chart');
   },
   methods: {
@@ -48,6 +36,43 @@
       })
     }
   }
+}
+
+//Caso a dimensão seja numérica, a exemplo do ano, ordena por ela
+function ordenarPorDimensao(dimension, metric){
+    if (isTodosValoresNumericos(dimension)){
+      var teveTroca = true
+      while (teveTroca){
+        teveTroca = false
+        dimension.map((item, index) => {
+          //troca valor com o proximo, se for o caso, até o tamanho do vetor
+          if ((index+1) < dimension.length){
+            let numero1 = parseInt(item)
+            let numero2 = parseInt(dimension[index+1])
+            if (numero1 < numero2){
+              teveTroca = true
+              //faz a troca na dimensao e na metrica correspondente
+              dimension[index] = numero2
+              dimension[index+1] = numero1
+              let metricaTemporaria = metric[index]
+              metric[index] = metric[index+1]
+              metric[index+1] = metricaTemporaria           
+            }
+          }
+        })
+      }
+    }  
+}
+
+
+function isTodosValoresNumericos(vetor){
+  let snTodosNumericos = true
+  vetor.map(valor => {
+    if (isNaN(valor)){
+      snTodosNumericos = false
+    }
+  })
+  return snTodosNumericos
 }
 
 function getOptions(title){

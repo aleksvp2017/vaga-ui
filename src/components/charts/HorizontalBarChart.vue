@@ -121,8 +121,11 @@ function getOptions(title){
             meta.data.forEach(function(linha, index) {
               var label = dataset.data[index];
               label = Helper.incluiSeparadorDeMilhar(label)
-              ctx.fillText(label, linha._model.x-60, 
-              linha._model.y);
+              // console.log('X (' + label + '):', linha._model.x)
+              // console.log(linha._model.x)
+              var x = linha._model.x > 200 ? linha._model.x - 60 : linha._model.x
+              ctx.fillText(label, x, 
+              linha._model.y+10);
             })
           })
         }

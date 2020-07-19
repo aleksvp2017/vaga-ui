@@ -50,8 +50,7 @@ function retirarValoresZerados(dimension, metric){
   var dimensoesSemValoresZerados = []
   var metricasSemValoresZerados = []
   metric.map((metrica, index) => {
-    
-    if (parseInt(metrica) !== 0){
+    if (metrica && parseInt(metrica) !== 0){
       metricasSemValoresZerados.push(metrica)
       dimensoesSemValoresZerados.push(dimension[index])
     }

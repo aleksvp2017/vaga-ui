@@ -9,33 +9,54 @@
   import Chart from 'chart.js'
 
   export default {
-  props:['metric', 'dimension', 'metriclegend'],
+  props:['metric', 'dimension', 'metriclegend', 'mostrarRotulosNoGrafico', 'mostrarValorezZerados', 'mostrarValoresZerados'],
   mounted() {
-    ordenarPorDimensao(this.dimension, this.metric)
-    this.createChart('horizontal-bar-chart');
+    var metricas = this.metric
+    var dimensoes = this.dimension
+    if (!this.mostrarValoresZerados){
+      var {dimensoesSemValoresZerados, metricasSemValoresZerados} = retirarValoresZerados(this.dimension, this.metric)
+      metricas = metricasSemValoresZerados
+      dimensoes = dimensoesSemValoresZerados
+    }
+    ordenarPorDimensao(dimensoes, metricas)
+    this.createChart('horizontal-bar-chart', metricas, dimensoes);
   },
   methods: {
-    createChart(chartId) {
+    createChart(chartId, metricas, dimensoes) {
       const ctx = document.getElementById(chartId)
       const myChart = new Chart(ctx, {
         type: 'horizontalBar',
         data: {
-          labels: this.dimension,
+          labels: dimensoes,
           datasets: [{
               //barPercentage: 0.1,
               //categoryPercentage: 0.1,
               //barThickness: 10,
               label: this.metriclegend,
-              data: this.metric,
-              backgroundColor: Helper.backgroundColor(this.dimension),
-              borderColor: Helper.borderColor(this.dimension),
+              data: metricas,
+              backgroundColor: Helper.backgroundColor(dimensoes),
+              borderColor: Helper.borderColor(dimensoes),
               borderWidth: 1
           }]
         },
-        options: getOptions(this.metriclegend),
+        options: getOptions(this.metriclegend, this.mostrarRotulosNoGrafico),
       })
     }
   }
+}
+
+
+function retirarValoresZerados(dimension, metric){
+  var dimensoesSemValoresZerados = []
+  var metricasSemValoresZerados = []
+  metric.map((metrica, index) => {
+    
+    if (parseInt(metrica) !== 0){
+      metricasSemValoresZerados.push(metrica)
+      dimensoesSemValoresZerados.push(dimension[index])
+    }
+  })
+  return {dimensoesSemValoresZerados, metricasSemValoresZerados}
 }
 
 //Caso a dimensão seja numérica, a exemplo do ano, ordena por ela
@@ -75,7 +96,7 @@ function isTodosValoresNumericos(vetor){
   return snTodosNumericos
 }
 
-function getOptions(title){
+function getOptions(title, mostrarRotulosNoGrafico){
   return {
       legend: {
         display: false
@@ -99,8 +120,13 @@ function getOptions(title){
         }]
       },
       events: [],
-      animation: {
-        onComplete: function() {
+      animation: getAnimation(mostrarRotulosNoGrafico)     
+  }
+}
+
+function getAnimation(mostrarRotulosNoGrafico){
+  if (mostrarRotulosNoGrafico){
+    return {onComplete: function() {
           const chartInstance = this.chart, ctx = chartInstance.ctx;
 
           //Configurações de fonte dos labels / tooltip
@@ -129,8 +155,9 @@ function getOptions(title){
             })
           })
         }
-      },      
+    }
   }
+  return {}
 }
 
 </script>

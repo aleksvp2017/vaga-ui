@@ -33,6 +33,7 @@
             <v-btn color="success" @click="gerarGrafico()">Gerar gráfico</v-btn>
           </v-flex>
         </v-layout>
+        <!-- OPCOES DE CONFIGURACAO DOS GRAFICOS -->
         <v-row v-if="(tipoGraficoSelecionado === 'mostrarGraficoLinha')" >
          <v-switch
             v-model="snTotal"
@@ -43,15 +44,21 @@
             label="Mostrar dados acumulados"
           ></v-switch> 
         </v-row>
-        <v-row v-if="(tipoGraficoSelecionado === 'mostrarGraficoPizza')" >
+        <v-row v-if="(tipoGraficoSelecionado === 'mostrarGraficoPizza' || tipoGraficoSelecionado === 'mostrarGraficoBarraHorizontal')" >
          <v-switch
+            v-if="(tipoGraficoSelecionado === 'mostrarGraficoPizza')"
             v-model="tipoDonut"
             label="Donut?"
-          ></v-switch>           
+          ></v-switch>                     
          <v-switch
             v-model="mostrarRotulosNoGrafico"
             label="Mostrar rótulos no gráfico?"
-          ></v-switch>           
+          ></v-switch>   
+         <v-switch
+            v-if="(tipoGraficoSelecionado === 'mostrarGraficoBarraHorizontal')"
+            v-model="mostrarValoresZerados"
+            label="Mostrar valores zerados?"
+          ></v-switch>                   
         </v-row>
         <p class="font-weight-light mb-0"><v-icon>mdi-head-lightbulb</v-icon> As dimensões do gráfico são as colunas não numéricas da tabela</p>
     </v-container>
@@ -67,7 +74,8 @@
         v-if='mostrarTipoGrafico.mostrarGraficoBarra'
         :height="140"/>
       <horizontalbarchart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" 
-        v-if='mostrarTipoGrafico.mostrarGraficoBarraHorizontal'
+        v-if='mostrarTipoGrafico.mostrarGraficoBarraHorizontal' :mostrarRotulosNoGrafico='mostrarRotulosNoGrafico'
+        :mostrarValoresZerados='mostrarValoresZerados'
         :height="140"/>
       <linechart :metrics='metricas' :dimension='dimensoes' :key="chartKey" v-if='mostrarTipoGrafico.mostrarGraficoLinha'
        :height="140"/>
@@ -94,6 +102,7 @@ import MultipleMetricBarChart from './MultipleMetricBarChart.vue'
 export default {
   data() {
     return {
+      mostrarValoresZerados: false,
       mostrarRotulosNoGrafico: false,
       tipoDonut: false,
       snTotal: false,

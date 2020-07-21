@@ -58,11 +58,11 @@ function manageProtectedEndPoints() {
   router.beforeEach((to, from, next) => {
     if (routeRequireAuth(to)) {
       if (!store.getters.loggedIn) {
-        next('/entrar')
+        next('/')
         return
       }
     }
-    if (to.fullPath === '/entrar') {
+    if (to.fullPath === '/') {
       if (store.getters.loggedIn) {
         next('/home')
         return

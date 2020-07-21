@@ -1,5 +1,6 @@
 <template>
-    <v-card width="400px" class="mt-5 mx-auto">
+  <v-img src="/src/img/home.jpg" aspect-ratio="1.75">
+    <v-card width="400px" class="mt-5 mx-auto" >
       <v-card-title class="pb-0">
         <h2>Acesso ao sistema</h2>
       </v-card-title>
@@ -31,6 +32,7 @@
         <v-btn color="info" @click="login">Entrar</v-btn>
       </v-card-actions>
     </v-card>
+  </v-img>
 </template>
 
 <script>
@@ -57,7 +59,7 @@
       login(){
         this.alerta = ''
         this.ActionLogin(this.credencial).then((response) => {
-          this.$router.push(obterRota('Vagas'))
+          this.$router.push(obterRota('Home'))
         }).catch (error => {
           console.log('Error: ', error)
           this.alerta = error.body.error

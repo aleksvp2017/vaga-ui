@@ -1,6 +1,7 @@
 import VueRouter from 'vue-router' //navegacao
 import Vue from 'vue' //core do vue
 import Bemvindo from './views/bemvindo/Bemvindo.vue'
+import Home from './views/bemvindo/Home.vue'
 import Login from './views/login/Login.vue'
 import Registrar from './views/registrar/Registrar.vue'
 import DadosPessoais from './views/usuario/DadosPessoais.vue'
@@ -13,8 +14,9 @@ import Auditoria from './views/auditoria/Auditoria.vue'
 
 var routes = [
 
-   { path: '/', name: 'Início', component: Bemvindo, menuItem: false, alwaysShow: false},
-   { path: '/entrar', name: 'Entrar', component: Login, menuItem: true },
+   //{ path: '/', name: 'Bem vindo', component: Bemvindo, menuItem: false, alwaysShow: false},
+   { path: '/home', name: 'Home', component: Home, menuItem: false, alwaysShow: false, requireAuth: true},
+   { path: '/', name: 'Login', component: Login, menuItem: false },
    { path: '/registrar', name: 'Registrar', component: Registrar, requireAuth: false, menuItem: false},
    { path: '/dadospessoais', name: 'Dados Pessoais', component: DadosPessoais, requireAuth: true, menuItem: false},
    { path: '/faleconosco', name: 'Fale Conosco', component: FaleConosco, requireAuth: true, menuItem: true},

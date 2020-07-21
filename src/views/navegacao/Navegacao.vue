@@ -65,7 +65,7 @@
 </template>
 
 <script>
-    import { mapGetters, mapState } from 'vuex'
+    import { mapGetters, mapState, mapActions } from 'vuex'
     import { routes } from '../../routes.js'
 
     export default {
@@ -90,7 +90,7 @@
                 return routes.filter(route => route.menuItem)
             },
             rotaHome(){
-                return routes.filter(route => route.name == 'Início')[0]
+                return routes.filter(route => route.name == 'Home')[0]
             },            
             rotaDadosPessoais(){
                 return routes.filter(route => route.name == 'Dados Pessoais')[0]
@@ -104,8 +104,9 @@
             mapState(['user'])
         },
         methods: {
+            ...mapActions(['ActionLogout']),
             logout(){
-                this.$store.dispatch('ActionLogout')
+                this.ActionLogout()
             }
         }
     }

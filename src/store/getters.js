@@ -11,6 +11,5 @@ export default{
         if (state.user && state.user.menu){
             return state.user.menu
         }
-        return ['Fale Conosco', 'Vagas']
     }
 }

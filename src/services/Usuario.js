@@ -17,7 +17,7 @@ async function alterarSenha(usuario, senhaNova){
 }
 
 async function alterarUsuario(usuario){
-    return  http.post(BASE_BACKEND_URL + 'usuarios/:' + usuario.id, {usuario: usuario})
+    return  http.post(BASE_BACKEND_URL + 'usuarios/:' + usuario.usuarioid, {usuario: usuario})
 }
 
 async function excluirUsuario(usuario){

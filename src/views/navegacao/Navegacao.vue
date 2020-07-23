@@ -10,11 +10,11 @@
                 </h2>
             </v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn text rounded v-for="(link, index) in links" :key="index"
-                :to="link.path"
-                v-show="(!link.requireAuth && !loggedIn) 
-                    || (loggedIn && link.requireAuth && menu.indexOf(link.name) > -1) 
-                    || link.alwaysShow"> {{link.name}} </v-btn>
+            <!--PERMISSAO DO MENU É CHECADA AQUI -->
+            <div v-if="loggedIn">
+                <v-btn text rounded v-for="(link, index) in links" :key="index"
+                    :to="link.path"> {{link.nome}} </v-btn>
+            </div>
             
             <!-- USER MENU -->
             <v-menu offset-y
@@ -66,40 +66,59 @@
 
 <script>
     import { mapGetters, mapState, mapActions } from 'vuex'
-    import { routes } from '../../routes.js'
+    import { routes, obterRota } from '../../routes.js'
+    import { obterMenu } from '../../services/Permissao.js'
 
     export default {
         data() {
             return {
-                itensMenu:[
-                    {
-                        titulo: 'Aleksander Velozo Pascoal'
-                    },
-                    {
-                        titulo: 'Sair',
-                        acao: this.logout,
-                    },
-                ]       
+                menuDisponivel: false,
             }
         },
         computed: {
             temAcesso(){
-
             },
             links (){
-                return routes.filter(route => route.menuItem)
+                var itens = []
+                //Precisa do arquivo de rotas por causa do mapeamento com o componente, que não pode ser
+                //simplesmente uma string, tem que ser o componente mesmo
+                //Junção entre as rotas e o que vem via permissao se da pelo path
+                routes.map(rota => {
+                    var temPermissao = false
+                    this.menu.map(itemMenu => {
+                        if (itemMenu.path === rota.path){
+                            itens.push({
+                                nome: itemMenu.nome,
+                                path: itemMenu.path
+                            })
+                        }
+                    })
+                })
+                // var extraRoutes = []
+                // this.menu.map(itemMenu => {
+                //     itens.push({
+                //         nome: itemMenu.nome,
+                //         path: itemMenu.url
+                //     })
+                //     this.$router.addRoutes([{ path: itemMenu.url, component: itemMenu.componenteUI, requiredAtuh: true}])
+                //     extraRoutes.push({ path: itemMenu.url, component: itemMenu.componenteUI, requiredAtuh: true})
+                //     console.log('Adicionou ', itemMenu.url)
+                // })
+                // this.$router.options.routes = [...this.$router.options.routes, ...extraRoutes]
+                // console.log(this.$router.options.routes)
+                return itens       
             },
             rotaHome(){
-                return routes.filter(route => route.name == 'Home')[0]
+                return obterRota('Home')
             },            
             rotaDadosPessoais(){
-                return routes.filter(route => route.name == 'Dados Pessoais')[0]
+                return obterRota('DadosPessoais')
             },
             rotaSenha(){
-                return routes.filter(route => route.name == 'Alterar Senha')[0]
+                return obterRota('AlterarSenha')
             },            
             ...
-            mapGetters(['loggedIn', 'menu']),
+            mapGetters(['loggedIn','menu']),
             ...
             mapState(['user'])
         },

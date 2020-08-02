@@ -8,6 +8,7 @@
       <v-tab>Tabela</v-tab>
       <v-tab>Gráfico</v-tab>
       <v-tab>Mapa</v-tab>
+      <v-tab>Projeções</v-tab>
 
       <v-tab-item key="tabela">
         <v-alert :type="typeAlert" dense text dismissible v-model="showAlert">
@@ -471,6 +472,11 @@
         <mymap :items='items' :metrics='tableColumns.filter(tableColumn => tableColumn.summable)'/>
       </v-tab-item>
       <!-- FIM DO MAPA -->
+      <!-- PROJECOES -->
+      <v-tab-item key="projecoes">
+        <projecao />
+      </v-tab-item>
+      <!-- FIM DO GRAFICO -->      
     </v-tabs>
 
   
@@ -485,11 +491,13 @@ import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
 import XLSX from 'xlsx'
 import MyChart from '../../components/charts/MyChart.vue'
 import MyMap from '../../components/maps/MyMap.vue'
+import Projecao from '../../components/projecoes/Projecao.vue'
 
 export default {
     components: {
       'mychart': MyChart,
       'mymap': MyMap,
+      'projecao': Projecao
     }, 
     data() {
         return {

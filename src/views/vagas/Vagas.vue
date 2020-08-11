@@ -82,24 +82,21 @@
                         <v-card-text>
                             <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
                                 {{alertMessagePopup}}
-                            </v-alert>
-                            <v-file-input v-model="fileuploaded" label="Escolha a planilha a ser importada"></v-file-input>
-                            <v-text-field label="Nome da aba / página da planilha" v-model="planilha.aba" 
+                            </v-alert>                            
+                            <v-text-field label="Nome da aba / página da planilha*" v-model="planilha.aba" 
                                 @keypress.enter="uploadFile()" type="text"/>
                             <v-text-field label="Período pactuação" v-model="planilha.periodoPactuacao" 
-                                @keypress.enter="uploadFile()" type="text"/>
-                            <v-icon>mdi-head-lightbulb</v-icon> Caso não seja preenchido, sistema procurará a coluna na planilha ou utilizará o período atualmente 
-                            aberto: <b>{{periodoPactuacaoAberto}}</b>
-                            <v-layout row wrap>
-                                <v-flex xs2>
-                                    <v-text-field label="Ano" v-model="planilha.ano" 
+                                persistent-hint="true" 
+                                :hint="periodoPactuacaoHint"
+                                @keypress.enter="uploadFile()" type="text"/>                                                        
+                            <v-text-field label="Ano" v-model="planilha.ano" 
+                                persistent-hint="true" hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
                                         @keypress.enter="uploadFile()" type="text" v-mask="'####'"/>  
-                                </v-flex>   
-                                <v-flex mx-2 xs2>                       
-                                    <v-text-field label="Mês" v-model="planilha.mes" 
-                                        @keypress.enter="uploadFile()" type="text" v-mask="'##'"/>                                                                
-                                </v-flex>
-                            </v-layout>
+                            <v-text-field label="Mês" v-model="planilha.mes" 
+                                persistent-hint="true" hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
+                                        @keypress.enter="uploadFile()" type="text" v-mask="'##'"/>                                                                                                        
+                            
+                            <v-file-input v-model="fileuploaded" label="Escolha a planilha a ser importada*"></v-file-input>
                         </v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
@@ -461,7 +458,7 @@ export default {
     data() {
         return {
             mascara:'##',
-            periodoPactuacaoAberto: {},
+            periodoPactuacaoHint: '',
             planilha:{
             },
             actionColumn: {},
@@ -794,7 +791,8 @@ function initialize(owner){
     owner.tableColumns = Vagas.columns()
     owner.actionColumn = owner.tableColumns.filter(item => item.value === 'actions')[0]
     Vagas.obterPeriodoPactuacaoAberto().then(response => {
-        owner.periodoPactuacaoAberto = response.data.periodopactuacao.nome
+        owner.periodoPactuacaoHint = 'Caso não seja preenchido, sistema procurará a coluna na planilha ou utilizará o período atualmente aberto: ' 
+                + response.data.periodopactuacao.nome
     }).catch(error => {
         console.log(error)
         displayMessage(owner, true, error.body.error, 'error')

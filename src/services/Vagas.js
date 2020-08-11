@@ -6,10 +6,15 @@ Vue.use(VueResource)
 const http = Vue.http
 import {BASE_BACKEND_URL} from './Constantes.js'
 
-function upload(file){
+function upload(file, planilha){
     let formData = new FormData()
     //esse parametro tem que coincidir com o lido pelo muter no backend
     formData.append('fileuploaded', file)
+    formData.append('nomeAba', planilha.aba)
+    //formData.append('nomeAba', 'Vagas')
+    formData.append('periodoPactuacao', planilha.periodoPactuacao)
+    formData.append('ano', planilha.ano)
+    formData.append('mes', planilha.mes)
     return http.post(BASE_BACKEND_URL + 'vagas/importar', formData)
 }
 
@@ -23,6 +28,10 @@ async function remove(vagas){
 
 async function save(vaga){
     return http.post(BASE_BACKEND_URL + 'vagas/' + (vaga.vagaid ? (':' + vaga.vagaid) : ''), {vaga})
+}
+
+async function obterPeriodoPactuacaoAberto(){
+    return http.get(BASE_BACKEND_URL + 'periodopactuacaoaberto')
 }
 
 const fieldsToDetermineEquality = ['ano', 'mes', 'uf', 'tipocurso', 'modalidadeeducacional', 'acao', 'tiporede', 'ted', 'tipodeconta',
@@ -48,7 +57,16 @@ function columns(){
             summable: false,
             colunatempo: true,
             colunadimensao: true,
-        },                    
+        },  
+        {
+            id: itemId++,
+            text: 'INSTITUIÇÃO DE ENSINO',
+            value: 'instituicao',
+            selected: true,
+            summable: false,
+            colunatempo: false,
+            colunadimensao: true,
+        },                          
         {
             id: itemId++,
             text: 'UF',
@@ -69,8 +87,8 @@ function columns(){
         },        
         {
             id: itemId++,
-            text: 'TIPO DE CURSO',
-            value: 'tipocurso',
+            text: 'TIPO',
+            value: 'tipodecurso',
             selected: true,            
             summable: false,
             colunatempo: false,
@@ -79,12 +97,30 @@ function columns(){
         {
             id: itemId++,
             text: 'MODALIDADE EDUCACIONAL',
-            value: 'modalidadeeducacional',
+            value: 'modalidadedeensino',
             selected: true,            
             summable: false,
             colunatempo: false,
             colunadimensao: true,
         },
+        {
+            id: itemId++,
+            text: 'CURSO',
+            value: 'curso',
+            selected: true,
+            summable: false,
+            colunatempo: false,
+            colunadimensao: true,
+        }, 
+        {
+            id: itemId++,
+            text: 'PERÍODO PACTUAÇÃO',
+            value: 'periodopactuacao',
+            selected: true,
+            summable: false,
+            colunatempo: false,
+            colunadimensao: true,
+        },                 
         {
             id: itemId++,
             text: 'AÇÃO',
@@ -93,68 +129,11 @@ function columns(){
             summable: false,
             colunatempo: false,
             colunadimensao: true,
-        }, 
-        {
-            id: itemId++,
-            text: 'TIPO DE REDE',
-            value: 'tiporede',
-            selected: true,
-            summable: false,
-            colunatempo: false,
-            colunadimensao: true,
-        },   
-        {
-            id: itemId++,
-            text: 'PARCEIRO',
-            value: 'parceiro',
-            selected: true,
-            summable: false,
-            colunatempo: false,
-            colunadimensao: true,
-        },         
-        {
-            id: itemId++,
-            text: 'TED',
-            value: 'ted',
-            selected: true,
-            summable: false,
-            colunatempo: false,
-            colunadimensao: true,
-        }, 
-        {
-            id: itemId++,
-            text: 'TIPO DE CONTA',
-            value: 'tipodeconta',
-            selected: true,
-            summable: false,
-            colunatempo: false,
-            colunadimensao: true,
-        },     
-        {
-            id: itemId++,
-            text: 'TURMA',
-            value: 'turma',
-            selected: true,
-            summable: false,
-            colunatempo: false,
-            colunadimensao: true,
         },                                   
         {
             id: itemId++,
-            text: 'SALDO',
-            value: 'saldo',
-            selected: true,
-            summable: true,
-            colunatempo: false,
-            colunadimensao: false,
-            format: (item) => {
-                return item.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' })
-            },
-        },
-        {
-            id: itemId++,
-            text: 'VALOR APROVADO',
-            value: 'valoraprovado',
+            text: 'HORA-AULA',
+            value: 'valorhoraaula',
             selected: true,
             summable: true,
             colunatempo: false,
@@ -241,5 +220,5 @@ const fieldsToSum = () => {
 }
 
 export {
-    upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality, obterIdColuna
+    upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality, obterIdColuna, obterPeriodoPactuacaoAberto
 }

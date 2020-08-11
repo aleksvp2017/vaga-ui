@@ -25,8 +25,9 @@
                     label="Filtrar por"
                 ></v-select>
             </v-flex>
-            <v-flex xs2>
+            <v-flex xs2 mx-1>
             <v-text-field 
+            
             @keydown.enter="addSearchPair"
             @keyup="customSearch"
             v-model="searchKey"
@@ -56,7 +57,7 @@
             :items="items"
             item-key="vagaid"
             :footer-props="{
-                itemsPerPageOptions: [10,20, 50, 100],
+                itemsPerPageOptions: [10,20, 50, 100, 1000],
                 showFirstLastPage: true,
                 firstIcon: 'mdi-arrow-collapse-left',
                 lastIcon: 'mdi-arrow-collapse-right',
@@ -83,6 +84,22 @@
                                 {{alertMessagePopup}}
                             </v-alert>
                             <v-file-input v-model="fileuploaded" label="Escolha a planilha a ser importada"></v-file-input>
+                            <v-text-field label="Nome da aba / página da planilha" v-model="planilha.aba" 
+                                @keypress.enter="uploadFile()" type="text"/>
+                            <v-text-field label="Período pactuação" v-model="planilha.periodoPactuacao" 
+                                @keypress.enter="uploadFile()" type="text"/>
+                            <v-icon>mdi-head-lightbulb</v-icon> Caso não seja preenchido, sistema procurará a coluna na planilha ou utilizará o período atualmente 
+                            aberto: <b>{{periodoPactuacaoAberto}}</b>
+                            <v-layout row wrap>
+                                <v-flex xs2>
+                                    <v-text-field label="Ano" v-model="planilha.ano" 
+                                        @keypress.enter="uploadFile()" type="text" v-mask="'####'"/>  
+                                </v-flex>   
+                                <v-flex mx-2 xs2>                       
+                                    <v-text-field label="Mês" v-model="planilha.mes" 
+                                        @keypress.enter="uploadFile()" type="text" v-mask="'##'"/>                                                                
+                                </v-flex>
+                            </v-layout>
                         </v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
@@ -160,7 +177,26 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>                    
+            </template>  
+            <!--INSTITUICAO DE ENSINO-->
+            <template #item.instituicao="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.instituicao"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.instituicao }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.instituicao"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>                                
             <!--UF-->
             <template #item.uf="{item}">
                 <v-edit-dialog
@@ -200,17 +236,17 @@
                 </v-edit-dialog>
             </template>             
             <!-- TIPO DE CURSO -->        
-            <template #item.tipocurso="{item}">
+            <template #item.tipodecurso="{item}">
                 <v-edit-dialog
-                    :return-value.sync="item.tipocurso"
+                    :return-value.sync="item.tipodecurso"
                     @save="saveItem(item)"
                     @cancel="cancelEditField"
                     @open="editField"
                     @close="closeEditField"
-                    > {{ item.tipocurso }} 
+                    > {{ item.tipodecurso }} 
                     <template v-slot:input>
                         <v-text-field :disabled="editDisabled"
-                        v-model="item.tipocurso"
+                        v-model="item.tipodecurso"
                         label="Edit"
                         single-line
                         counter
@@ -219,24 +255,62 @@
                 </v-edit-dialog>
             </template> 
             <!-- MODALIDADE EDUCACIONAL -->        
-            <template #item.modalidadeeducacional="{item}">
+            <template #item.modalidadedeensino="{item}">
                 <v-edit-dialog
-                    :return-value.sync="item.modalidadeeducacional"
+                    :return-value.sync="item.modalidadedeensino"
                     @save="saveItem(item)"
                     @cancel="cancelEditField"
                     @open="editField"
                     @close="closeEditField"
-                    > {{ item.modalidadeeducacional }}
+                    > {{ item.modalidadedeensino }}
                     <template v-slot:input>
                         <v-text-field :disabled="editDisabled"
-                        v-model="item.modalidadeeducacional"
+                        v-model="item.modalidadedeensino"
                         label="Edit"
                         single-line
                         counter
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>                                     
+            </template>   
+            <!-- CURSO -->         
+            <template #item.curso="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.curso"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.curso }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.curso"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>   
+            <!-- PERIODO PACTUACAO -->         
+            <template #item.periodopactuacao="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.periodopactuacao"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.periodopactuacao }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.periodopactuacao"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>                                                         
             <!-- ACAO -->         
             <template #item.acao="{item}">
                 <v-edit-dialog
@@ -255,137 +329,20 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>     
-            <!-- TIPO DE REDE -->         
-            <template #item.tiporede="{item}">
+            </template>                                                                  
+        <!-- VALOR HORA-AULA -->        
+            <template #item.valorhoraaula="{item}">
                 <v-edit-dialog
-                    :return-value.sync="item.tiporede"
+                    :return-value.sync="item.valorhoraaula"
                     @save="saveItem(item)"
                     @cancel="cancelEditField"
                     @open="editField"
                     @close="closeEditField"
-                    > {{ item.tiporede }}
-                    <template v-slot:input>
-                        <v-text-field :disabled="editDisabled"
-                        v-model="item.tiporede"
-                        label="Edit"
-                        single-line
-                        counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>  
-            <!-- PARCEIRO -->         
-            <template #item.parceiro="{item}">
-                <v-edit-dialog
-                    :return-value.sync="item.parceiro"
-                    @save="saveItem(item)"
-                    @cancel="cancelEditField"
-                    @open="editField"
-                    @close="closeEditField"
-                    > {{ item.parceiro }}
-                    <template v-slot:input>
-                        <v-text-field :disabled="editDisabled"
-                        v-model="item.parceiro"
-                        label="Edit"
-                        single-line
-                        counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>             
-            <!-- TED -->         
-            <template #item.ted="{item}">
-                <v-edit-dialog
-                    :return-value.sync="item.ted"
-                    @save="saveItem(item)"
-                    @cancel="cancelEditField"
-                    @open="editField"
-                    @close="closeEditField"
-                    > {{ item.ted }}
-                    <template v-slot:input>
-                        <v-text-field :disabled="editDisabled"
-                        v-model="item.ted"
-                        label="Edit"
-                        single-line
-                        counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>  
-            <!-- TIPO DE CONTA -->         
-            <template #item.tipodeconta="{item}">
-                <v-edit-dialog
-                    :return-value.sync="item.tipodeconta"
-                    @save="saveItem(item)"
-                    @cancel="cancelEditField"
-                    @open="editField"
-                    @close="closeEditField"
-                    > {{ item.tipodeconta }}
-                    <template v-slot:input>
-                        <v-text-field :disabled="editDisabled"
-                        v-model="item.tipodeconta"
-                        label="Edit"
-                        single-line
-                        counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>   
-            <!-- TURMA -->         
-            <template #item.turma="{item}">
-                <v-edit-dialog
-                    :return-value.sync="item.turma"
-                    @save="saveItem(item)"
-                    @cancel="cancelEditField"
-                    @open="editField"
-                    @close="closeEditField"
-                    > {{ item.turma }}
-                    <template v-slot:input>
-                        <v-text-field :disabled="editDisabled"
-                        v-model="item.turma"
-                        label="Edit"
-                        single-line
-                        counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>                                                           
-            <!-- SALDO -->        
-            <template #item.saldo="{item}">
-                <v-edit-dialog
-                    :return-value.sync="item.saldo"
-                    @save="saveItem(item)"
-                    @cancel="cancelEditField"
-                    @open="editField"
-                    @close="closeEditField"
-                    > {{ item.saldo ? item.saldo.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) : '' }}
-                    <template v-slot:input>
-                        <!-- <v-text-field :disabled="editDisabled"
-                        v-model="item.saldo"
-                        label="Edit"
-                        single-line
-                        counter
-                        ></v-text-field> -->
-                        <v-currency-field 
-                            :disabled="editDisabled"
-                            v-model="item.saldo"/>                    
-                    </template>
-                </v-edit-dialog>
-            </template>    
-        <!-- VALOR APROVADO -->        
-            <template #item.valoraprovado="{item}">
-                <v-edit-dialog
-                    :return-value.sync="item.valoraprovado"
-                    @save="saveItem(item)"
-                    @cancel="cancelEditField"
-                    @open="editField"
-                    @close="closeEditField"
-                    > {{ item.valoraprovado? item.valoraprovado.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) : '' }}
+                    > {{ item.valorhoraaula? item.valorhoraaula.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) : '' }}
                     <template v-slot:input>
                         <v-currency-field 
                             :disabled="editDisabled"
-                            v-model="item.valoraprovado"/>  
+                            v-model="item.valorhoraaula"/>  
                     </template>
                 </v-edit-dialog>
             </template>  
@@ -485,15 +442,17 @@
 </template>
 
 <script>
-import {upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality, obterIdColuna} from '../../services/Vagas.js'
+import * as Vagas from '../../services/Vagas.js'
 import moment  from 'moment'
 import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
 import XLSX from 'xlsx'
 import MyChart from '../../components/charts/MyChart.vue'
 import MyMap from '../../components/maps/MyMap.vue'
 import Projecao from '../../components/projecoes/Projecao.vue'
+import {mask} from 'vue-the-mask'
 
 export default {
+    directives: {mask},
     components: {
       'mychart': MyChart,
       'mymap': MyMap,
@@ -501,6 +460,10 @@ export default {
     }, 
     data() {
         return {
+            mascara:'##',
+            periodoPactuacaoAberto: {},
+            planilha:{
+            },
             actionColumn: {},
             snLinhasAgrupadas: false,
             vagasTable: {},
@@ -533,7 +496,7 @@ export default {
     computed: {
         //todas as colunas exceto a de actions
         tableConfigurableColumns(){
-            return columns().filter(column => column.value !== 'actions')
+            return Vagas.columns().filter(column => column.value !== 'actions')
         },
         colunasFiltraveis(){
             let colunas = []
@@ -545,7 +508,7 @@ export default {
             return colunas
         },
         editDisabled(){
-            return this.tableColumns.length !== columns().length
+            return this.tableColumns.length !== Vagas.columns().length
         }
     },
     methods: {
@@ -606,9 +569,9 @@ export default {
                 itemsAAgrupar = this.items
             }
             var {itemsWithIdenticalPairs, itemsWithoutIdenticalPairs} = 
-                separateIdenticalAndNoIdenticalItems(itemsAAgrupar, this.tableColumns, fieldsToDetermineEquality)
+                separateIdenticalAndNoIdenticalItems(itemsAAgrupar, this.tableColumns, Vagas.fieldsToDetermineEquality)
             this.snLinhasAgrupadas = (itemsWithIdenticalPairs.length > 0)? true : false
-            var identicalItemsGrouped = sumItems(fieldsToSum(), itemsWithIdenticalPairs)
+            var identicalItemsGrouped = sumItems(Vagas.fieldsToSum(), itemsWithIdenticalPairs)
             this.items = []
             this.items.push(...itemsWithoutIdenticalPairs,...identicalItemsGrouped)
         },
@@ -666,7 +629,7 @@ export default {
                 //Search all columns
                 else{
                     Object.entries(item).map((cell, index) => {   
-                        var id = obterIdColuna(cell[0])
+                        var id = Vagas.obterIdColuna(cell[0])
                         //Verifica se está nas colunas selecionadas                         
                         if (this.selectedColumns.indexOf(id) != -1){
                             if ((cell[1] != null &&
@@ -697,7 +660,7 @@ export default {
             return total
         },
         updateItens() {
-            list().then((response) => {
+            Vagas.list().then((response) => {
                     this.items = response.data.vagas
                     this.items = this.items.map((item) => 
                             ({...item, datapublicacaoformatada: moment(item.datapublicacao).format("HH:mm:SS DD/MM/YYYY")}))
@@ -717,7 +680,11 @@ export default {
                 displayMessagePopup(this, true, 'Selecione um arquivo', 'info')
                 return
             }
-            upload(this.fileuploaded).then((response) => {
+            if (!this.planilha.aba){
+                displayMessagePopup(this, true, 'Entre com o nome da aba dos dados na planilha', 'info')
+                return
+            }
+            Vagas.upload(this.fileuploaded, this.planilha).then((response) => {
                 displayMessagePopup(this, true, response.body.message, 'success')
                 this.updateItens()
             }).catch((error) => {
@@ -751,7 +718,7 @@ export default {
                 return
             }
             confirm('Tem certeza que deseja excluir essa(s) ' + this.rowsSelected.length + ' linha(s)?') && 
-            remove(this.rowsSelected).then((response) => {
+            Vagas.remove(this.rowsSelected).then((response) => {
                 this.rowsSelected = []
                 displayMessage(this, true, response.body.message, 'success')
                 this.updateItens()
@@ -762,7 +729,7 @@ export default {
         deleteItem (item) {
             const index = this.items.indexOf(item)
             confirm('Tem certeza que deseja excluir essa linha?') && 
-            remove([item]).then((response) => {
+            Vagas.remove([item]).then((response) => {
                 displayMessage(this, true, response.body.message, 'success')
                 let index = this.items.indexOf(item)
                 this.items.splice(index, 1)
@@ -772,7 +739,7 @@ export default {
             })               
         }, 
         saveItem (item) {
-            save(item).then((response) => {
+            Vagas.save(item).then((response) => {
                 let itemSaved = response.body.vaga
                 item.datapublicacaoformatada = moment(itemSaved.datapublicacao).format("HH:mm:SS DD/MM/YYYY")
                 displayMessage(this, true, response.body.message, 'success')
@@ -824,8 +791,17 @@ function initialize(owner){
             return column.id
         }
     })
-    owner.tableColumns = columns()
+    owner.tableColumns = Vagas.columns()
     owner.actionColumn = owner.tableColumns.filter(item => item.value === 'actions')[0]
+    Vagas.obterPeriodoPactuacaoAberto().then(response => {
+        owner.periodoPactuacaoAberto = response.data.periodopactuacao.nome
+    }).catch(error => {
+        console.log(error)
+        displayMessage(owner, true, error.body.error, 'error')
+        if (error.status === ERROR_SESSION_EXPIRED){
+            owner.$store.dispatch('ActionLogout')
+        }                
+    })
 }
 
 function separateIdenticalAndNoIdenticalItems(items, tableColumns, fieldsToDetermineEquality){

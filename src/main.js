@@ -12,6 +12,7 @@ import AsyncComputed from 'vue-async-computed' //Para permtir computed propertie
 import {router, routes} from './routes.js' //vuerouter navegacao no lado do cliente
 import VCurrencyField from 'v-currency-field'
 
+
 Vue.use(VCurrencyField, { 
 	locale: 'pt-BR',
 	decimalLength: 2,

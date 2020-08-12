@@ -26,6 +26,14 @@ async function remove(vagas){
     return  http.delete(BASE_BACKEND_URL + 'vagas/', {body:{vagas}})
 }
 
+async function removePlanilha(planilha){
+    return  http.delete(BASE_BACKEND_URL + 'vagasplanilha/', {body:{nomePlanilha: planilha}})
+}
+
+async function listarPlanilhas(){
+    return http.get(BASE_BACKEND_URL + 'vagasplanilha')
+}
+
 async function save(vaga){
     return http.post(BASE_BACKEND_URL + 'vagas/' + (vaga.vagaid ? (':' + vaga.vagaid) : ''), {vaga})
 }
@@ -34,8 +42,8 @@ async function obterPeriodoPactuacaoAberto(){
     return http.get(BASE_BACKEND_URL + 'periodopactuacaoaberto')
 }
 
-const fieldsToDetermineEquality = ['ano', 'mes', 'uf', 'tipocurso', 'modalidadeeducacional', 'acao', 'tiporede', 'ted', 'tipodeconta',
-    'municipio', 'parceiro']
+const fieldsToDetermineEquality = ['ano', 'mes', 'instituicao','uf', 'tipodecurso', 'modalidadedeensino', 'municipio', 'curso',
+    'periodopactuacao']
 
 function columns(){
     var itemId = 0
@@ -189,6 +197,15 @@ function columns(){
         },
         {
             id: itemId++,
+            text: 'ORIGEM',
+            value: 'origem',
+            selected: true,
+            summable: false,
+            colunatempo: false,
+            colunadimensao: false,
+        },        
+        {
+            id: itemId++,
             text: '',
             value: 'actions', 
             sortable: false,
@@ -220,5 +237,6 @@ const fieldsToSum = () => {
 }
 
 export {
-    upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality, obterIdColuna, obterPeriodoPactuacaoAberto
+    upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality, obterIdColuna, obterPeriodoPactuacaoAberto, 
+        removePlanilha, listarPlanilhas
 }

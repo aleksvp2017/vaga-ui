@@ -73,6 +73,30 @@
                 <v-spacer></v-spacer>
                 <v-btn color="success" dark class="ma-2" @click="exportSheet">Exportar</v-btn>
                 <v-btn color="success" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn>
+                <!-- EXCLUIR PLANILHA -->
+                <v-dialog v-model="dialogExcluirPlanilha" max-width="800px" height="1000px" scrollable>
+                    <template v-slot:activator="{ on }">
+                        <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogExcluirPlanilha()">Excluir planilha</v-btn>
+                    </template>                
+                    <v-card>
+                        <v-card-text>
+                            <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
+                                {{alertMessagePopup}}
+                            </v-alert>                            
+                            <v-select
+                                v-model="planilhaAExcluir"
+                                :items="planilhasJaCarregadas"
+                                label="Selecione a planilha"
+                            ></v-select>
+                        </v-card-text>
+                        <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="success" @click="excluirPlanilha()">Excluir</v-btn>
+                        <v-btn color="blue darken-1" text @click="closedialogExcluirPlanilha">Fechar</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <!-- FIM IMPORTAR -->                
                 <!-- IMPORTAR -->
                 <v-dialog v-model="dialogImportar" max-width="800px" height="1000px" scrollable>
                     <template v-slot:activator="{ on }">
@@ -86,14 +110,14 @@
                             <v-text-field label="Nome da aba / página da planilha*" v-model="planilha.aba" 
                                 @keypress.enter="uploadFile()" type="text"/>
                             <v-text-field label="Período pactuação" v-model="planilha.periodoPactuacao" 
-                                persistent-hint="true" 
+                                :persistent-hint=true
                                 :hint="periodoPactuacaoHint"
                                 @keypress.enter="uploadFile()" type="text"/>                                                        
                             <v-text-field label="Ano" v-model="planilha.ano" 
-                                persistent-hint="true" hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
+                                :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
                                         @keypress.enter="uploadFile()" type="text" v-mask="'####'"/>  
                             <v-text-field label="Mês" v-model="planilha.mes" 
-                                persistent-hint="true" hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
+                                :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
                                         @keypress.enter="uploadFile()" type="text" v-mask="'##'"/>                                                                                                        
                             
                             <v-file-input v-model="fileuploaded" label="Escolha a planilha a ser importada*"></v-file-input>
@@ -402,7 +426,10 @@
             </template>            
             <template #item.datapublicacao="{item}">
                 {{item.datapublicacaoformatada}}
-            </template>            
+            </template>    
+            <template #item.origem="{item}">
+                {{item.origem}}
+            </template>                     
             <template #item.actions="{item}">
                 <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
             </template>     
@@ -457,6 +484,8 @@ export default {
     }, 
     data() {
         return {
+            planilhaAExcluir: '',
+            planilhasJaCarregadas: [],
             mascara:'##',
             periodoPactuacaoHint: '',
             planilha:{
@@ -470,6 +499,7 @@ export default {
             rowsSelected: [],
             loading: true,
             searchKey:'',
+            dialogExcluirPlanilha: false,
             dialogImportar: false,
             dialogColunas: false,
             items:[],
@@ -672,6 +702,21 @@ export default {
                     }                
             })            
         },        
+        //Exclui todos os dados vinculados a determinada planilha
+        excluirPlanilha(){
+            if (!this.planilhaAExcluir){
+                displayMessagePopup(this, true, 'Selecione uma planilha', 'info')
+                return
+            }
+            Vagas.removePlanilha(this.planilhaAExcluir).then((response) => {
+                displayMessagePopup(this, true, response.body.message, 'success')
+                this.updateItens()
+                this
+            }).catch((error) => {
+                console.log(error)
+                displayMessagePopup(this, true, error.body.error, 'error')
+            })
+        },
         uploadFile(){
             if (!this.fileuploaded){
                 displayMessagePopup(this, true, 'Selecione um arquivo', 'info')
@@ -694,6 +739,10 @@ export default {
         closeDialogChart () {
             this.dialogChart = false
         },
+        closedialogExcluirPlanilha(){
+            this.dialogExcluirPlanilha = false
+            this.planilhaAExcluir = ''
+        },
         closeDialogImportar () {
             this.dialogImportar = false
             this.fileuploaded = null
@@ -701,6 +750,20 @@ export default {
         closeDialogColunas () {
             this.dialogColunas = false
         },
+        initiateDialogExcluirPlanilha(){
+            Vagas.listarPlanilhas().then(response => {
+                    this.planilhasJaCarregadas = response.data.planilhas
+                    console.log('Planilhas ja carregadas:',this.planilhasJaCarregadas)
+                }).catch(error => {
+                    console.log(error)
+                    displayMessage(this, true, error.body.error, 'error')
+                    if (error.status === ERROR_SESSION_EXPIRED){
+                        this.$store.dispatch('ActionLogout')
+                    }                
+                })            
+            displayMessage(this, false, '', 'error')
+            displayMessagePopup(this, false, '','error')
+        },        
         initiateDialogImportar(){
             displayMessage(this, false, '', 'error')
             displayMessagePopup(this, false, '','error')

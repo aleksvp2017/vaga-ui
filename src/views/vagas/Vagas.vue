@@ -367,6 +367,29 @@
                     </template>
                 </v-edit-dialog>
             </template> 
+            <!-- APROVADA -->        
+            <template #item.aprovada="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.aprovada"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.aprovada }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.aprovada"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>              
+        <!-- VALOR APROVADO -->        
+            <template #item.valoraprovado="{item}">
+                {{ item.valoraprovado? item.valoraprovado.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) : '' }}
+            </template> 
         <!-- CARGA HORÁRIA -->        
             <template #item.cargahoraria="{item}">
                 <v-edit-dialog
@@ -385,26 +408,7 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>             
-        <!-- APROVADA -->        
-            <template #item.aprovada="{item}">
-                <v-edit-dialog
-                    :return-value.sync="item.aprovada"
-                    @save="saveItem(item)"
-                    @cancel="cancelEditField"
-                    @open="editField"
-                    @close="closeEditField"
-                    > {{ item.aprovada }}
-                    <template v-slot:input>
-                        <v-text-field :disabled="editDisabled"
-                        v-model="item.aprovada"
-                        label="Edit"
-                        single-line
-                        counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>       
+            </template>                  
         <!-- HOMOLOGADA -->        
             <template #item.homologada="{item}">
                 <v-edit-dialog
@@ -707,7 +711,9 @@ export default {
         },
         updateItens() {
             Vagas.list().then((response) => {
-                    this.items = response.data.vagas
+                    this.items = response.data.vagas.map(vaga => 
+                        ({...vaga,valoraprovado:(vaga.valorhoraaula*vaga.aprovada*vaga.cargahoraria)}))
+                    console.log(this.items)
                     this.items = this.items.map((item) => 
                             ({...item, datapublicacaoformatada: moment(item.datapublicacao).format("HH:mm:SS DD/MM/YYYY")}))
                     this.originalItems = this.items.slice(0)

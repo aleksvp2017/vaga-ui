@@ -152,18 +152,6 @@ function columns(){
         },
         {
             id: itemId++,
-            text: 'CARGA HORÁRIA',
-            value: 'cargahoraria',
-            selected: true,
-            summable: true,
-            colunatempo: false,
-            colunadimensao: false,
-            format: (item) => {
-                return item
-            },
-        },        
-        {
-            id: itemId++,
             text: 'APROVADA',
             value: 'aprovada',
             selected: true,
@@ -173,7 +161,31 @@ function columns(){
             format: (item) => {
                 return item
             },
-        },
+        },                
+        {
+            id: itemId++,
+            text: 'CARGA HORÁRIA',
+            value: 'cargahoraria',
+            selected: true,
+            summable: true,
+            colunatempo: false,
+            colunadimensao: false,
+            format: (item) => {
+                return item
+            },
+        }, 
+        {
+            id: itemId++,
+            text: 'VALOR APROVADO',
+            value: 'valoraprovado',
+            selected: true,
+            summable: true,
+            colunatempo: false,
+            colunadimensao: false,
+            format: (item) => {
+                return item.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' })
+            },
+        },               
         {
             id: itemId++,
             text: 'HOMOLOGADA',

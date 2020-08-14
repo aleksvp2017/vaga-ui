@@ -152,6 +152,18 @@ function columns(){
         },
         {
             id: itemId++,
+            text: 'CARGA HORÁRIA',
+            value: 'cargahoraria',
+            selected: true,
+            summable: true,
+            colunatempo: false,
+            colunadimensao: false,
+            format: (item) => {
+                return item
+            },
+        },        
+        {
+            id: itemId++,
             text: 'APROVADA',
             value: 'aprovada',
             selected: true,

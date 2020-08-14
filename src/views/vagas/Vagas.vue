@@ -366,7 +366,26 @@
                             v-model="item.valorhoraaula"/>  
                     </template>
                 </v-edit-dialog>
-            </template>  
+            </template> 
+        <!-- CARGA HORÁRIA -->        
+            <template #item.cargahoraria="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.cargahoraria"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.cargahoraria }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.cargahoraria"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>             
         <!-- APROVADA -->        
             <template #item.aprovada="{item}">
                 <v-edit-dialog

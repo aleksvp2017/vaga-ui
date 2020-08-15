@@ -333,7 +333,7 @@
                 </v-edit-dialog>
             </template>                                                         
             <!-- ACAO -->         
-            <template #item.acao="{item}">
+            <!-- <template #item.acao="{item}">
                 <v-edit-dialog
                     :return-value.sync="item.acao"
                     @save="saveItem(item)"
@@ -350,7 +350,7 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>                                                                  
+            </template>                                                                   -->
         <!-- VALOR HORA-AULA -->        
             <template #item.valorhoraaula="{item}">
                 <v-edit-dialog
@@ -450,8 +450,8 @@
             <template #item.datapublicacao="{item}">
                 {{item.datapublicacaoformatada}}
             </template>    
-            <template #item.origem="{item}">
-                {{item.origem}}
+            <template #item.nomeplanilha="{item}">
+                {{item.nomeplanilha}}
             </template>                     
             <template #item.actions="{item}">
                 <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>

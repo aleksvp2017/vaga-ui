@@ -120,6 +120,10 @@
                                 :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
                                         @keypress.enter="uploadFile()" type="text" v-mask="'##'"/>                                                                                                        
                             
+                            <v-switch
+                                v-model="planilha.sncontrapartida"
+                                label="Vagas de contrapartida"
+                            ></v-switch> 
                             <v-file-input v-model="fileuploaded" label="Escolha a planilha a ser importada*"></v-file-input>
                         </v-card-text>
                         <v-card-actions>
@@ -447,9 +451,13 @@
                     </template>
                 </v-edit-dialog>
             </template>            
-            <template #item.datapublicacao="{item}">
+            <template #item.sncontrapartida="{item}">
+                {{item.sncontrapartida? 'sim' : 'não' }}
+            </template>     -->
+
+            <!-- <template #item.datapublicacao="{item}">
                 {{item.datapublicacaoformatada}}
-            </template>    
+            </template>     -->
             <template #item.nomeplanilha="{item}">
                 {{item.nomeplanilha}}
             </template>                     

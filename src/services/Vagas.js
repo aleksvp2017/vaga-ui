@@ -15,6 +15,7 @@ function upload(file, planilha){
     formData.append('periodoPactuacao', planilha.periodoPactuacao)
     formData.append('ano', planilha.ano)
     formData.append('mes', planilha.mes)
+    formData.append('sncontrapartida', planilha.sncontrapartida)
     return http.post(BASE_BACKEND_URL + 'vagas/importar', formData)
 }
 
@@ -212,13 +213,28 @@ function columns(){
         },
         {
             id: itemId++,
-            text: 'DATA',
-            value: 'datapublicacao',
-            selected: true,
-            summable: false,
+            text: 'CONTRAPARTIDA',
+            value: 'sncontrapartida',
+            selected: true,   
+            summable: false, 
             colunatempo: false,
             colunadimensao: false,
-        },
+            format: (item) => {
+                if (item){
+                    return 'sim'
+                }
+                return 'não'
+            },
+        },        
+        // {
+        //     id: itemId++,
+        //     text: 'DATA',
+        //     value: 'datapublicacao',
+        //     selected: true,
+        //     summable: false,
+        //     colunatempo: false,
+        //     colunadimensao: false,
+        // },
         {
             id: itemId++,
             text: 'PLANILHA',

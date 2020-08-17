@@ -520,6 +520,7 @@ export default {
             mascara:'##',
             periodoPactuacaoHint: '',
             planilha:{
+                sncontrapartida: false,
             },
             actionColumn: {},
             snLinhasAgrupadas: false,

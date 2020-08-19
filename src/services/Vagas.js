@@ -10,12 +10,17 @@ function upload(file, planilha){
     let formData = new FormData()
     //esse parametro tem que coincidir com o lido pelo muter no backend
     formData.append('fileuploaded', file)
-    formData.append('nomeAba', planilha.aba)
-    //formData.append('nomeAba', 'Vagas')
-    formData.append('periodoPactuacao', planilha.periodoPactuacao)
-    formData.append('ano', planilha.ano)
-    formData.append('mes', planilha.mes)
-    formData.append('sncontrapartida', planilha.sncontrapartida)
+    formData.append('nomeAba', planilha.nomeAba)
+    if (planilha.periodoPactuacao){
+        formData.append('periodoPactuacao', planilha.periodoPactuacao)
+    }
+    if (planilha.dataAprovacao){
+        formData.append('dataAprovacao', planilha.dataAprovacao)
+    }
+    if (planilha.dataMatricula){
+        formData.append('dataMatricula', planilha.dataMatricula)
+    }
+    formData.append('sncontrapartida', planilha.snContrapartida)
     return http.post(BASE_BACKEND_URL + 'vagas/importar', formData)
 }
 
@@ -43,30 +48,30 @@ async function obterPeriodoPactuacaoAberto(){
     return http.get(BASE_BACKEND_URL + 'periodopactuacaoaberto')
 }
 
-const fieldsToDetermineEquality = ['ano', 'mes', 'instituicao','uf', 'tipodecurso', 'modalidadedeensino', 'municipio', 'curso',
+const fieldsToDetermineEquality = ['instituicao','uf', 'tipodecurso', 'modalidadedeensino', 'municipio', 'curso',
     'periodopactuacao', 'sncontrapartida']
 
 function columns(){
     var itemId = 0
     return [  
-        {
-            id: itemId++,
-            text: 'ANO',
-            value: 'ano',
-            selected: true,
-            summable: false,
-            colunatempo: true,
-            colunadimensao: true,
-        }, 
-        {
-            id: itemId++,
-            text: 'MÊS',
-            value: 'mes',
-            selected: true,
-            summable: false,
-            colunatempo: true,
-            colunadimensao: true,
-        },  
+        // {
+        //     id: itemId++,
+        //     text: 'ANO',
+        //     value: 'ano',
+        //     selected: true,
+        //     summable: false,
+        //     colunatempo: true,
+        //     colunadimensao: true,
+        // }, 
+        // {
+        //     id: itemId++,
+        //     text: 'MÊS',
+        //     value: 'mes',
+        //     selected: true,
+        //     summable: false,
+        //     colunatempo: true,
+        //     colunadimensao: true,
+        // },  
         {
             id: itemId++,
             text: 'INSTITUIÇÃO DE ENSINO',
@@ -162,7 +167,20 @@ function columns(){
             format: (item) => {
                 return item
             },
-        },                
+        },  
+        {
+            id: itemId++,
+            text: 'DATA APROVAÇÃO',
+            value: 'dataaprovacao',
+            selected: true,
+            summable: false,
+            colunatempo: false,
+            colunadimensao: false,
+            format: (item) => {
+                return item
+            },
+        },   
+
         {
             id: itemId++,
             text: 'CARGA HORÁRIA',
@@ -211,6 +229,18 @@ function columns(){
                 return item
             },
         },
+        {
+            id: itemId++,
+            text: 'DATA MATRÍCULA',
+            value: 'datamatricula',
+            selected: true,
+            summable: false,
+            colunatempo: false,
+            colunadimensao: false,
+            format: (item) => {
+                return item
+            },
+        },        
         {
             id: itemId++,
             text: 'CONTRAPARTIDA',

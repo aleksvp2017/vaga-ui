@@ -74,7 +74,7 @@
                 <v-btn color="success" dark class="ma-2" @click="exportSheet">Exportar</v-btn>
                 <v-btn color="success" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn>
                 <!-- EXCLUIR PLANILHA -->
-                <v-dialog v-model="dialogExcluirPlanilha" max-width="800px" height="1000px" scrollable>
+                <v-dialog v-model="dialogExcluirPlanilha" max-width="600px">
                     <template v-slot:activator="{ on }">
                         <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogExcluirPlanilha()">Excluir planilha</v-btn>
                     </template>                
@@ -98,44 +98,55 @@
                 </v-dialog>
                 <!-- FIM IMPORTAR -->                
                 <!-- IMPORTAR -->
-                <v-dialog v-model="dialogImportar" max-width="800px" height="1000px" scrollable>
+                <v-dialog v-model="dialogImportar" scrollable width="600">
                     <template v-slot:activator="{ on }">
                         <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogImportar">Importar</v-btn>
                     </template>                
-                    <v-card>
+                    <v-card height="500px" width="100">
                         <v-card-text>
                             <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
                                 {{alertMessagePopup}}
-                            </v-alert>                            
-                            <v-text-field label="Nome da aba / página da planilha*" v-model="planilha.aba" 
-                                @keypress.enter="uploadFile()" type="text"/>
-                            <v-text-field label="Período pactuação" v-model="planilha.periodoPactuacao" 
-                                :persistent-hint=true
-                                :hint="periodoPactuacaoHint"
-                                @keypress.enter="uploadFile()" type="text"/>                                                        
-                            <v-text-field label="Ano" v-model="planilha.ano" 
-                                :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
-                                        @keypress.enter="uploadFile()" type="text" v-mask="'####'"/>  
-                            <v-text-field label="Mês" v-model="planilha.mes" 
-                                :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
-                                        @keypress.enter="uploadFile()" type="text" v-mask="'##'"/>                                                                                                        
-                            
-                            <v-switch
-                                v-model="planilha.sncontrapartida"
-                                label="Vagas de contrapartida"
-                            ></v-switch> 
-                            <v-file-input v-model="fileuploaded" label="Escolha a planilha a ser importada*"></v-file-input>
+                            </v-alert>
+                            <v-form ref="formularioImportacao">                            
+                                <v-text-field label="Nome da aba / página da planilha*" v-model="planilha.nomeAba" 
+                                    @keypress.enter="uploadFile()" type="text"/>
+                                <v-text-field label="Período pactuação" v-model="planilha.periodoPactuacao" 
+                                    :persistent-hint=true
+                                    :hint="periodoPactuacaoHint"
+                                    @keypress.enter="uploadFile()" type="text"/>  
+                                <v-text-field label="Data aprovação" v-model="planilha.dataAprovacao" 
+                                    :rules="regrasData"
+                                    :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
+                                            @keypress.enter="uploadFile()" type="text" v-mask="'##/##/####'"/>  
+                                <v-text-field label="Data matrícula" v-model="planilha.dataMatricula" 
+                                    :rules="regrasData"
+                                    :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
+                                            @keypress.enter="uploadFile()" type="text" v-mask="'##/##/####'"/>  
+                                <!-- <v-text-field label="Ano" v-model="planilha.ano" 
+                                    :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
+                                            @keypress.enter="uploadFile()" type="text" v-mask="'####'"/>  
+                                <v-text-field label="Mês" v-model="planilha.mes" 
+                                    :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
+                                            @keypress.enter="uploadFile()" type="text" v-mask="'##'"/>                                                                                                        
+                                -->
+                                <v-switch
+                                    v-model="planilha.snContrapartida"
+                                    label="Vagas de contrapartida"
+                                ></v-switch> 
+                                <v-file-input v-model="fileuploaded" label="Escolha a planilha a ser importada*"></v-file-input>
+                            </v-form>
                         </v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="success" @click="uploadFile()">Enviar</v-btn>
+                        <v-btn color="success" @click="uploadFile()"
+                            :loading="importandoPlanilha" :disabled="importandoPlanilha">Enviar</v-btn>
                         <v-btn color="blue darken-1" text @click="closeDialogImportar">Fechar</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
                 <!-- FIM IMPORTAR -->
                 <!-- CONFIGURAR COLUNAS -->
-                <v-dialog v-model="dialogColunas" max-width="800px" height="1000px" scrollable>
+                <v-dialog v-model="dialogColunas" width="600px">
                     <template v-slot:activator="{ on }">
                         <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogColunas">Escolher colunas</v-btn>
                     </template>                
@@ -164,7 +175,7 @@
             </v-toolbar>
             </template>      
             <!-- ANO -->
-            <template #item.ano="{item}" class="d-flex">
+            <!-- <template #item.ano="{item}" class="d-flex">
                 <v-edit-dialog
                     :return-value.sync="item.ano"
                     @save="saveItem(item)"
@@ -182,9 +193,9 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>
+            </template> -->
             <!-- MES -->
-            <template #item.mes="{item}" class="d-flex">
+            <!-- <template #item.mes="{item}" class="d-flex">
                 <v-edit-dialog
                     :return-value.sync="item.mes"
                     @save="saveItem(item)"
@@ -202,7 +213,7 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>  
+            </template>   -->
             <!--INSTITUICAO DE ENSINO-->
             <template #item.instituicao="{item}">
                 <v-edit-dialog
@@ -389,7 +400,26 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>              
+            </template>
+            <!-- DATA DA APROVACAO -->        
+            <template #item.dataaprovacao="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.dataaprovacao"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.dataaprovacao }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.dataaprovacao"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>                           
         <!-- VALOR APROVADO -->        
             <template #item.valoraprovado="{item}">
                 {{ item.valoraprovado? item.valoraprovado.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) : '' }}
@@ -432,7 +462,7 @@
                     </template>
                 </v-edit-dialog>
             </template>  
-        <!-- MATRICULA -->        
+            <!-- MATRICULA -->        
             <template #item.matricula="{item}">
                 <v-edit-dialog
                     :return-value.sync="item.matricula"
@@ -450,7 +480,26 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>            
+            </template>  
+            <!-- DATA DA MATRICULA -->        
+            <template #item.datamatricula="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.datamatricula"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.datamatricula }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.datamatricula"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>                        
             <template #item.sncontrapartida="{item}">
                 {{item.sncontrapartida? 'sim' : 'não' }}
             </template>     -->
@@ -515,12 +564,21 @@ export default {
     }, 
     data() {
         return {
+            importandoPlanilha: false,
+            regrasData: [
+                (valor) => {
+                    if (valor){
+                        return moment(valor, "DD/MM/YYYY", true).isValid()
+                    }
+                    return true    
+                }
+            ],
             planilhaAExcluir: '',
             planilhasJaCarregadas: [],
             mascara:'##',
             periodoPactuacaoHint: '',
             planilha:{
-                sncontrapartida: false,
+                snContrapartida: false,
             },
             actionColumn: {},
             snLinhasAgrupadas: false,
@@ -722,7 +780,6 @@ export default {
             Vagas.list().then((response) => {
                     this.items = response.data.vagas.map(vaga => 
                         ({...vaga,valoraprovado:(vaga.valorhoraaula*vaga.aprovada*vaga.cargahoraria)}))
-                    console.log(this.items)
                     this.items = this.items.map((item) => 
                             ({...item, datapublicacaoformatada: moment(item.datapublicacao).format("HH:mm:SS DD/MM/YYYY")}))
                     this.originalItems = this.items.slice(0)
@@ -752,20 +809,27 @@ export default {
             })
         },
         uploadFile(){
+            this.importandoPlanilha = true
+            let formularioValido = this.$refs.formularioImportacao.validate()
+            if (!formularioValido){ 
+                return
+            }
             if (!this.fileuploaded){
                 displayMessagePopup(this, true, 'Selecione um arquivo', 'info')
                 return
             }
-            if (!this.planilha.aba){
+            if (!this.planilha.nomeAba){
                 displayMessagePopup(this, true, 'Entre com o nome da aba dos dados na planilha', 'info')
                 return
             }
             Vagas.upload(this.fileuploaded, this.planilha).then((response) => {
                 displayMessagePopup(this, true, response.body.message, 'success')
                 this.updateItens()
+                this.importandoPlanilha = false
             }).catch((error) => {
                 console.log(error)
                 displayMessagePopup(this, true, error.body.error, 'error')
+                this.importandoPlanilha = false
             })
         },
         initiateDialogChart(){

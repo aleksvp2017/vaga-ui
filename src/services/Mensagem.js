@@ -13,7 +13,6 @@ async function enviarFaleConosco(mensagem){
 }
 
 async function enviarMensagem(assunto, mensagem, destinatario){
-    console.log(assunto, mensagem, destinatario)
     return  http.post(BASE_BACKEND_URL + 'mensagem', {assunto, mensagem, destinatario})
 }
 

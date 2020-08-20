@@ -101,12 +101,12 @@
                 <v-dialog v-model="dialogImportar" scrollable width="600">
                     <template v-slot:activator="{ on }">
                         <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogImportar">Importar</v-btn>
-                    </template>                
-                    <v-card height="500px" width="100">
+                    </template>                                   
+                    <v-card height="500px">
                         <v-card-text>
                             <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
-                                {{alertMessagePopup}}
-                            </v-alert>
+                                {{alertMessagePopup}}                                                             
+                            </v-alert>                            
                             <v-form ref="formularioImportacao">                            
                                 <v-text-field label="Nome da aba / página da planilha*" v-model="planilha.nomeAba" 
                                     @keypress.enter="uploadFile()" type="text"/>
@@ -122,25 +122,46 @@
                                     :rules="regrasData"
                                     :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
                                             @keypress.enter="uploadFile()" type="text" v-mask="'##/##/####'"/>  
-                                <!-- <v-text-field label="Ano" v-model="planilha.ano" 
-                                    :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
-                                            @keypress.enter="uploadFile()" type="text" v-mask="'####'"/>  
-                                <v-text-field label="Mês" v-model="planilha.mes" 
-                                    :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
-                                            @keypress.enter="uploadFile()" type="text" v-mask="'##'"/>                                                                                                        
-                                -->
                                 <v-switch
                                     v-model="planilha.snContrapartida"
                                     label="Vagas de contrapartida"
                                 ></v-switch> 
                                 <v-file-input v-model="fileuploaded" label="Escolha a planilha a ser importada*"></v-file-input>
                             </v-form>
+                            <v-dialog v-model="dialogDetalhesImportacao" max-width="900px">
+                                <v-card>
+                                    <v-card-title>Detalhes da importação</v-card-title>
+                                    <v-card-text>
+                                        <v-simple-table dense>
+                                            <template v-slot:default>
+                                            <thead>
+                                                <tr>
+                                                <th class="text-left">Item</th>
+                                                <th class="text-left">Detalhe</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="item in resumoImportacao" :key="item.nome">
+                                                    <td>{{ item.nome }}</td>
+                                                    <td>{{ item.detalhe }}</td>
+                                                </tr>
+                                            </tbody>
+                                            </template>
+                                        </v-simple-table>                                                                                
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="primary" text @click="dialogDetalhesImportacao = false">Fechar</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
                         </v-card-text>
                         <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="success" @click="uploadFile()"
-                            :loading="importandoPlanilha" :disabled="importandoPlanilha">Enviar</v-btn>
-                        <v-btn color="blue darken-1" text @click="closeDialogImportar">Fechar</v-btn>
+                            <v-spacer></v-spacer>
+                            <v-btn color="success" @click="uploadFile()"
+                                :loading="importandoPlanilha" :disabled="importandoPlanilha">Enviar</v-btn>
+                            <v-btn color="info" @click="dialogDetalhesImportacao = true" v-show="resumoImportacao != ''">Detalhes</v-btn>                                
+                            <v-btn color="blue darken-1" text @click="closeDialogImportar">Fechar</v-btn>
+                           
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -564,6 +585,8 @@ export default {
     }, 
     data() {
         return {
+            dialogDetalhesImportacao: false,
+            resumoImportacao: '',
             importandoPlanilha: false,
             regrasData: [
                 (valor) => {
@@ -824,6 +847,7 @@ export default {
             }
             Vagas.upload(this.fileuploaded, this.planilha).then((response) => {
                 displayMessagePopup(this, true, response.body.message, 'success')
+                this.resumoImportacao = response.body.detalheMensagem
                 this.updateItens()
                 this.importandoPlanilha = false
             }).catch((error) => {
@@ -863,8 +887,14 @@ export default {
             displayMessagePopup(this, false, '','error')
         },        
         initiateDialogImportar(){
+            console.log(this.$refs)
             displayMessage(this, false, '', 'error')
             displayMessagePopup(this, false, '','error')
+            this.resumoImportacao = ''
+            this.dialogDetalhesImportacao = false    
+            this.planilha = {
+                snContrapartida: false
+            }        
         },
         initiateDialogColunas(){
             displayMessage(this, false, '', 'error')

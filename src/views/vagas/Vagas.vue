@@ -185,7 +185,7 @@
                         </v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary" @click="desmarcarDimensoesNaoTemporais()">Desmarcar dimensões</v-btn>
+                        <v-btn color="primary" @click="desmarcarTodos()">Desmarcar todos</v-btn>
                         <v-btn color="success" @click="updateColumns()">Ok</v-btn>
                         <v-btn color="blue darken-1" text @click="closeDialogColunas">Fechar</v-btn>
                         </v-card-actions>
@@ -670,19 +670,8 @@ export default {
 			XLSX.utils.book_append_sheet(wb, ws, "Vagas")
 			XLSX.writeFile(wb, "vagas.xlsx")
         },
-        desmarcarDimensoesNaoTemporais(){
-            var colunasSelecionadas = []
-            var index = 0
-            this.tableConfigurableColumns.map((coluna, index) => {
-                //console.log(this.tableConfigurableColumns[this.selectedColumns[selectedColumn]])
-                //var coluna = this.tableConfigurableColumns[this.selectedColumns[selectedColumn]]
-                //console.log(coluna.text, coluna.colunatempo, coluna.colunadimensao)
-                if (coluna.colunatempo || !coluna.colunadimensao){
-                    colunasSelecionadas.push(index)
-                }
-                index ++
-            })
-            this.selectedColumns = colunasSelecionadas
+        desmarcarTodos(){
+            this.selectedColumns = []
         },
         updateColumns(){
             this.selectedColumns = this.selectedColumns.sort((a, b) => {

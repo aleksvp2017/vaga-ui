@@ -49,7 +49,7 @@ async function obterPeriodoPactuacaoAberto(){
 }
 
 const fieldsToDetermineEquality = ['instituicao','uf', 'tipodecurso', 'modalidadedeensino', 'municipio', 'curso',
-    'periodopactuacao', 'sncontrapartida']
+    'periodopactuacao', 'sncontrapartida', 'dataaprovacao', 'datamatricula']
 
 function columns(){
     var itemId = 0
@@ -164,6 +164,7 @@ function columns(){
             summable: true,
             colunatempo: false,
             colunadimensao: false,
+            datavinculada: 'dataaprovacao',
             format: (item) => {
                 return item
             },
@@ -174,8 +175,8 @@ function columns(){
             value: 'dataaprovacao',
             selected: true,
             summable: false,
-            colunatempo: false,
-            colunadimensao: false,
+            colunatempo: true,
+            colunadimensao: true,
             format: (item) => {
                 return item
             },
@@ -201,6 +202,7 @@ function columns(){
             summable: true,
             colunatempo: false,
             colunadimensao: false,
+            datavinculada: 'dataaprovacao',
             format: (item) => {
                 return item.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' })
             },
@@ -225,6 +227,7 @@ function columns(){
             summable: true, 
             colunatempo: false,
             colunadimensao: false,
+            datavinculada: 'datamatricula',
             format: (item) => {
                 return item
             },
@@ -235,8 +238,8 @@ function columns(){
             value: 'datamatricula',
             selected: true,
             summable: false,
-            colunatempo: false,
-            colunadimensao: false,
+            colunatempo: true,
+            colunadimensao: true,
             format: (item) => {
                 return item
             },
@@ -286,14 +289,19 @@ function columns(){
       ]
 }
 
-const obterIdColuna = (valor) => {
-    var id = ''
-    columns().map(coluna => {
-        if (coluna.value === valor){
-            id = coluna.id
+const obterColuna = (valor) => {
+    var coluna = null
+    columns().map(item => {
+        if (item.value === valor){
+            coluna = item
         }
     })
-    return id
+    return coluna
+}
+
+const obterIdColuna = (valor) => {
+    var coluna = obterColuna(valor)
+    return coluna.id
 }
 
 const fieldsToSum = () => {
@@ -308,5 +316,5 @@ const fieldsToSum = () => {
 
 export {
     upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality, obterIdColuna, obterPeriodoPactuacaoAberto, 
-        removePlanilha, listarPlanilhas
+        removePlanilha, listarPlanilhas, obterColuna
 }

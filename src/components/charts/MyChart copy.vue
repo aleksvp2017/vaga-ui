@@ -97,7 +97,6 @@ import HorizontalBarChart from './HorizontalBarChart.vue'
 import LineChart from './LineChart.vue'
 import PolarAreaChart from './PolarAreaChart.vue'
 import MultipleMetricBarChart from './MultipleMetricBarChart.vue'
-import * as Vagas from '../../services/Vagas.js'
 
 
 export default {
@@ -170,11 +169,16 @@ export default {
       })
       return legenda
     },
+    dimensoesTemporais(){
+      var item = []
+      this.colunasDimensoes.map(dimensao)
+      return intervalos
+    }
   },
   methods: {
     gerarGrafico(){
       try{
-        validarSelecao(this.colunasMetricas, this.metricasSelecionadas, this.tipoGraficoSelecionado, this.colunasDimensoes)
+        validaSelecao(this.metricasSelecionadas, this.tipoGraficoSelecionado, this.colunasDimensoes)
         exibirGrafico(this.mostrarTipoGrafico, this.tipoGraficoSelecionado)
         
         displayMessage(this, false)
@@ -220,7 +224,7 @@ export default {
         }
       ]
       */
-      var dadosFormatadosPorLegendaValoresPorMesAno = montarDadosFormatadosPorLegendaValoresPorMesAno(this.matrizDados, 
+      var dadosFormatadosPorLegendaValoresPorMesAno = montaDadosFormatadosPorLegendaValoresPorMesAno(this.matrizDados, 
         this.colunasDimensoes, this.metricasSelecionadas, this.colunasMetricas)
 
       //percore o vetor com o par <ano, mês> procurando por dados correspondentes para montar
@@ -292,7 +296,7 @@ function acumularDados(metricas){
   //console.log(metricas)
 }
 
-function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDimensoes, 
+function montaDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDimensoes, 
   metricasSelecionadas, colunasMetricas){
   
   var dadosFormatadosPorLegendaValoresPorMesAno = []
@@ -316,47 +320,25 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
           dadosFormatadosPorLegendaValoresPorMesAno.map(itemMetric => {
             if (itemMetric.legenda === legenda){
               legandaJaPreenchida = true
-              if (item.dataaprovacao){
-                itemMetric.dados.push({
-                  valor: item[metricaSelecionada],
-                  ano: item.dataaprovacao.substring(6),
-                  mes: item.dataaprovacao.substring(3,5),
-                })
-              }
-              if (item.datamatricula){
-                itemMetric.dados.push({
-                  valor: item[metricaSelecionada],
-                  ano: item.datamatricula.substring(6),
-                  mes: item.datamatricula.substring(3,5),
-                })  
-              }
+              itemMetric.dados.push({
+                valor: item[metricaSelecionada],
+                ano: item.ano,
+                mes: item.mes,
+              })
             } 
           })
         }
 
         //se nao tiver, inclui no vetor
         if (!legandaJaPreenchida){
-          if (item.dataaprovacao){
-            dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
-              dados: [
-                {
-                  valor: item[metricaSelecionada],
-                  ano: item.dataaprovacao.substring(6),
-                  mes: item.dataaprovacao.substring(3,5),
-                }
-              ]})            
-          }
-          if (item.datamatricula){
-            dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
-              dados: [
-                {
-                  valor: item[metricaSelecionada],
-                  ano: item.datamatricula.substring(6),
-                  mes: item.datamatricula.substring(3,5),
-                }
-              ]})             
-          }
-
+          dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
+            dados: [
+              {
+                valor: item[metricaSelecionada],
+                ano: item.ano,
+                mes: item.mes,
+              }
+            ]})
         }
       })
     })
@@ -409,6 +391,7 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
     //     ]
     //   }      
     // ]
+    // console.log('Aqui2:', dadosFormatadosPorLegendaValoresPorMesAno)
   }
   else{
     //percorre a matriz de dados, que veio da tabela, para organizar os dados
@@ -428,48 +411,25 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
         dadosFormatadosPorLegendaValoresPorMesAno.map(itemMetric => {
           if (itemMetric.legenda === legenda){
             legandaJaPreenchida = true
-
-            if (item.dataaprovacao){
-              itemMetric.dados.push({
-                valor: item[metricasSelecionadas[0]],
-                ano: item.dataaprovacao.substring(6),
-                mes: item.dataaprovacao.substring(3,5),
-              })
-            }
-            if (item.datamatricula){
-              itemMetric.dados.push({
-                valor: item[metricasSelecionadas[0]],
-                ano: item.datamatricula.substring(6),
-                mes: item.datamatricula.substring(3,5),
-              })
-            }
- 
+            itemMetric.dados.push({
+              valor: item[metricasSelecionadas[0]],
+              ano: item.ano,
+              mes: item.mes,
+            })
           } 
         })
       }
 
       //se nao tiver, inclui no vetor
       if (!legandaJaPreenchida){
-        if (item.dataaprovacao){
-            dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
-              dados: [
-                {
-                  valor: item[metricasSelecionadas[0]],
-                  ano: item.dataaprovacao.substring(6),
-                  mes: item.dataaprovacao.substring(3,5),
-                }
-              ]})
-        }
-        if (item.datamatricula){
-            dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
-              dados: [
-                {
-                  valor: item[metricasSelecionadas[0]],
-                  ano: item.datamatricula.substring(6),
-                  mes: item.datamatricula.substring(3,5),
-                }
-              ]})              
-        }
+        dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
+          dados: [
+            {
+              valor: item[metricasSelecionadas[0]],
+              ano: item.ano,
+              mes: item.mes,
+            }
+          ]})
       }
     })
   }
@@ -477,47 +437,18 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
 }
 
 function gerarAnosMesesOrdenados(matrizDados){
-
   var anosMeses = []
-
-
-
-   matrizDados.map(item => {
+  matrizDados.map(item => {
     var achou = false
-
-    if (item.dataaprovacao){
-      var ano = item.dataaprovacao.substring(6)
-      var mes = item.dataaprovacao.substring(3,5)
-
-      //checa data de aprovacao
-      anosMeses.map(anoMes => {
-        if (anoMes.mes === mes && anoMes.ano == ano){
-          achou = true
-        }
-      })
-      if (!achou){
-        anosMeses.push({mes:mes, ano: ano})
+    anosMeses.map(anoMes => {
+      if (anoMes.mes === item.mes && anoMes.ano == item.ano){
+        achou = true
       }
+    })
+    if (!achou){
+      anosMeses.push({mes:item.mes, ano: item.ano})
     }
-
-    //checa data de matrícula
-    if (item.datamatricula){
-      var ano = item.datamatricula.substring(6)
-      var mes = item.datamatricula.substring(3,5)
-
-      anosMeses.map(anoMes => {
-        if (anoMes.mes === mes && anoMes.ano == ano){
-          achou = true
-        }
-      })
-      if (!achou){
-        anosMeses.push({mes:mes, ano: ano})
-      }
-    }
-
   })
-
-  console.log(anosMeses)
 
   anosMeses.sort((anoMesA, anoMesB) => {
     if (anoMesA.ano > anoMesB.ano) return 1
@@ -526,7 +457,7 @@ function gerarAnosMesesOrdenados(matrizDados){
     if (anoMesA.mes < anoMesB.mes) return -1
     return 0
   })
-
+  
   return anosMeses
 }
 
@@ -584,78 +515,40 @@ function generateChartWithSingleMetric(matrizDados, metricas, colunasDimensoes, 
   })  
 }
 
-function validarSelecao(colunasMetricas, metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes){
-  //Esse passo tem que ser feito para o caso do usuário volta na tabela de 
-  //dados e tirar alguma coluna ja selecionada como metrica. 
-  if (metricasSelecionadas.length > 0){
-    var metricasSelecionadasCorrigidas = []
-    metricasSelecionadas.map(metricaSelecionada => {
-      for (var colunaMetrica of colunasMetricas){
-        if (colunaMetrica.value == metricaSelecionada){
-          metricasSelecionadasCorrigidas.push(metricaSelecionada)
-          break
+function validaSelecao(metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes){
+      if (metricasSelecionadas.length == 0){
+        throw 'Selecione uma métrica'
+      }
+      if (!tipoGraficoSelecionado){
+        throw 'Selecione um tipo de gráfico'
+      }   
+
+      var dimensoesSelecionadas = []
+      colunasDimensoes.map(dimensao => dimensoesSelecionadas.push(dimensao.value))
+
+      //Gráfico do tipo linha aceita multiplas métricas ou sem dimensão
+      //Mas sempre tem que ter os campos de mês e ano
+      if (tipoGraficoSelecionado === 'mostrarGraficoLinha'){
+        if (dimensoesSelecionadas.indexOf('ano') == -1 || dimensoesSelecionadas.indexOf('mes') == -1){
+          throw 'Colunas ano e mês devem estar selecionadas na tabela de dados para gerar gráfico de linha'
+        }
+
+        //Caso mais de uma métrica esteja selecionada, nenhum campo de dimensão deve estar selecionados
+        //na tabela de dados, pois as métricas serão as dimensões
+        var temOutraDimensaoAlemDeAnoMes = false
+        dimensoesSelecionadas.map(dimensao => {
+          if (dimensao !== 'ano' && dimensao != 'mes'){
+            temOutraDimensaoAlemDeAnoMes = true
+          }
+        })
+        if (metricasSelecionadas.length > 1 && temOutraDimensaoAlemDeAnoMes){
+            throw 'Selecione apenas ano e mês como colunas da tabela para gerar gráfico de linha com múltiplas métricas'    
         }
       }
-    })
-    metricasSelecionadas = metricasSelecionadasCorrigidas
-  }
+      else if (metricasSelecionadas.length > 1 && tipoGraficoSelecionado !== 'mostrarGraficoBarra'){
+        throw 'Seleção de mais de uma métrica só é possível no gráfico de barras'
+      } 
 
-  if (metricasSelecionadas.length == 0){
-    throw 'Selecione uma métrica'
-  }
-  if (!tipoGraficoSelecionado){
-    throw 'Selecione um tipo de gráfico'
-  }   
-
-  //Gráfico do tipo linha aceita multiplas métricas ou sem dimensão
-  //As métricas só podem ser as que têm datas associadas
-  //Aprovada, Matricula e Valor aprovado e a respectiva data tem que estar na tabela de dados
-  if (tipoGraficoSelecionado === 'mostrarGraficoLinha'){
-    validarSelecaoGraficoLinha(colunasMetricas, metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes)
-  }
-  else if (metricasSelecionadas.length > 1 && tipoGraficoSelecionado !== 'mostrarGraficoBarra'){
-    throw 'Seleção de mais de uma métrica só é possível no gráfico de barras'
-  } 
-
-}
-
-function validarSelecaoGraficoLinha(colunasMetricas, metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes){
-  var dimensoesSelecionadas = []
-  colunasDimensoes.map(dimensao => dimensoesSelecionadas.push(dimensao.value))
-
-  //checa se as métricas selecionadas são as que têm data vinculada
-    //e se os campos de data vinculado estao na tabela
-    var todasAsMetricasTemDataVinculada = true
-    for (var metricaSelecionada of metricasSelecionadas) {          
-      var coluna = Vagas.obterColuna(metricaSelecionada)
-      if (!coluna.datavinculada){
-        todasAsMetricasTemDataVinculada = false
-        break
-      }else{
-        if (dimensoesSelecionadas.indexOf(coluna.datavinculada) == - 1){
-          throw 'Coluna ' + Vagas.obterColuna(coluna.datavinculada).text + ' deve estar selecionada em conjunto com a coluna ' + 
-            coluna.text + 
-            ' para geração do gráfico de linha'
-        }
-      }
-    }
-    if (!todasAsMetricasTemDataVinculada){
-      throw 'Apenas colunas com datas associadas podem ser selecionadas para o gráfico de linha: aprovada, matricula ou valor aprovado'
-    }
-
-    
-    //Caso mais de uma métrica esteja selecionada, nenhum campo de dimensão deve estar selecionados
-    //na tabela de dados, pois as métricas serão as dimensões
-    var temOutraDimensaoAlemDasDeTempo = false
-    dimensoesSelecionadas.map(dimensao => {
-      var coluna = Vagas.obterColuna(dimensao)
-      if (!coluna.colunatempo){
-        temOutraDimensaoAlemDasDeTempo = true
-      }
-    })
-    if (metricasSelecionadas.length > 1 && temOutraDimensaoAlemDasDeTempo){
-        throw 'Além das métricas, selecione apenas as datas como colunas da tabela para gerar gráfico de linha com múltiplas métricas'    
-    }
 }
 
 function exibirGrafico(mostrarTipoGrafico, tipoGraficoSelecionado){

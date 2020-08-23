@@ -73,30 +73,12 @@
                 <v-spacer></v-spacer>
                 <v-btn color="success" dark class="ma-2" @click="exportSheet">Exportar</v-btn>
                 <v-btn color="success" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn>
+                <v-btn color="success" dark class="ma-2" @click="inicializarPopupExcluirPlanilha">Excluir planilha</v-btn>
                 <!-- EXCLUIR PLANILHA -->
-                <v-dialog v-model="dialogExcluirPlanilha" max-width="600px">
-                    <template v-slot:activator="{ on }">
-                        <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogExcluirPlanilha()">Excluir planilha</v-btn>
-                    </template>                
-                    <v-card>
-                        <v-card-text>
-                            <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
-                                {{alertMessagePopup}}
-                            </v-alert>                            
-                            <v-select
-                                v-model="planilhaAExcluir"
-                                :items="planilhasJaCarregadas"
-                                label="Selecione a planilha"
-                            ></v-select>
-                        </v-card-text>
-                        <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="success" @click="excluirPlanilha()">Excluir</v-btn>
-                        <v-btn color="blue darken-1" text @click="closedialogExcluirPlanilha">Fechar</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-                <!-- FIM IMPORTAR -->                
+                <popupExcluirPlanilha :mostrarPopupExcluir="mostrarPopupExcluir"
+                    v-on:fecharPopupExcluirPlanilha="fecharPopupExcluirPlanilha"
+                    v-on:updateItens="updateItens"/>
+                <!-- FIM EXCLUIR PLANILHA -->                
                 <!-- IMPORTAR -->
                 <v-dialog v-model="dialogImportar" scrollable width="600">
                     <template v-slot:activator="{ on }">
@@ -575,16 +557,19 @@ import MyChart from '../../components/charts/MyChart.vue'
 import MyMap from '../../components/maps/MyMap.vue'
 import Projecao from '../../components/projecoes/Projecao.vue'
 import {mask} from 'vue-the-mask'
+import PopupExcluirPlanilha from './PopupExcluirPlanilha.vue'
 
 export default {
     directives: {mask},
     components: {
       'mychart': MyChart,
       'mymap': MyMap,
-      'projecao': Projecao
+      'projecao': Projecao,
+      'popupExcluirPlanilha': PopupExcluirPlanilha,
     }, 
     data() {
         return {
+            mostrarPopupExcluir: false,
             dialogDetalhesImportacao: false,
             resumoImportacao: '',
             importandoPlanilha: false,
@@ -596,8 +581,6 @@ export default {
                     return true    
                 }
             ],
-            planilhaAExcluir: '',
-            planilhasJaCarregadas: [],
             mascara:'##',
             periodoPactuacaoHint: '',
             planilha:{
@@ -612,7 +595,6 @@ export default {
             rowsSelected: [],
             loading: true,
             searchKey:'',
-            dialogExcluirPlanilha: false,
             dialogImportar: false,
             dialogColunas: false,
             items:[],
@@ -760,7 +742,7 @@ export default {
                     Object.entries(item).map((cell, index) => {   
                         var id = Vagas.obterIdColuna(cell[0])
                         //Verifica se está nas colunas selecionadas                         
-                        if (this.selectedColumns.indexOf(id) != -1){
+                        if (id && this.selectedColumns.indexOf(id) != -1){
                             if ((cell[1] != null &&
                             this.searchKey != null &&
                             isContem(cell[1].toString(), this.searchKey)) || this.searchKey === ''){
@@ -805,21 +787,6 @@ export default {
                     }                
             })            
         },        
-        //Exclui todos os dados vinculados a determinada planilha
-        excluirPlanilha(){
-            if (!this.planilhaAExcluir){
-                displayMessagePopup(this, true, 'Selecione uma planilha', 'info')
-                return
-            }
-            Vagas.removePlanilha(this.planilhaAExcluir).then((response) => {
-                displayMessagePopup(this, true, response.body.message, 'success')
-                this.updateItens()
-                this
-            }).catch((error) => {
-                console.log(error)
-                displayMessagePopup(this, true, error.body.error, 'error')
-            })
-        },
         uploadFile(){
             this.importandoPlanilha = true
             let formularioValido = this.$refs.formularioImportacao.validate()
@@ -850,10 +817,6 @@ export default {
         closeDialogChart () {
             this.dialogChart = false
         },
-        closedialogExcluirPlanilha(){
-            this.dialogExcluirPlanilha = false
-            this.planilhaAExcluir = ''
-        },
         closeDialogImportar () {
             this.dialogImportar = false
             this.fileuploaded = null
@@ -861,20 +824,6 @@ export default {
         closeDialogColunas () {
             this.dialogColunas = false
         },
-        initiateDialogExcluirPlanilha(){
-            Vagas.listarPlanilhas().then(response => {
-                    this.planilhasJaCarregadas = response.data.planilhas
-                    console.log('Planilhas ja carregadas:',this.planilhasJaCarregadas)
-                }).catch(error => {
-                    console.log(error)
-                    displayMessage(this, true, error.body.error, 'error')
-                    if (error.status === ERROR_SESSION_EXPIRED){
-                        this.$store.dispatch('ActionLogout')
-                    }                
-                })            
-            displayMessage(this, false, '', 'error')
-            displayMessagePopup(this, false, '','error')
-        },        
         initiateDialogImportar(){
             console.log(this.$refs)
             displayMessage(this, false, '', 'error')
@@ -888,6 +837,12 @@ export default {
         initiateDialogColunas(){
             displayMessage(this, false, '', 'error')
             displayMessagePopup(this, false, '','error')
+        },
+        inicializarPopupExcluirPlanilha(){
+            this.mostrarPopupExcluir = true
+        },
+        fecharPopupExcluirPlanilha(){
+            this.mostrarPopupExcluir = false
         },
         deleteSelectedItens(){
             if (this.rowsSelected.length == 0){

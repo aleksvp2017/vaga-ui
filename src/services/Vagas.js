@@ -74,6 +74,15 @@ function columns(){
         // },  
         {
             id: itemId++,
+            text: 'VAGAID',
+            value: 'vagaid',
+            selected: false,
+            summable: false,
+            colunatempo: false,
+            colunadimensao: false,
+        },         
+        {
+            id: itemId++,
             text: 'INSTITUIÇÃO DE ENSINO',
             value: 'instituicao',
             selected: true,
@@ -301,7 +310,9 @@ const obterColuna = (valor) => {
 
 const obterIdColuna = (valor) => {
     var coluna = obterColuna(valor)
-    return coluna.id
+    if (coluna){
+        return coluna.id
+    }
 }
 
 const fieldsToSum = () => {

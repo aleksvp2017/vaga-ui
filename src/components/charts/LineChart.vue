@@ -3,14 +3,27 @@ import { Line} from 'vue-chartjs'
 import  * as Helper from './HelperChart'
 
 export default {
-  props:['dimension', 'metrics'],  
+  props:['dimension', 'metrics','mostrarValoresZerados'],  
   extends: Line,
   mounted () {
+      //console.log('Prop metrics:', this.metrics)
+      //console.log('Prop dimension:', this.dimension)
+      var metricas = this.metrics
+      var dimensoes = this.dimension
+      //console.log('Var metricas:', metricas)
+      //console.log('Var dimensoes:', dimensoes)
+
+      if (!this.mostrarValoresZerados){
+        var {dimensoesSemValoresZerados, metricasSemValoresZerados} = retirarValoresZerados(this.dimension, this.metrics)
+        metricas = metricasSemValoresZerados
+        dimensoes = dimensoesSemValoresZerados
+      }
+
       var datasets = []
-      this.metrics.map(metric => {
+      metricas.map(metrica => {
         datasets.push({
-            label: metric.legenda,
-            data: metric.dados,
+            label: metrica.legenda,
+            data: metrica.dados,
             fill: false,
             borderColor: Helper.generateColor(),
             borderWidth: 4
@@ -18,33 +31,78 @@ export default {
       })
 
       this.renderChart({
-        labels: this.dimension,
+        labels: dimensoes,
         datasets: datasets,
-        // [
-        // {
-        //     label: 'Total',
-        //     // 78841
-        //     data: [39000, 115701, 184621, 248533],
-        //     fill: false,
-        //     borderColor: '#84E900',
-        //     borderWidth: 2
-        // },  
-        // {
-        //     label: 'Rede Federal',
-        //     data: [40064, 53264, 122184, 182186],
-        //     fill: false,
-        //     borderColor: '#0000FF',
-        //     borderWidth: 2
-        // },
-        // {
-        //     label: 'Estados, DF, Municípios',
-        //     data: [38777, 62437, 62437, 66347],
-        //     fill: false,
-        //     borderColor: '#FFAE42',
-        //     borderWidth: 2
-        // }]
-    }, getOptions())
+  //       // [
+  //       // {
+  //       //     label: 'Total',
+  //       //     // 78841
+  //       //     data: [39000, 115701, 184621, 248533],
+  //       //     fill: false,
+  //       //     borderColor: '#84E900',
+  //       //     borderWidth: 2
+  //       // },  
+  //       // {
+  //       //     label: 'Rede Federal',
+  //       //     data: [40064, 53264, 122184, 182186],
+  //       //     fill: false,
+  //       //     borderColor: '#0000FF',
+  //       //     borderWidth: 2
+  //       // },
+  //       // {
+  //       //     label: 'Estados, DF, Municípios',
+  //       //     data: [38777, 62437, 62437, 66347],
+  //       //     fill: false,
+  //       //     borderColor: '#FFAE42',
+  //       //     borderWidth: 2
+  //       // }]
+      }, getOptions())
   }
+}
+
+function retirarValoresZerados(dimensoes, metricas){
+  //console.log('metricas parametro', metricas)
+  var colunasComValoresZerados = []
+
+  metricas.map((metrica, indicemetrica) => {
+    metrica.dados.map((valormetrica, indiceevalor) => {
+      //console.log('Valor da metrica:', valormetrica)
+      if (!valormetrica || parseInt(valormetrica) === 0){
+        //Como podem vir varios vetores de metricas (ex: matriculas e aprovadas)
+        //só é considerada zerada, uma dimensao com zero em todos eles        
+        if (indicemetrica == 0){
+          colunasComValoresZerados[indiceevalor] = true
+        }
+      }
+      else{
+        colunasComValoresZerados[indiceevalor] = false
+      }
+    })
+  })
+  //console.log('colunasComValoresZerados:', colunasComValoresZerados)
+
+  //Tira as colunas que só tem zeros nas métricas das dimensoes
+  var dimensoesSemValoresZerados = []
+  colunasComValoresZerados.map((colunaComValorZerado, indice) => {
+    if (!colunaComValorZerado){
+      dimensoesSemValoresZerados.push(dimensoes[indice])
+    }
+  })
+  //console.log('Dimensoes sem valores zerados:', dimensoesSemValoresZerados)
+
+
+  var metricasSemValoresZerados = []
+  metricas.map((metrica, indicemetrica) => {
+    metricasSemValoresZerados[indicemetrica] = {legenda: metrica.legenda, dados:[]}
+    colunasComValoresZerados.map((colunaComValorZerado, indice) => {
+      if (!colunaComValorZerado){
+        metricasSemValoresZerados[indicemetrica].dados.push(metrica.dados[indice])
+      }
+    })
+  })
+  //console.log('Metricas sem valores zerados:', metricasSemValoresZerados)
+
+  return {dimensoesSemValoresZerados, metricasSemValoresZerados}
 }
 
 //Opcoes de configuracao do gráfico

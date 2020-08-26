@@ -73,106 +73,19 @@
                 <v-spacer></v-spacer>
                 <v-btn color="success" dark class="ma-2" @click="exportSheet">Exportar</v-btn>
                 <v-btn color="success" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn>
-                <v-btn color="success" dark class="ma-2" @click="inicializarPopupExcluirPlanilha">Excluir planilha</v-btn>
+
                 <!-- EXCLUIR PLANILHA -->
-                <popupExcluirPlanilha :mostrarPopupExcluir="mostrarPopupExcluir"
-                    v-on:fecharPopupExcluirPlanilha="fecharPopupExcluirPlanilha"
-                    v-on:updateItens="updateItens"/>
+                <popupExcluirPlanilha v-on:updateItens="updateItens"/>
                 <!-- FIM EXCLUIR PLANILHA -->                
+
                 <!-- IMPORTAR -->
-                <v-dialog v-model="dialogImportar" scrollable width="600">
-                    <template v-slot:activator="{ on }">
-                        <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogImportar">Importar</v-btn>
-                    </template>                                   
-                    <v-card height="500px">
-                        <v-card-text>
-                            <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
-                                {{alertMessagePopup}}                                                             
-                            </v-alert>                            
-                            <v-form ref="formularioImportacao">                            
-                                <v-text-field label="Nome da aba / página da planilha*" v-model="planilha.nomeAba" 
-                                    @keypress.enter="uploadFile()" type="text"/>
-                                <v-text-field label="Período pactuação" v-model="planilha.periodoPactuacao" 
-                                    :persistent-hint=true
-                                    :hint="periodoPactuacaoHint"
-                                    @keypress.enter="uploadFile()" type="text"/>  
-                                <v-text-field label="Data aprovação" v-model="planilha.dataAprovacao" 
-                                    :rules="regrasData"
-                                    :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
-                                            @keypress.enter="uploadFile()" type="text" v-mask="'##/##/####'"/>  
-                                <v-text-field label="Data matrícula" v-model="planilha.dataMatricula" 
-                                    :rules="regrasData"
-                                    :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
-                                            @keypress.enter="uploadFile()" type="text" v-mask="'##/##/####'"/>  
-                                <v-switch
-                                    v-model="planilha.snContrapartida"
-                                    label="Vagas de contrapartida"
-                                ></v-switch> 
-                                <v-file-input v-model="fileuploaded" label="Escolha a planilha a ser importada*"></v-file-input>
-                            </v-form>
-                            <v-dialog v-model="dialogDetalhesImportacao" max-width="900px">
-                                <v-card>
-                                    <v-card-title>Detalhes da importação</v-card-title>
-                                    <v-card-text>
-                                        <v-simple-table dense>
-                                            <template v-slot:default>
-                                            <thead>
-                                                <tr>
-                                                <th class="text-left">Item</th>
-                                                <th class="text-left">Detalhe</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="item in resumoImportacao" :key="item.nome">
-                                                    <td>{{ item.nome }}</td>
-                                                    <td>{{ item.detalhe }}</td>
-                                                </tr>
-                                            </tbody>
-                                            </template>
-                                        </v-simple-table>                                                                                
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-btn color="primary" text @click="dialogDetalhesImportacao = false">Fechar</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="success" @click="uploadFile()"
-                                :loading="importandoPlanilha" :disabled="importandoPlanilha">Enviar</v-btn>
-                            <v-btn color="info" @click="dialogDetalhesImportacao = true" v-show="resumoImportacao != ''">Detalhes</v-btn>                                
-                            <v-btn color="blue darken-1" text @click="closeDialogImportar">Fechar</v-btn>
-                           
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
+                <popupImportarPlanilha v-on:updateItens="updateItens"/>                
                 <!-- FIM IMPORTAR -->
+
                 <!-- CONFIGURAR COLUNAS -->
-                <v-dialog v-model="dialogColunas" width="600px">
-                    <template v-slot:activator="{ on }">
-                        <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogColunas">Escolher colunas</v-btn>
-                    </template>                
-                    <v-card>
-                        <v-card-text>
-                            <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
-                                {{alertMessagePopup}}
-                            </v-alert>
-                                    <v-chip-group column active-class="primary--text" multiple v-model="selectedColumns"> 
-                                        <v-chip v-for="column in tableConfigurableColumns" :key="column.id" filter>
-                                            {{ column.text }}
-                                        </v-chip>
-                                    </v-chip-group> 
-                                    <p class="font-weight-light mb-0"><v-icon>mdi-head-lightbulb</v-icon> A edição em tela ficará desabilita enquanto qualquer das colunas estiver desabilitada</p>
-                        </v-card-text>
-                        <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="primary" @click="desmarcarTodos()">Desmarcar todos</v-btn>
-                        <v-btn color="success" @click="updateColumns()">Ok</v-btn>
-                        <v-btn color="blue darken-1" text @click="closeDialogColunas">Fechar</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
+                <popupConfigurarColunas :tableConfigurableColumns="tableConfigurableColumns"
+                    v-on:atualizarColunas="atualizarColunas"
+                    :selectedColumns="selectedColumns"/>                
                 <!-- FIM DO CONFIGURAR COLUNAS -->    
                 <v-btn color="success" dark class="ma-2" @click="reset">Limpar</v-btn>                   
             </v-toolbar>
@@ -556,36 +469,23 @@ import XLSX from 'xlsx'
 import MyChart from '../../components/charts/MyChart.vue'
 import MyMap from '../../components/maps/MyMap.vue'
 import Projecao from '../../components/projecoes/Projecao.vue'
-import {mask} from 'vue-the-mask'
 import PopupExcluirPlanilha from './PopupExcluirPlanilha.vue'
+import PopupImportarPlanilha from './PopupImportarPlanilha.vue'
+import PopupConfigurarColunas from './PopupConfigurarColunas.vue'
 
 export default {
-    directives: {mask},
     components: {
       'mychart': MyChart,
       'mymap': MyMap,
       'projecao': Projecao,
       'popupExcluirPlanilha': PopupExcluirPlanilha,
+      'popupImportarPlanilha': PopupImportarPlanilha,
+      'popupConfigurarColunas': PopupConfigurarColunas,
     }, 
     data() {
         return {
             mostrarPopupExcluir: false,
-            dialogDetalhesImportacao: false,
-            resumoImportacao: '',
-            importandoPlanilha: false,
-            regrasData: [
-                (valor) => {
-                    if (valor){
-                        return moment(valor, "DD/MM/YYYY", true).isValid()
-                    }
-                    return true    
-                }
-            ],
-            mascara:'##',
-            periodoPactuacaoHint: '',
-            planilha:{
-                snContrapartida: false,
-            },
+            mostrarPopupImportar: false,
             actionColumn: {},
             snLinhasAgrupadas: false,
             vagasTable: {},
@@ -599,7 +499,6 @@ export default {
             dialogColunas: false,
             items:[],
             originalItems:[],
-            fileuploaded: null,
             showAlert: false,
             alertMessage: '',
             typeAlert: 'success',
@@ -635,7 +534,7 @@ export default {
     },
     methods: {
         exportSheet(){
-            let header = this.tableColumns.filter(element => element.value !== 'actions')
+            let header = this.tableColumns.filter(element => element.value !== 'actions' && element.value != 'vagaid')
             header = header.map(element => element.value)
             
             var dataRows = []
@@ -654,25 +553,6 @@ export default {
         },
         desmarcarTodos(){
             this.selectedColumns = []
-        },
-        updateColumns(){
-            this.selectedColumns = this.selectedColumns.sort((a, b) => {
-                if (parseInt(a) > parseInt(b)){
-                    return 1
-                }
-                else if (parseInt(a) === parseInt(b)){
-                    return 0
-                }
-                return -1})
-            var updatedColumns = []
-            for (var selectedColumn in this.selectedColumns){
-                updatedColumns.push(this.tableConfigurableColumns[this.selectedColumns[selectedColumn]])
-            }
-            updatedColumns.push(this.actionColumn)
-            this.tableColumns = updatedColumns
-            this.closeDialogColunas()
-            this.searchKey = ''
-            this.agrupaLinhasIdenticas()
         },
         agrupaLinhasIdenticas(){
             var itemsAAgrupar = this.originalItems
@@ -774,8 +654,10 @@ export default {
             Vagas.list().then((response) => {
                     this.items = response.data.vagas.map(vaga => 
                         ({...vaga,valoraprovado:(vaga.valorhoraaula*vaga.aprovada*vaga.cargahoraria)}))
-                    this.items = this.items.map((item) => 
-                            ({...item, datapublicacaoformatada: moment(item.datapublicacao).format("HH:mm:SS DD/MM/YYYY")}))
+                    this.items = this.items.map(vaga => 
+                        ({...vaga,datamatricula:vaga.datamatricula.substring(3)}))                        
+                    // this.items = this.items.map((item) => 
+                    //         ({...item, datapublicacaoformatada: moment(item.datapublicacao).format("HH:mm:SS DD/MM/YYYY")}))
                     this.originalItems = this.items.slice(0)
                     this.loading = false
                 }).catch((error) => {
@@ -787,31 +669,6 @@ export default {
                     }                
             })            
         },        
-        uploadFile(){
-            this.importandoPlanilha = true
-            let formularioValido = this.$refs.formularioImportacao.validate()
-            if (!formularioValido){ 
-                return
-            }
-            if (!this.fileuploaded){
-                displayMessagePopup(this, true, 'Selecione um arquivo', 'info')
-                return
-            }
-            if (!this.planilha.nomeAba){
-                displayMessagePopup(this, true, 'Entre com o nome da aba dos dados na planilha', 'info')
-                return
-            }
-            Vagas.upload(this.fileuploaded, this.planilha).then((response) => {
-                displayMessagePopup(this, true, response.body.message, 'success')
-                this.resumoImportacao = response.body.detalheMensagem
-                this.updateItens()
-                this.importandoPlanilha = false
-            }).catch((error) => {
-                console.log(error)
-                displayMessagePopup(this, true, error.body.error, 'error')
-                this.importandoPlanilha = false
-            })
-        },
         initiateDialogChart(){
         },        
         closeDialogChart () {
@@ -823,26 +680,6 @@ export default {
         },
         closeDialogColunas () {
             this.dialogColunas = false
-        },
-        initiateDialogImportar(){
-            console.log(this.$refs)
-            displayMessage(this, false, '', 'error')
-            displayMessagePopup(this, false, '','error')
-            this.resumoImportacao = ''
-            this.dialogDetalhesImportacao = false    
-            this.planilha = {
-                snContrapartida: false
-            }        
-        },
-        initiateDialogColunas(){
-            displayMessage(this, false, '', 'error')
-            displayMessagePopup(this, false, '','error')
-        },
-        inicializarPopupExcluirPlanilha(){
-            this.mostrarPopupExcluir = true
-        },
-        fecharPopupExcluirPlanilha(){
-            this.mostrarPopupExcluir = false
         },
         deleteSelectedItens(){
             if (this.rowsSelected.length == 0){
@@ -906,7 +743,15 @@ export default {
             this.searchKey = ''
             this.columnToSearch = null
             initialize(this)
-        }       
+        },
+        atualizarColunas(colunasSelecionadas, updatedColumns){
+            this.selectedColumns = colunasSelecionadas
+            console.log(updatedColumns.length, this.tableColumns.length)
+            updatedColumns.push(this.actionColumn)
+            this.tableColumns = updatedColumns
+            this.searchKey = ''
+            this.agrupaLinhasIdenticas()
+        }     
     },
 }
 
@@ -925,16 +770,6 @@ function initialize(owner){
     })
     owner.tableColumns = Vagas.columns()
     owner.actionColumn = owner.tableColumns.filter(item => item.value === 'actions')[0]
-    Vagas.obterPeriodoPactuacaoAberto().then(response => {
-        owner.periodoPactuacaoHint = 'Caso não seja preenchido, sistema procurará a coluna na planilha ou utilizará o período atualmente aberto: ' 
-                + response.data.periodopactuacao.nome
-    }).catch(error => {
-        console.log(error)
-        displayMessage(owner, true, error.body.error, 'error')
-        if (error.status === ERROR_SESSION_EXPIRED){
-            owner.$store.dispatch('ActionLogout')
-        }                
-    })
 }
 
 function separateIdenticalAndNoIdenticalItems(items, tableColumns, fieldsToDetermineEquality){

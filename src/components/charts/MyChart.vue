@@ -34,30 +34,36 @@
           </v-flex>
         </v-layout>
         <!-- OPCOES DE CONFIGURACAO DOS GRAFICOS -->
-        <v-row v-if="(tipoGraficoSelecionado === 'mostrarGraficoLinha')" >
+        <v-row>
          <v-switch
-            v-model="snTotal"
-            label="Incluir Total"
+          style="margin:10px"
+          v-if="(tipoGraficoSelecionado === 'mostrarGraficoLinha')"
+          v-model="snTotal"
+          label="Incluir Total"
           ></v-switch> 
          <v-switch
-            v-model="snAcumulados"
-            label="Mostrar dados acumulados"
+          style="margin:10px"
+          v-if="(tipoGraficoSelecionado === 'mostrarGraficoLinha')"
+          v-model="snAcumulados"
+          label="Mostrar dados acumulados"
           ></v-switch> 
-        </v-row>
-        <v-row v-if="(tipoGraficoSelecionado === 'mostrarGraficoPizza' || tipoGraficoSelecionado === 'mostrarGraficoBarraHorizontal')" >
          <v-switch
-            v-if="(tipoGraficoSelecionado === 'mostrarGraficoPizza')"
-            v-model="tipoDonut"
-            label="Donut?"
+          style="margin:10px"
+          v-if="(tipoGraficoSelecionado === 'mostrarGraficoPizza')"
+          v-model="tipoDonut"
+          label="Donut?"
           ></v-switch>                     
          <v-switch
-            v-model="mostrarRotulosNoGrafico"
-            label="Mostrar rótulos no gráfico?"
+          style="margin:10px"
+          v-model="mostrarRotulosNoGrafico"
+          v-if="(tipoGraficoSelecionado === 'mostrarGraficoPizza' || tipoGraficoSelecionado === 'mostrarGraficoBarraHorizontal')"
+          label="Mostrar rótulos no gráfico?"
           ></v-switch>   
          <v-switch
-            v-if="(tipoGraficoSelecionado === 'mostrarGraficoBarraHorizontal')"
-            v-model="mostrarValoresZerados"
-            label="Mostrar valores zerados?"
+          style="margin:10px"
+          v-if="(tipoGraficoSelecionado === 'mostrarGraficoBarraHorizontal' || tipoGraficoSelecionado === 'mostrarGraficoLinha')"
+          v-model="mostrarValoresZerados"
+          label="Mostrar valores zerados?"
           ></v-switch>                   
         </v-row>
         <p class="font-weight-light mb-0"><v-icon>mdi-head-lightbulb</v-icon> As dimensões do gráfico são as colunas não numéricas da tabela</p>
@@ -78,7 +84,7 @@
         :mostrarValoresZerados='mostrarValoresZerados'
         :height="140"/>
       <linechart :metrics='metricas' :dimension='dimensoes' :key="chartKey" v-if='mostrarTipoGrafico.mostrarGraficoLinha'
-       :height="140"/>
+        :mostrarValoresZerados='mostrarValoresZerados' :height="140"/>
       <polarchart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" 
         v-if='mostrarTipoGrafico.mostrarGraficoPolar'
        :height="140"/>       
@@ -291,6 +297,20 @@ function acumularDados(metricas){
   })
   //console.log(metricas)
 }
+function obterAno(data){
+  if (data.length === 10){
+    return data.substring(6)
+  }
+  return data.substring(3)
+}
+
+function obterMes(data){
+  if (data.length === 10){
+    return data.substring(3,5)
+  }
+  return data.substring(0,2)
+
+}
 
 function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDimensoes, 
   metricasSelecionadas, colunasMetricas){
@@ -319,15 +339,15 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
               if (item.dataaprovacao){
                 itemMetric.dados.push({
                   valor: item[metricaSelecionada],
-                  ano: item.dataaprovacao.substring(6),
-                  mes: item.dataaprovacao.substring(3,5),
+                  ano: obterAno(item.dataaprovacao),
+                  mes: obterMes(item.dataaprovacao),
                 })
               }
               if (item.datamatricula){
                 itemMetric.dados.push({
                   valor: item[metricaSelecionada],
-                  ano: item.datamatricula.substring(6),
-                  mes: item.datamatricula.substring(3,5),
+                  ano: obterAno(item.datamatricula),
+                  mes: obterMes(item.datamatricula),
                 })  
               }
             } 
@@ -341,8 +361,8 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
               dados: [
                 {
                   valor: item[metricaSelecionada],
-                  ano: item.dataaprovacao.substring(6),
-                  mes: item.dataaprovacao.substring(3,5),
+                  ano: obterAno(item.dataaprovacao),
+                  mes: obterMes(item.dataaprovacao),
                 }
               ]})            
           }
@@ -351,8 +371,8 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
               dados: [
                 {
                   valor: item[metricaSelecionada],
-                  ano: item.datamatricula.substring(6),
-                  mes: item.datamatricula.substring(3,5),
+                  ano: obterAno(item.datamatricula),
+                  mes: obterMes(item.datamatricula),
                 }
               ]})             
           }
@@ -432,15 +452,15 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
             if (item.dataaprovacao){
               itemMetric.dados.push({
                 valor: item[metricasSelecionadas[0]],
-                ano: item.dataaprovacao.substring(6),
-                mes: item.dataaprovacao.substring(3,5),
+                ano: obterAno(item.dataaprovacao),
+                mes: obterMes(item.dataaprovacao),
               })
             }
             if (item.datamatricula){
               itemMetric.dados.push({
                 valor: item[metricasSelecionadas[0]],
-                ano: item.datamatricula.substring(6),
-                mes: item.datamatricula.substring(3,5),
+                ano: obterAno(item.datamatricula),
+                mes: obterMes(item.datamatricula),
               })
             }
  
@@ -455,8 +475,8 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
               dados: [
                 {
                   valor: item[metricasSelecionadas[0]],
-                  ano: item.dataaprovacao.substring(6),
-                  mes: item.dataaprovacao.substring(3,5),
+                  ano: obterAno(item.dataaprovacao),
+                  mes: obterMes(item.dataaprovacao),
                 }
               ]})
         }
@@ -465,8 +485,8 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
               dados: [
                 {
                   valor: item[metricasSelecionadas[0]],
-                  ano: item.datamatricula.substring(6),
-                  mes: item.datamatricula.substring(3,5),
+                  ano: obterAno(item.datamatricula),
+                  mes: obterMes(item.datamatricula),
                 }
               ]})              
         }
@@ -486,8 +506,8 @@ function gerarAnosMesesOrdenados(matrizDados){
     var achou = false
 
     if (item.dataaprovacao){
-      var ano = item.dataaprovacao.substring(6)
-      var mes = item.dataaprovacao.substring(3,5)
+      var ano = obterAno(item.dataaprovacao)
+      var mes = obterMes(item.dataaprovacao)
 
       //checa data de aprovacao
       anosMeses.map(anoMes => {
@@ -502,8 +522,8 @@ function gerarAnosMesesOrdenados(matrizDados){
 
     //checa data de matrícula
     if (item.datamatricula){
-      var ano = item.datamatricula.substring(6)
-      var mes = item.datamatricula.substring(3,5)
+      var ano = obterAno(item.datamatricula)
+      var mes = obterMes(item.datamatricula)
 
       anosMeses.map(anoMes => {
         if (anoMes.mes === mes && anoMes.ano == ano){
@@ -517,7 +537,7 @@ function gerarAnosMesesOrdenados(matrizDados){
 
   })
 
-  console.log(anosMeses)
+  
 
   anosMeses.sort((anoMesA, anoMesB) => {
     if (anoMesA.ano > anoMesB.ano) return 1

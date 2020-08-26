@@ -1,8 +1,8 @@
 <template>    
     <v-dialog v-model="dialogExcluirPlanilha" max-width="600px">
-        <!-- <template v-slot:activator="{ on }">
-            <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogExcluirPlanilha()">Excluir planilha</v-btn>
-        </template>                 -->
+        <template v-slot:activator="{ on }">
+            <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogExcluirPlanilha">Excluir planilha</v-btn>
+        </template>                 
         <v-card>
             <v-card-text>
                 <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
@@ -27,7 +27,6 @@
 import * as Vagas from '../../services/Vagas.js'
 
 export default {
-    props:['mostrarPopupExcluir'],
     data() {
         return {
             planilhaAExcluir: '',
@@ -35,27 +34,26 @@ export default {
             showAlertPopup: false,
             alertMessagePopup: '',
             typeAlertPopup: 'error',  
+            dialogExcluirPlanilha: false,
         }
     },
     computed: {
-        dialogExcluirPlanilha(){
-            return this.mostrarPopupExcluir
-        }
     },
     created() {
-        Vagas.listarPlanilhas().then(response => {
-                this.planilhasJaCarregadas = response.data.planilhas
-                console.log('Planilhas ja carregadas:',this.planilhasJaCarregadas)
-            }).catch(error => {
-                console.log(error)
-                displayMessage(this, true, error.body.error, 'error')
-                if (error.status === ERROR_SESSION_EXPIRED){
-                    this.$store.dispatch('ActionLogout')
-                }                
-            })            
-        displayMessagePopup(this, false, '','error')
     },
     methods: {  
+        initiateDialogExcluirPlanilha(){
+            Vagas.listarPlanilhas().then(response => {
+                    this.planilhasJaCarregadas = response.data.planilhas
+                }).catch(error => {
+                    console.log(error)
+                    displayMessagePopup(this, true, error.body.error, 'error')
+                    if (error.status === ERROR_SESSION_EXPIRED){
+                        this.$store.dispatch('ActionLogout')
+                    }                
+                })            
+            displayMessagePopup(this, false, '','error')        
+        },        
         //Exclui todos os dados vinculados a determinada planilha
         excluirPlanilha(){
             if (!this.planilhaAExcluir){
@@ -72,7 +70,7 @@ export default {
         },   
         closedialogExcluirPlanilha(){
             this.planilhaAExcluir = ''
-            this.$emit('fecharPopupExcluirPlanilha')
+            this.dialogExcluirPlanilha = false
         },                  
     },    
 }

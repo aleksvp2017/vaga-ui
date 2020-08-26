@@ -26,6 +26,13 @@
                 ></v-select>
             </v-flex>
             <v-flex xs2 mx-1>
+                <v-select
+                    v-model="operador"
+                    :items="operadores"
+                    label=""
+                ></v-select>
+            </v-flex>
+            <v-flex xs2 mx-1>
             <v-text-field 
             
             @keydown.enter="addSearchPair"
@@ -484,6 +491,8 @@ export default {
     }, 
     data() {
         return {
+            operador: 'contém',
+            operadores: ['contém','maior que','menor que', 'não contém'],
             mostrarPopupExcluir: false,
             mostrarPopupImportar: false,
             actionColumn: {},
@@ -614,7 +623,36 @@ export default {
                 //Search for specific column
                 if (this.columnToSearch !== null){
                     if (item[this.columnToSearch] != null){
-                        includeItem = isContem(item[this.columnToSearch].toString(), this.searchKey) || this.searchKey === ''
+                        if (this.operador === 'contém'){
+                            includeItem = isContem(item[this.columnToSearch].toString(), this.searchKey) || this.searchKey === ''
+                        }
+                        else if (this.operador === 'maior que'){
+                            try{
+                                var chave = parseFloat(this.searchKey)
+                                var valorColuna = parseFloat(item[this.columnToSearch])
+                                includeItem = valorColuna > chave
+                            }
+                            catch (error){
+                                console.log('aqui')
+                                displayMessage(this, true, error, 'error')
+                                return
+                            }                            
+                        }
+                        else if (this.operador === 'menor que'){
+                            try{
+                                var chave = parseFloat(this.searchKey)
+                                var valorColuna = parseFloat(item[this.columnToSearch])
+                                includeItem = valorColuna < chave
+                            }
+                            catch (error){
+                                console.log('aqui')
+                                displayMessage(this, true, error, 'error')
+                                return
+                            }                            
+                        }   
+                        else if (this.operador === 'não contém'){
+                           includeItem = !isContem(item[this.columnToSearch].toString(), this.searchKey) || this.searchKey === ''                           
+                        }                                             
                     }
                 }
                 //Search all columns

@@ -21,6 +21,8 @@ function upload(file, planilha){
         formData.append('dataMatricula', planilha.dataMatricula)
     }
     formData.append('sncontrapartida', planilha.snContrapartida)
+    formData.append('snAlterarRegistrosExistentes', planilha.snAlterarRegistrosExistentes)
+    console.log('Alterar registros existentes:', planilha.snAlterarRegistrosExistentes)
     return http.post(BASE_BACKEND_URL + 'vagas/importar', formData)
 }
 

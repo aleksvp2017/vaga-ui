@@ -97,46 +97,7 @@
                 <v-btn color="success" dark class="ma-2" @click="reset">Limpar</v-btn>                   
             </v-toolbar>
             </template>      
-            <!-- ANO -->
-            <!-- <template #item.ano="{item}" class="d-flex">
-                <v-edit-dialog
-                    :return-value.sync="item.ano"
-                    @save="saveItem(item)"
-                    @cancel="cancelEditField"
-                    @open="editField"
-                    @close="closeEditField"
-                    > {{ item.ano }}
-                    <template v-slot:input>
-                        <v-text-field
-                        :disabled="editDisabled"
-                        v-model="item.ano"
-                        label="Edit"
-                        single-line
-                        counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template> -->
-            <!-- MES -->
-            <!-- <template #item.mes="{item}" class="d-flex">
-                <v-edit-dialog
-                    :return-value.sync="item.mes"
-                    @save="saveItem(item)"
-                    @cancel="cancelEditField"
-                    @open="editField"
-                    @close="closeEditField"
-                    > {{ item.mes }}
-                    <template v-slot:input>
-                        <v-text-field
-                        :disabled="editDisabled"
-                        v-model="item.mes"
-                        label="Edit"
-                        single-line
-                        counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>   -->
+
             <!--INSTITUICAO DE ENSINO-->
             <template #item.instituicao="{item}">
                 <v-edit-dialog
@@ -425,7 +386,7 @@
             </template>                        
             <template #item.sncontrapartida="{item}">
                 {{item.sncontrapartida? 'sim' : 'não' }}
-            </template>     -->
+            </template>     
 
             <!-- <template #item.datapublicacao="{item}">
                 {{item.datapublicacaoformatada}}
@@ -628,12 +589,11 @@ export default {
                         }
                         else if (this.operador === 'maior que'){
                             try{
-                                var chave = parseFloat(this.searchKey)
-                                var valorColuna = parseFloat(item[this.columnToSearch])
+                                var chave = this.searchKey ? parseFloat(this.searchKey) : 0
+                                var valorColuna = item[this.columnToSearch]? parseFloat(item[this.columnToSearch]) : 0
                                 includeItem = valorColuna > chave
                             }
                             catch (error){
-                                console.log('aqui')
                                 displayMessage(this, true, error, 'error')
                                 return
                             }                            
@@ -693,7 +653,7 @@ export default {
                     this.items = response.data.vagas.map(vaga => 
                         ({...vaga,valoraprovado:(vaga.valorhoraaula*vaga.aprovada*vaga.cargahoraria)}))
                     this.items = this.items.map(vaga => 
-                        ({...vaga,datamatricula:vaga.datamatricula.substring(3)}))                        
+                        ({...vaga,datamatricula:vaga.datamatricula?vaga.datamatricula.substring(3):''}))                        
                     // this.items = this.items.map((item) => 
                     //         ({...item, datapublicacaoformatada: moment(item.datapublicacao).format("HH:mm:SS DD/MM/YYYY")}))
                     this.originalItems = this.items.slice(0)

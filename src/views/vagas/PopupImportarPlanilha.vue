@@ -3,7 +3,7 @@
         <template v-slot:activator="{ on }">
             <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogImportarPlanilha">Importar</v-btn>
         </template>         
-        <v-card height="500px">
+        <v-card height="600px">
             <v-card-text>
                 <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
                     {{alertMessagePopup}}                                                             
@@ -27,6 +27,10 @@
                         v-model="planilha.snContrapartida"
                         label="Vagas de contrapartida"
                     ></v-switch> 
+                    <v-switch
+                        v-model="planilha.snAlterarRegistrosExistentes"
+                        label="Alterar registros existentes?"
+                    ></v-switch>                     
                     <v-file-input v-model="fileuploaded" label="Escolha a planilha a ser importada*"></v-file-input>
                 </v-form>
                 <v-dialog v-model="dialogDetalhesImportacao" max-width="900px">
@@ -79,6 +83,7 @@ export default {
             fileuploaded: null,
             planilha:{
                 snContrapartida: false,
+                snAlterarRegistrosExistentes: false,
             },
             dialogDetalhesImportacao: false,
             resumoImportacao: '',
@@ -107,7 +112,8 @@ export default {
             this.resumoImportacao = ''
             this.dialogDetalhesImportacao = false    
             this.planilha = {
-                snContrapartida: false
+                snContrapartida: false,
+                snAlterarRegistrosExistentes: false,
             }   
             Vagas.obterPeriodoPactuacaoAberto().then(response => {
                 this.periodoPactuacaoHint = 'Caso não seja preenchido, sistema procurará a coluna na planilha ou utilizará o período atualmente aberto: ' 
@@ -139,6 +145,7 @@ export default {
                 displayMessagePopup(this, true, 'Entre com o nome da aba dos dados na planilha', 'info')
                 return
             }
+            console.log('Planilha:', this.planilha)
             Vagas.upload(this.fileuploaded, this.planilha).then((response) => {
                 displayMessagePopup(this, true, response.body.message, 'success')
                 this.resumoImportacao = response.body.detalheMensagem

@@ -75,6 +75,7 @@
 <script>
 import * as Vagas from '../../services/Vagas.js'
 import {mask} from 'vue-the-mask'
+import moment  from 'moment'
 
 export default {
     directives: {mask},

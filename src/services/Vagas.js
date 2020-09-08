@@ -10,7 +10,9 @@ function upload(file, planilha){
     let formData = new FormData()
     //esse parametro tem que coincidir com o lido pelo muter no backend
     formData.append('fileuploaded', file)
-    formData.append('nomeAba', planilha.nomeAba)
+    if (planilha.nomeAba){
+        formData.append('nomeAba', planilha.nomeAba)
+    } 
     if (planilha.periodoPactuacao){
         formData.append('periodoPactuacao', planilha.periodoPactuacao)
     }

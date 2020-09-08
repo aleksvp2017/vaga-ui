@@ -10,6 +10,8 @@
                 </v-alert>                            
                 <v-form ref="formularioImportacao">                            
                     <v-text-field label="Nome da aba / página da planilha*" v-model="planilha.nomeAba" 
+                        :persistent-hint=true 
+                        hint="Caso não seja preenchido, sistema utilizará a primeira aba da planilha"
                         @keypress.enter="uploadFile()" type="text"/>
                     <v-text-field label="Período pactuação" v-model="planilha.periodoPactuacao" 
                         :persistent-hint=true
@@ -142,10 +144,10 @@ export default {
                 displayMessagePopup(this, true, 'Selecione um arquivo', 'info')
                 return
             }
-            if (!this.planilha.nomeAba){
-                displayMessagePopup(this, true, 'Entre com o nome da aba dos dados na planilha', 'info')
-                return
-            }
+            // if (!this.planilha.nomeAba){
+            //     displayMessagePopup(this, true, 'Entre com o nome da aba dos dados na planilha', 'info')
+            //     return
+            // }
             console.log('Planilha:', this.planilha)
             Vagas.upload(this.fileuploaded, this.planilha).then((response) => {
                 displayMessagePopup(this, true, response.body.message, 'success')

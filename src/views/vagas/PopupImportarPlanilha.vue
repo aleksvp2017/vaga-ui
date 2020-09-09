@@ -9,7 +9,7 @@
                     {{alertMessagePopup}}                                                             
                 </v-alert>                            
                 <v-form ref="formularioImportacao">                            
-                    <v-text-field label="Nome da aba / página da planilha*" v-model="planilha.nomeAba" 
+                    <v-text-field label="Nome da aba / página da planilha" v-model="planilha.nomeAba" 
                         :persistent-hint=true 
                         hint="Caso não seja preenchido, sistema utilizará a primeira aba da planilha"
                         @keypress.enter="uploadFile()" type="text"/>

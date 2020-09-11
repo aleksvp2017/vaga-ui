@@ -285,6 +285,10 @@
                     </template>
                 </v-edit-dialog>
             </template>
+            <!-- APROVADA + CONTRAPARTIDA -->        
+            <template #item.aprovadamaiscontrapartida="{item}">
+                {{ item.aprovadamaiscontrapartida }}
+            </template>             
             <!-- DATA DA APROVACAO -->        
             <template #item.dataaprovacao="{item}">
                 <v-edit-dialog
@@ -653,7 +657,11 @@ export default {
                     this.items = response.data.vagas.map(vaga => 
                         ({...vaga,valoraprovado:(vaga.valorhoraaula*vaga.aprovada*vaga.cargahoraria)}))
                     this.items = this.items.map(vaga => 
-                        ({...vaga,datamatricula:vaga.datamatricula?vaga.datamatricula.substring(3):''}))                        
+                        ({...vaga,datamatricula:vaga.datamatricula?vaga.datamatricula.substring(3):''}))    
+                    this.items = this.items.map(vaga => 
+                        ({...vaga,aprovadamaiscontrapartida:(vaga.aprovada + vaga.aprovadacontrapartida)}))                        
+                    this.items = this.items.map(vaga => 
+                        ({...vaga,dataaprovacao:vaga.dataaprovacao?vaga.dataaprovacao.substring(3):''}))    
                     // this.items = this.items.map((item) => 
                     //         ({...item, datapublicacaoformatada: moment(item.datapublicacao).format("HH:mm:SS DD/MM/YYYY")}))
                     this.originalItems = this.items.slice(0)

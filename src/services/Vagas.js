@@ -57,25 +57,7 @@ const fieldsToDetermineEquality = ['instituicao','uf', 'tipodecurso', 'modalidad
 
 function columns(){
     var itemId = 0
-    return [  
-        // {
-        //     id: itemId++,
-        //     text: 'ANO',
-        //     value: 'ano',
-        //     selected: true,
-        //     summable: false,
-        //     colunatempo: true,
-        //     colunadimensao: true,
-        // }, 
-        // {
-        //     id: itemId++,
-        //     text: 'MÊS',
-        //     value: 'mes',
-        //     selected: true,
-        //     summable: false,
-        //     colunatempo: true,
-        //     colunadimensao: true,
-        // },  
+    return [    
         // {
         //     id: itemId++,
         //     text: 'VAGAID',
@@ -182,6 +164,19 @@ function columns(){
                 return item
             },
         },  
+        {
+            id: itemId++,
+            text: 'APROVADA + CONTRAPARTIDA',
+            value: 'aprovadamaiscontrapartida',
+            selected: true,
+            summable: true,
+            colunatempo: false,
+            colunadimensao: false,
+            datavinculada: 'dataaprovacao',
+            format: (item) => {
+                return item
+            },
+        },         
         {
             id: itemId++,
             text: 'DATA APROVAÇÃO',

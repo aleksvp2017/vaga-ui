@@ -211,6 +211,7 @@ export default {
     gerarDadosParaGraficoEmLinha(){
       //monta vetor de objetos únicos de ano e mês
       var anosMeses = gerarAnosMesesOrdenados(this.matrizDados)
+      console.log('anos meses:', anosMeses)
 
       /*
       monta vetor de objetos por dimensão e com valores por intervalo de tempo no seguinte formato:
@@ -228,16 +229,19 @@ export default {
       */
       var dadosFormatadosPorLegendaValoresPorMesAno = montarDadosFormatadosPorLegendaValoresPorMesAno(this.matrizDados, 
         this.colunasDimensoes, this.metricasSelecionadas, this.colunasMetricas)
+      console.log('dadosFormatadosPorLegendaValoresPorMesAno', dadosFormatadosPorLegendaValoresPorMesAno)
 
       //percore o vetor com o par <ano, mês> procurando por dados correspondentes para montar
       //o conjunto de dados
       anosMeses.map(anoMes => {
+        console.log('Procurando por ' + anoMes.mes + '/' + anoMes.ano)
         this.dimensoes.push(anoMes.mes + '/' + anoMes.ano)  
         dadosFormatadosPorLegendaValoresPorMesAno.map(dadoOrganizado => {
-          
           var dado = dadoOrganizado.dados.find(dadoValor => {
+            console.log(dadoValor)
             return dadoValor.ano == anoMes.ano && dadoValor.mes == anoMes.mes
           })
+          console.log('Dado valor:', dado)
 
           var itemEncontrado = this.metricas.find(metrica => {
             return dadoOrganizado.legenda === metrica.legenda
@@ -325,6 +329,7 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
       metricasSelecionadas.map(metricaSelecionada => {
         //Pega o texto da métrica selecionada
         var legenda = ''
+        console.log('Metrica selecionada:', metricaSelecionada)
         colunasMetricas.map(colunaMetrica => {
           if (metricaSelecionada === colunaMetrica.value){
             legenda = colunaMetrica.text
@@ -356,7 +361,7 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
 
         //se nao tiver, inclui no vetor
         if (!legandaJaPreenchida){
-          if (item.dataaprovacao){
+          if (item.dataaprovacao && (metricaSelecionada == 'aprovada' || metricaSelecionada == 'aprovadamaiscontrapartida')){
             dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
               dados: [
                 {
@@ -366,7 +371,7 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
                 }
               ]})            
           }
-          if (item.datamatricula){
+          if (item.datamatricula && metricaSelecionada == 'matricula'){
             dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
               dados: [
                 {

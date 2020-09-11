@@ -27,7 +27,7 @@
                                 @keypress.enter="uploadFile()" type="text" v-mask="'##/##/####'"/>  
                     <v-switch
                         v-model="planilha.snContrapartida"
-                        label="Vagas de contrapartida"
+                        label="Matrículas de contrapartida"
                     ></v-switch> 
                     <v-switch
                         v-model="planilha.snAlterarRegistrosExistentes"

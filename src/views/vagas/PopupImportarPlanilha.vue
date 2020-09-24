@@ -25,14 +25,18 @@
                         :rules="regrasData"
                         :persistent-hint=true hint="Caso não seja preenchido, sistema procurará a coluna na planilha"
                                 @keypress.enter="uploadFile()" type="text" v-mask="'##/##/####'"/>  
+                    <v-text-field label="SEI" v-model="planilha.sei" 
+                                @keypress.enter="uploadFile()" type="text"/>   
+                    <v-text-field label="TED" v-model="planilha.ted" 
+                                @keypress.enter="uploadFile()" type="text"/>                                                                 
                     <v-switch
                         v-model="planilha.snContrapartida"
                         label="Matrículas de contrapartida"
                     ></v-switch> 
-                    <v-switch
+                    <!--<v-switch
                         v-model="planilha.snAlterarRegistrosExistentes"
                         label="Alterar registros existentes?"
-                    ></v-switch>                     
+                    ></v-switch> -->                    
                     <v-file-input v-model="fileuploaded" label="Escolha a planilha a ser importada*"></v-file-input>
                 </v-form>
                 <v-dialog v-model="dialogDetalhesImportacao" max-width="900px">

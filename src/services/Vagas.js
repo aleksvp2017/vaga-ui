@@ -22,6 +22,12 @@ function upload(file, planilha){
     if (planilha.dataMatricula){
         formData.append('dataMatricula', planilha.dataMatricula)
     }
+    if (planilha.sei){
+        formData.append('sei', planilha.sei)
+    }
+    if (planilha.ted){
+        formData.append('ted', planilha.ted)
+    }        
     formData.append('sncontrapartida', planilha.snContrapartida)
     formData.append('snAlterarRegistrosExistentes', planilha.snAlterarRegistrosExistentes)
     console.log('Alterar registros existentes:', planilha.snAlterarRegistrosExistentes)
@@ -53,7 +59,7 @@ async function obterPeriodoPactuacaoAberto(){
 }
 
 const fieldsToDetermineEquality = ['instituicao','uf', 'tipodecurso', 'modalidadedeensino', 'municipio', 'curso',
-    'periodopactuacao', 'sncontrapartida', 'dataaprovacao', 'datamatricula', 'nomeplanilha']
+    'periodopactuacao', 'sncontrapartida', 'dataaprovacao', 'datamatricula', 'nomeplanilha', 'acao']
 
 function columns(){
     var itemId = 0
@@ -130,21 +136,21 @@ function columns(){
             colunatempo: false,
             colunadimensao: true,
         },                 
-        // {
-        //     id: itemId++,
-        //     text: 'AÇÃO',
-        //     value: 'acao',
-        //     selected: true,
-        //     summable: false,
-        //     colunatempo: false,
-        //     colunadimensao: true,
-        // },                                   
+        {
+             id: itemId++,
+             text: 'AÇÃO',
+             value: 'acao',
+             selected: true,
+             summable: false,
+             colunatempo: false,
+             colunadimensao: true,
+         },                                   
         {
             id: itemId++,
             text: 'HORA-AULA',
             value: 'valorhoraaula',
             selected: true,
-            summable: true,
+            calcularMedia: true,
             colunatempo: false,
             colunadimensao: false,
             format: (item) => {
@@ -284,7 +290,25 @@ function columns(){
             summable: false,
             colunatempo: false,
             colunadimensao: false,
-        },        
+        },  
+        {
+            id: itemId++,
+            text: 'SEI',
+            value: 'sei',
+            selected: true,
+            summable: false,
+            colunatempo: false,
+            colunadimensao: false,
+        },    
+        {
+            id: itemId++,
+            text: 'TED',
+            value: 'ted',
+            selected: true,
+            summable: false,
+            colunatempo: false,
+            colunadimensao: false,
+        },                    
         {
             id: itemId++,
             text: '',

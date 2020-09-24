@@ -232,7 +232,7 @@
                 </v-edit-dialog>
             </template>                                                         
             <!-- ACAO -->         
-            <!-- <template #item.acao="{item}">
+             <template #item.acao="{item}">
                 <v-edit-dialog
                     :return-value.sync="item.acao"
                     @save="saveItem(item)"
@@ -397,7 +397,13 @@
             </template>     -->
             <template #item.nomeplanilha="{item}">
                 {{item.nomeplanilha}}
-            </template>                     
+            </template>        
+            <template #item.sei="{item}">
+                {{item.sei}}
+            </template> 
+            <template #item.ted="{item}">
+                {{item.ted}}
+            </template>                                      
             <template #item.actions="{item}">
                 <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
             </template>     
@@ -405,6 +411,7 @@
                 <td><b>Totais</b></td>
                 <td v-for="column in tableColumns" :key="column.id">
                     {{ column.summable? column.format(sum(column.value)) : '' }}
+                    {{ column.calcularMedia? column.format(calcularMedia(column.value)) : '' }}
                 </td>
             </template>   
         </v-data-table>            
@@ -640,23 +647,38 @@ export default {
             this.items = filteredItems            
         },
         sum(column){
-            let total = 0;
+            let total = 0
             if (this.$refs.vagasTable){
                 //var items = this.$refs.vagasTable.selectableItems
                 var items = this.items
                 items.map( item => {
                     if (item[column] !== null){
-                        total += parseInt(item[column]) 
+                        total += parseFloat(item[column]) 
                     }
                 })
             }
             return total
         },
+        calcularMedia(column){
+            let total = 0
+            let numeroItens = 0
+            if (this.$refs.vagasTable){
+                //var items = this.$refs.vagasTable.selectableItems
+                var items = this.items
+                items.map( item => {
+                    if (item[column] !== null){
+                        total += parseFloat(item[column]) 
+                        numeroItens++
+                    }
+                })
+            }
+            return total / numeroItens
+        },        
         updateItens() {
             Vagas.list().then((response) => {
+                    //this.items = response.data.vagas.map(vaga => 
+                    //    ({...vaga,valoraprovado:(vaga.valorhoraaula*vaga.aprovada*vaga.cargahoraria)}))
                     this.items = response.data.vagas.map(vaga => 
-                        ({...vaga,valoraprovado:(vaga.valorhoraaula*vaga.aprovada*vaga.cargahoraria)}))
-                    this.items = this.items.map(vaga => 
                         ({...vaga,datamatricula:vaga.datamatricula?vaga.datamatricula.substring(3):''}))    
                     this.items = this.items.map(vaga => 
                         ({...vaga,aprovadamaiscontrapartida:(vaga.aprovada + vaga.aprovadacontrapartida)}))                        
@@ -843,8 +865,8 @@ function sumItems(fieldsToSum, itemsWithIdenticalPairs){
         items.map((item, index) => {
             fieldsToSum.map(fieldToSum => {
                 if (index !== 0){
-                    let itemA = parseInt(groupedItem[fieldToSum])
-                    let itemB = parseInt(item[fieldToSum])
+                    let itemA = parseFloat(groupedItem[fieldToSum])
+                    let itemB = parseFloat(item[fieldToSum])
                     if (Number.isNaN(itemA)){
                         itemA = 0
                     }

@@ -11,7 +11,9 @@ export default {
       sortDescending: ': Ordenado decrescente. Ative para remover a ordenação.',
       sortAscending: ': Ordenado crescente. Ative para ordenar decrescente.',
       sortNone: ': Não ordenado. Ative para ordenar crescente.',
-      activateAscending: ': Ativar ordenado crescente.'
+      activateAscending: ': Ativar ordenado crescente.',
+      activateNone: 'activateNone.',
+      activateDescending: ': Ativar ordenado decrescente.'
     },
     sortBy: 'Ordenar por',
   },

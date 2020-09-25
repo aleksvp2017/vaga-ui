@@ -14,46 +14,9 @@
         <v-alert :type="typeAlert" dense text dismissible v-model="showAlert">
             {{alertMessage}}
         </v-alert> 
-        <v-card-title>
-        <v-spacer></v-spacer>
-        <v-container grid-list-lg>
-        <v-layout row wrap>
-            <v-flex xs2>
-                <v-select
-                    v-model="columnToSearch"
-                    :items="colunasFiltraveis"
-                    label="Filtrar por"
-                ></v-select>
-            </v-flex>
-            <v-flex xs2 mx-1>
-                <v-select
-                    v-model="operador"
-                    :items="operadores"
-                    label=""
-                ></v-select>
-            </v-flex>
-            <v-flex xs2 mx-1>
-            <v-text-field 
-            
-            @keydown.enter="addSearchPair"
-            @keyup="customSearch"
-            v-model="searchKey"
-            append-icon="mdi-magnify"
-            label="Valor"
-            single-line
-            hide-details
-            ></v-text-field>
-            </v-flex>
-            <v-card-text>            
-                {{ isSearchPairsFilled()? 'Filtrando por' : ''}}
-                <v-chip v-for="searchPair in searchPairs" :key="searchPair.field" close
-                    v-show="searchPair.show" @click:close="removePair(searchPair)">
-                    {{ searchPair.field + ":" + searchPair.key}}
-                </v-chip>
-            </v-card-text>
-        </v-layout>
-        </v-container>
-        </v-card-title>          
+        <!--FILTROS -->
+        <filtros ref="filtros" :colunasFiltraveis="colunasFiltraveis" v-on:mostrarAlerta="mostrarAlerta"
+            v-on:customSearch="customSearch"/>        
         <v-data-table
             show-select
             ref="vagasTable"
@@ -62,6 +25,7 @@
             :loading="loading"
             :headers="tableColumns"
             :items="items"
+            :custom-sort="customSort"
             item-key="vagaid"
             :footer-props="{
                 itemsPerPageOptions: [10,20, 50, 100, 1000],
@@ -451,6 +415,8 @@ import Projecao from '../../components/projecoes/Projecao.vue'
 import PopupExcluirPlanilha from './PopupExcluirPlanilha.vue'
 import PopupImportarPlanilha from './PopupImportarPlanilha.vue'
 import PopupConfigurarColunas from './PopupConfigurarColunas.vue'
+import Filtros from './Filtros.vue'
+
 
 export default {
     components: {
@@ -460,11 +426,10 @@ export default {
       'popupExcluirPlanilha': PopupExcluirPlanilha,
       'popupImportarPlanilha': PopupImportarPlanilha,
       'popupConfigurarColunas': PopupConfigurarColunas,
+      'filtros': Filtros,
     }, 
     data() {
         return {
-            operador: 'contém',
-            operadores: ['contém','maior que','menor que', 'não contém'],
             mostrarPopupExcluir: false,
             mostrarPopupImportar: false,
             actionColumn: {},
@@ -472,10 +437,8 @@ export default {
             vagasTable: {},
             rate: 0,
             errors: {},            
-            columnToSearch: null,
             rowsSelected: [],
             loading: true,
-            searchKey:'',
             dialogImportar: false,
             dialogColunas: false,
             items:[],
@@ -488,7 +451,6 @@ export default {
             typeAlertPopup: 'error',  
             selectedColumns:[],
             tableColumns:[],
-            searchPairs:[],
             dialogChart: false,
         }
     },
@@ -514,6 +476,50 @@ export default {
         }
     },
     methods: {
+        customSort(items, index, isDesc) {
+            items.sort((a, b) => {
+                if (index[0] === "dataaprovacao" || index[0] === "datamatricula") {
+                    if (!a[index] || !b[index]){
+                        if (!isDesc[0]) {
+                            return a[index] < b[index] ? -1 : 1;
+                        } else {
+                            return b[index] < a[index] ? -1 : 1;
+                        }
+                    } else {
+                        var anoA = parseInt(a[index].substring(3,7))
+                        var mesA = parseInt(a[index].substring(0,2))
+                        var anoB = parseInt(b[index].substring(3,7))
+                        var mesB = parseInt(b[index].substring(0,2))
+                        if (!isDesc[0]){
+                            if (anoA === anoB){
+                                return mesA < mesB ? -1 : 1
+                            } 
+                            else {
+                                return anoA < anoB ? -1 : 1
+                            }
+                        }
+                        else {
+                            if (anoA === anoB){
+                                return mesA > mesB ? -1 : 1
+                            } 
+                            else {
+                                return anoA > anoB ? -1 : 1
+                            }
+                        }                        
+                    }
+                } else {
+                    if (!isDesc) {
+                        return a[index] < b[index] ? -1 : 1;
+                    } else {
+                        return b[index] < a[index] ? -1 : 1;
+                    }
+                }
+            })
+            return items
+        },
+        mostrarAlerta(message, type){
+            displayMessage(this, true, message, type)
+        },
         exportSheet(){
             let header = this.tableColumns.filter(element => element.value !== 'actions' && element.value != 'vagaid')
             header = header.map(element => element.value)
@@ -547,32 +553,28 @@ export default {
             this.items = []
             this.items.push(...itemsWithoutIdenticalPairs,...identicalItemsGrouped)
         },
-        removePair(searchPair){
-            searchPair.show = false
-            this.customSearch()
-        },
-        addSearchPair(){
-            if (this.columnToSearch !== null && this.searchKey != ''){
-                var item = this.searchPairs.filter(searchPair => searchPair.field === this.columnToSearch)
+        addSearchPair(columnToSearch){
+            if (columnToSearch !== null &&searchKey != ''){
+                var item = searchPairs.filter(searchPair => searchPair.field === columnToSearch)
                 if (item.length > 0){
                     item = item[0]
-                    item.key = this.searchKey
+                    item.key =searchKey
                     item.show = true
                 }
                 else {
-                    item = {field: this.columnToSearch, key: this.searchKey, show: true}
-                    this.searchPairs.push(item)
+                    item = {field: columnToSearch, key:searchKey, show: true}
+                    searchPairs.push(item)
                 }
             }
-            this.searchKey = ''
+           searchKey = ''
         },        
-        customSearch () {
-            if (this.isSearchPairsFilled(this.searchPairs)){
+        customSearch (searchPairs, searchKey, columnToSearch, operador) {
+            if (this.isSearchPairsFilled(searchPairs)){
                 var itemsToSearch = this.originalItems
                 var filteredItems = []
                 itemsToSearch.map((item, index) => {
                     var includeItem = true
-                    this.searchPairs.map(searchPair => {
+                    searchPairs.map(searchPair => {
                         if (searchPair.show && (item[searchPair.field] == null || !isContem(item[searchPair.field].toString(), searchPair.key))){
                             includeItem = false
                         }
@@ -581,27 +583,25 @@ export default {
                         filteredItems.push(item)
                     }
                 })
-                //console.log('Filtered:', filteredItems)
                 this.items = filteredItems.slice(0)                
-                //console.log(items)
             } else{
-                this.searchCellsForKey()
+                this.searchCellsForKey(searchKey, columnToSearch, operador)
             }
         },        
-        searchCellsForKey(){
+        searchCellsForKey(searchKey, columnToSearch, operador){
             var filteredItems = []
             this.originalItems.map((item, index) => {
                 var includeItem = false
                 //Search for specific column
-                if (this.columnToSearch !== null){
-                    if (item[this.columnToSearch] != null){
-                        if (this.operador === 'contém'){
-                            includeItem = isContem(item[this.columnToSearch].toString(), this.searchKey) || this.searchKey === ''
+                if (columnToSearch){
+                    if (item[columnToSearch] != null){
+                        if (operador === 'contém'){
+                            includeItem = isContem(item[columnToSearch].toString(),searchKey) ||searchKey === ''
                         }
-                        else if (this.operador === 'maior que'){
+                        else if (operador === 'maior que'){
                             try{
-                                var chave = this.searchKey ? parseFloat(this.searchKey) : 0
-                                var valorColuna = item[this.columnToSearch]? parseFloat(item[this.columnToSearch]) : 0
+                                var chave =searchKey ? parseFloat(searchKey) : 0
+                                var valorColuna = item[columnToSearch]? parseFloat(item[columnToSearch]) : 0
                                 includeItem = valorColuna > chave
                             }
                             catch (error){
@@ -609,20 +609,19 @@ export default {
                                 return
                             }                            
                         }
-                        else if (this.operador === 'menor que'){
+                        else if (operador === 'menor que'){
                             try{
-                                var chave = parseFloat(this.searchKey)
-                                var valorColuna = parseFloat(item[this.columnToSearch])
+                                var chave = parseFloat(searchKey)
+                                var valorColuna = parseFloat(item[columnToSearch])
                                 includeItem = valorColuna < chave
                             }
                             catch (error){
-                                console.log('aqui')
                                 displayMessage(this, true, error, 'error')
                                 return
                             }                            
                         }   
-                        else if (this.operador === 'não contém'){
-                           includeItem = !isContem(item[this.columnToSearch].toString(), this.searchKey) || this.searchKey === ''                           
+                        else if (operador === 'não contém'){
+                           includeItem = !isContem(item[columnToSearch].toString(),searchKey) ||searchKey === ''                           
                         }                                             
                     }
                 }
@@ -633,8 +632,8 @@ export default {
                         //Verifica se está nas colunas selecionadas                         
                         if (id && this.selectedColumns.indexOf(id) != -1){
                             if ((cell[1] != null &&
-                            this.searchKey != null &&
-                            isContem(cell[1].toString(), this.searchKey)) || this.searchKey === ''){
+                           searchKey != null &&
+                            isContem(cell[1].toString(),searchKey)) ||searchKey === ''){
                                 includeItem = true
                             }
                         }
@@ -644,7 +643,7 @@ export default {
                     filteredItems.push(item)
                 }
             })
-            this.items = filteredItems            
+            this.items = filteredItems   
         },
         sum(column){
             let total = 0
@@ -752,10 +751,10 @@ export default {
         },
         cancelEditField(){
         }, 
-        isSearchPairsFilled(){
-            if (this.searchPairs.length > 0){
+        isSearchPairsFilled(searchPairs){
+            if (searchPairs.length > 0){
                 var searchPairFilled = false
-                this.searchPairs.map( searchPair => {
+                searchPairs.map( searchPair => {
                     if (searchPair.show){
                         searchPairFilled = true
                     }
@@ -766,18 +765,15 @@ export default {
             return false
         },     
         reset(){
-            this.searchPairs = []
             this.snLinhasAgrupadas = false
-            this.searchKey = ''
-            this.columnToSearch = null
             initialize(this)
+            this.$refs.filtros.reset()
         },
         atualizarColunas(colunasSelecionadas, updatedColumns){
             this.selectedColumns = colunasSelecionadas
-            console.log(updatedColumns.length, this.tableColumns.length)
             updatedColumns.push(this.actionColumn)
             this.tableColumns = updatedColumns
-            this.searchKey = ''
+            this.$refs.filtros.reset()
             this.agrupaLinhasIdenticas()
         }     
     },

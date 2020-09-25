@@ -46,7 +46,7 @@
                 {{ isSearchPairsFilled()? 'Filtrando por' : ''}}
                 <v-chip v-for="searchPair in searchPairs" :key="searchPair.field" close
                     v-show="searchPair.show" @click:close="removePair(searchPair)">
-                    {{ searchPair.field + ":" + searchPair.key}}
+                    {{ searchPair.field + " " + searchPair.operador + " " + searchPair.key}}
                 </v-chip>
             </v-card-text>
         </v-layout>
@@ -82,7 +82,6 @@ export default {
             this.customSearch()
         },        
         addSearchPair(){
-            console.log(this.searchKey, this.columnToSearch)
             if (this.searchKey === '' || this.columnToSearch === ''){
                 this.$emit('mostrarAlerta', 'Preencha o campo chave e escolha a coluna pela qual filtrar', 'info')
                 return
@@ -94,9 +93,10 @@ export default {
                     item = item[0]
                     item.key = this.searchKey
                     item.show = true
+                    item.operador = this.operador
                 }
                 else {
-                    item = {field: this.columnToSearch, key: this.searchKey, show: true}
+                    item = {field: this.columnToSearch, key: this.searchKey, show: true, operador: this.operador}
                     this.searchPairs.push(item)
                 }
                 this.customSearch()

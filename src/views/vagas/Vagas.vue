@@ -575,9 +575,43 @@ export default {
                 itemsToSearch.map((item, index) => {
                     var includeItem = true
                     searchPairs.map(searchPair => {
-                        if (searchPair.show && (item[searchPair.field] == null || !isContem(item[searchPair.field].toString(), searchPair.key))){
-                            includeItem = false
-                        }
+                        if (searchPair.show){
+                            if (item[searchPair.field] == null){
+                                includeItem = false
+                            }
+                            else{
+                                if (searchPair.operador === 'contém'){
+                                    if (!isContem(item[searchPair.field].toString(), searchPair.key)){
+                                        includeItem = false
+                                    }
+                                }
+                                else if (searchPair.operador === 'menor que'){
+                                    try{
+                                        var chave =searchPair.key ? parseFloat(searchPair.key) : 0
+                                        var valorColuna = item[searchPair.field]? parseFloat(item[searchPair.field]) : 0
+                                        includeItem = valorColuna < chave
+                                    }
+                                    catch (error){
+                                        displayMessage(this, true, error, 'error')
+                                        return
+                                    }                            
+                                }    
+                                else if (searchPair.operador === 'maior que'){
+                                    try{
+                                        var chave =searchPair.key ? parseFloat(searchPair.key) : 0
+                                        var valorColuna = item[searchPair.field]? parseFloat(item[searchPair.field]) : 0
+                                        includeItem = valorColuna > chave
+                                    }
+                                    catch (error){
+                                        displayMessage(this, true, error, 'error')
+                                        return
+                                    }                            
+                                } 
+                                else if (searchPair.operador === 'não contém'){
+                                    includeItem = !isContem(item[searchPair.field].toString(),searchPair.key) ||searchPair.key === ''                           
+                                }                                                                                              
+                            }
+                        }  
                     })
                     if (includeItem){
                         filteredItems.push(item)

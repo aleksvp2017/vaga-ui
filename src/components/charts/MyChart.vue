@@ -43,12 +43,6 @@
           ></v-switch> 
          <v-switch
           style="margin:10px"
-          v-if="(tipoGraficoSelecionado === 'mostrarGraficoLinha')"
-          v-model="snAcumulados"
-          label="Mostrar dados acumulados"
-          ></v-switch> 
-         <v-switch
-          style="margin:10px"
           v-if="(tipoGraficoSelecionado === 'mostrarGraficoPizza')"
           v-model="tipoDonut"
           label="Donut?"
@@ -71,6 +65,17 @@
             v-model="mostrarOrdenar"
             label="Ordenar por métrica?"
           ></v-switch> 
+         <v-switch
+          style="margin:10px"
+          v-if="(tipoGraficoSelecionado === 'mostrarGraficoLinha')"
+          v-model="snAcumulados"
+          label="Mostrar dados acumulados"
+          ></v-switch>        
+               
+          <v-card class="d-flex flex-row mb-6" flat tile v-for="metricaAAcumular in colunasMetricasSelecionadas" :key="metricaAAcumular.value">
+            <v-checkbox :label="metricaAAcumular.text" v-model="metricaAAcumular.snAcumular" v-if="snAcumulados" >
+            </v-checkbox>
+          </v-card>       
       <v-btn-toggle v-if="mostrarOrdenar"
         
         color="primary"
@@ -177,15 +182,22 @@ export default {
       legendas:[],
     }
   },
+  created () {
+  },
   components: {
     'piechart': PieChart,
     'barchart': BarChart,
     'horizontalbarchart': HorizontalBarChart,
     'linechart': LineChart,
     'polarchart': PolarAreaChart,
-    'multiplebarchart': MultipleMetricBarChart,
+    'multiplebarchart': MultipleMetricBarChart,  
   }, 
   props:['matrizDados', 'colunasMetricas', 'colunasDimensoes'],
+  watch: { 
+      	snAcumulados: function(newVal, oldVal) { // watch it
+          //console.log('Prop changed: ', newVal, ' | was: ', oldVal)
+        }
+  }  ,
   computed: {
     metriclegend(){
       var legenda = ''
@@ -196,6 +208,15 @@ export default {
       })
       return legenda
     },
+    colunasMetricasSelecionadas(){
+      var itens = []
+      this.colunasMetricas.map(colunaMetrica => {
+        if (this.metricasSelecionadas.includes(colunaMetrica.value)){
+          itens.push(colunaMetrica)
+        }
+      })
+      return itens
+    }
   },
   methods: {
     gerarGrafico(){
@@ -282,9 +303,8 @@ export default {
       if (this.snTotal){
         this.metricas.push(calcularTotal(this.metricas))
       }
-
-      if (this.snAcumulados){
-        acumularDados(this.metricas)
+      if (this.snAcumulados){        
+        acumularDados(this.metricas, this.colunasMetricas)
       }
     }
   },
@@ -309,17 +329,22 @@ function calcularTotal(metricas){
   return total
 }
 
-function acumularDados(metricas){
+function acumularDados(metricas, colunasMetricas){
   metricas.map(metrica => {
-    metrica.dados.map((dado, index) =>{
-      if (index > 0){
-        //console.log('Somando ', dado, ' com ', metrica.dados[index-1])
-        metrica.dados[index] = dado + metrica.dados[index-1]
-        //console.log('Dado somado:', dado)
+    var snAcumular = false
+    colunasMetricas.map(colunaMetrica => {
+      if (colunaMetrica.text === metrica.legenda && colunaMetrica.snAcumular){
+        snAcumular = true
       }
     })
+    if (snAcumular){
+      metrica.dados.map((dado, index) =>{
+        if (index > 0){
+          metrica.dados[index] = dado + metrica.dados[index-1]
+        }
+      })
+    }
   })
-  //console.log(metricas)
 }
 function obterAno(data){
   if (data.length === 10){

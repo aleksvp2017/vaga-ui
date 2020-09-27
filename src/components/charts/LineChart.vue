@@ -6,7 +6,6 @@ export default {
   props:['dimension', 'metrics','mostrarValoresZerados'],  
   extends: Line,
   mounted () {
-      //console.log('Prop metrics:', this.metrics)
       //console.log('Prop dimension:', this.dimension)
       var metricas = this.metrics
       var dimensoes = this.dimension

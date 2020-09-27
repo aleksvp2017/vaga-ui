@@ -8,7 +8,7 @@
       <v-tab>Tabela</v-tab>
       <v-tab>Gráfico</v-tab>
       <v-tab>Mapa</v-tab>
-      <v-tab>Projeções</v-tab>
+      <v-tab>Detalhes</v-tab>
 
       <v-tab-item key="tabela">
         <v-alert :type="typeAlert" dense text dismissible v-model="showAlert">
@@ -393,8 +393,8 @@
       </v-tab-item>
       <!-- FIM DO MAPA -->
       <!-- PROJECOES -->
-      <v-tab-item key="projecoes">
-        <projecao />
+      <v-tab-item key="detalhes">
+        <detalhes />
       </v-tab-item>
       <!-- FIM DO GRAFICO -->      
     </v-tabs>
@@ -411,7 +411,7 @@ import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
 import XLSX from 'xlsx'
 import MyChart from '../../components/charts/MyChart.vue'
 import MyMap from '../../components/maps/MyMap.vue'
-import Projecao from '../../components/projecoes/Projecao.vue'
+import Detalhes from '../../components/detalhes/Detalhes.vue'
 import PopupExcluirPlanilha from './PopupExcluirPlanilha.vue'
 import PopupImportarPlanilha from './PopupImportarPlanilha.vue'
 import PopupConfigurarColunas from './PopupConfigurarColunas.vue'
@@ -422,7 +422,7 @@ export default {
     components: {
       'mychart': MyChart,
       'mymap': MyMap,
-      'projecao': Projecao,
+      'detalhes': Detalhes,
       'popupExcluirPlanilha': PopupExcluirPlanilha,
       'popupImportarPlanilha': PopupImportarPlanilha,
       'popupConfigurarColunas': PopupConfigurarColunas,
@@ -570,6 +570,7 @@ export default {
         },        
         customSearch (searchPairs, searchKey, columnToSearch, operador) {
             if (this.isSearchPairsFilled(searchPairs)){
+                console.log(searchPairs)
                 var itemsToSearch = this.originalItems
                 var filteredItems = []
                 itemsToSearch.map((item, index) => {
@@ -580,36 +581,38 @@ export default {
                                 includeItem = false
                             }
                             else{
-                                if (searchPair.operador === 'contém'){
-                                    if (!isContem(item[searchPair.field].toString(), searchPair.key)){
-                                        includeItem = false
+                                if (includeItem){ //precisa dessa if, pq se uma condicao de uma chave anterior deu falso, ja nao inclui o item
+                                    if (searchPair.operador === 'contém'){
+                                        if (!isContem(item[searchPair.field].toString(), searchPair.key)){
+                                            includeItem = false
+                                        }
                                     }
-                                }
-                                else if (searchPair.operador === 'menor que'){
-                                    try{
-                                        var chave =searchPair.key ? parseFloat(searchPair.key) : 0
-                                        var valorColuna = item[searchPair.field]? parseFloat(item[searchPair.field]) : 0
-                                        includeItem = valorColuna < chave
-                                    }
-                                    catch (error){
-                                        displayMessage(this, true, error, 'error')
-                                        return
-                                    }                            
-                                }    
-                                else if (searchPair.operador === 'maior que'){
-                                    try{
-                                        var chave =searchPair.key ? parseFloat(searchPair.key) : 0
-                                        var valorColuna = item[searchPair.field]? parseFloat(item[searchPair.field]) : 0
-                                        includeItem = valorColuna > chave
-                                    }
-                                    catch (error){
-                                        displayMessage(this, true, error, 'error')
-                                        return
-                                    }                            
-                                } 
-                                else if (searchPair.operador === 'não contém'){
-                                    includeItem = !isContem(item[searchPair.field].toString(),searchPair.key) ||searchPair.key === ''                           
-                                }                                                                                              
+                                    else if (searchPair.operador === 'menor que'){
+                                        try{
+                                            var chave =searchPair.key ? parseFloat(searchPair.key) : 0
+                                            var valorColuna = item[searchPair.field]? parseFloat(item[searchPair.field]) : 0
+                                            includeItem = valorColuna < chave
+                                        }
+                                        catch (error){
+                                            displayMessage(this, true, error, 'error')
+                                            return
+                                        }                            
+                                    }    
+                                    else if (searchPair.operador === 'maior que'){
+                                        try{
+                                            var chave =searchPair.key ? parseFloat(searchPair.key) : 0
+                                            var valorColuna = item[searchPair.field]? parseFloat(item[searchPair.field]) : 0
+                                            includeItem = valorColuna > chave
+                                        }
+                                        catch (error){
+                                            displayMessage(this, true, error, 'error')
+                                            return
+                                        }                            
+                                    } 
+                                    else if (searchPair.operador === 'não contém'){
+                                        includeItem = !isContem(item[searchPair.field].toString(),searchPair.key) ||searchPair.key === ''                           
+                                    }     
+                                }                                                                                         
                             }
                         }  
                     })

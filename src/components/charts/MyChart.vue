@@ -64,7 +64,24 @@
           v-if="(tipoGraficoSelecionado === 'mostrarGraficoBarraHorizontal' || tipoGraficoSelecionado === 'mostrarGraficoLinha')"
           v-model="mostrarValoresZerados"
           label="Mostrar valores zerados?"
-          ></v-switch>                   
+          ></v-switch>   
+          <v-switch
+            style="margin:10px"
+            v-if="(tipoGraficoSelecionado === 'mostrarGraficoBarraHorizontal')"
+            v-model="mostrarOrdenar"
+            label="Ordenar por métrica?"
+          ></v-switch> 
+      <v-btn-toggle v-if="mostrarOrdenar"
+        
+        color="primary"
+        dense
+        group
+        multiple
+      >          
+          <v-btn v-if="ordenarCrescente" icon  @click="ordenarCrescente = !ordenarCrescente" color="primary"><v-icon >mdi-arrow-down-bold</v-icon></v-btn>  
+          <v-btn v-if="!ordenarCrescente" icon @click="ordenarCrescente = !ordenarCrescente" color="primary"><v-icon >mdi-arrow-up-bold</v-icon></v-btn>    
+      </v-btn-toggle>          
+        
         </v-row>
         <p class="font-weight-light mb-0"><v-icon>mdi-head-lightbulb</v-icon> As dimensões do gráfico são as colunas não numéricas da tabela</p>
     </v-container>
@@ -82,6 +99,7 @@
       <horizontalbarchart :metric='metricas' :dimension='dimensoes' :metriclegend='legendas' :key="chartKey" 
         v-if='mostrarTipoGrafico.mostrarGraficoBarraHorizontal' :mostrarRotulosNoGrafico='mostrarRotulosNoGrafico'
         :mostrarValoresZerados='mostrarValoresZerados'
+        :mostrarOrdenar='mostrarOrdenar' :ordenarCrescente='ordenarCrescente'
         :height="140"/>
       <linechart :metrics='metricas' :dimension='dimensoes' :key="chartKey" v-if='mostrarTipoGrafico.mostrarGraficoLinha'
         :mostrarValoresZerados='mostrarValoresZerados' :height="140"/>
@@ -109,6 +127,8 @@ import * as Vagas from '../../services/Vagas.js'
 export default {
   data() {
     return {
+      ordenarCrescente: true,
+      mostrarOrdenar: false,
       mostrarValoresZerados: false,
       mostrarRotulosNoGrafico: false,
       tipoDonut: false,

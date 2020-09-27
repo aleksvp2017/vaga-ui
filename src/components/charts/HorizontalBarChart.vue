@@ -9,7 +9,8 @@
   import Chart from 'chart.js'
 
   export default {
-  props:['metric', 'dimension', 'metriclegend', 'mostrarRotulosNoGrafico', 'mostrarValorezZerados', 'mostrarValoresZerados'],
+  props:['metric', 'dimension', 'metriclegend', 'mostrarRotulosNoGrafico', 'mostrarValorezZerados', 'mostrarValoresZerados',
+    'ordenarCrescente', 'mostrarOrdenar'],
   mounted() {
     var metricas = this.metric
     var dimensoes = this.dimension
@@ -18,7 +19,12 @@
       metricas = metricasSemValoresZerados
       dimensoes = dimensoesSemValoresZerados
     }
-    ordenarPorDimensao(dimensoes, metricas)
+    if (this.mostrarOrdenar){
+      ordenarPorMetrica(dimensoes, metricas, this.ordenarCrescente)  
+    }
+    else{
+      ordenarPorDimensao(dimensoes, metricas)
+    }
     this.createChart('horizontal-bar-chart', metricas, dimensoes);
   },
   methods: {
@@ -56,6 +62,34 @@ function retirarValoresZerados(dimension, metric){
     }
   })
   return {dimensoesSemValoresZerados, metricasSemValoresZerados}
+}
+
+//Caso a dimensão seja numérica, a exemplo do ano, ordena por ela
+function ordenarPorMetrica(dimension, metric, ordemCrescente){
+  var teveTroca = true
+  while (teveTroca){
+    teveTroca = false
+    metric.map((item, index) => {
+      //troca valor com o proximo, se for o caso, até o tamanho do vetor      
+      if ((index+1) < metric.length){
+        let numero1 = parseInt(item)
+        let numero2 = parseInt(metric[index+1])
+        var condicao = numero1 < numero2
+        if (!ordemCrescente){
+          condicao = numero1 > numero2
+        }
+        if (condicao){
+          teveTroca = true
+          //faz a troca na dimensao e na metrica correspondente
+          metric[index] = numero2
+          metric[index+1] = numero1
+          let dimensaoTemporaria = dimension[index]
+          dimension[index] = dimension[index+1]
+          dimension[index+1] = dimensaoTemporaria           
+        }
+      }
+    })
+  }
 }
 
 //Caso a dimensão seja numérica, a exemplo do ano, ordena por ela

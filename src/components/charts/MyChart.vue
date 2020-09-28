@@ -330,8 +330,8 @@ function calcularTotal(metricas){
 }
 
 function acumularDados(metricas, colunasMetricas){
-  console.log('Colunas metricas:', colunasMetricas)
-  console.log('Metricas', metricas)
+  //console.log('Colunas metricas:', colunasMetricas)
+  //console.log('Metricas', metricas)
   metricas.map(metrica => {
     var snAcumular = false
     colunasMetricas.map(colunaMetrica => {

@@ -15,7 +15,7 @@
             {{alertMessage}}
         </v-alert> 
         <!--FILTROS -->
-        <filtros ref="filtros" :colunasFiltraveis="colunasFiltraveis" v-on:mostrarAlerta="mostrarAlerta"
+        <filtros ref="filtros" :colunasFiltraveis="colunasFiltraveisOrdenadas" v-on:mostrarAlerta="mostrarAlerta"
             v-on:customSearch="customSearch"/>        
         <v-data-table
             show-select
@@ -477,6 +477,18 @@ export default {
         initialize(this)
     },
     computed: {
+        colunasFiltraveisOrdenadas(){
+            var colunasOrdenadas = this.colunasFiltraveis.sort((a,b) =>{
+                if (a.text == b.text) {
+                    return 0
+                }
+                else if (a.text < b.text){
+                    return -1
+                }  
+                return 1
+            })
+            return colunasOrdenadas
+        },
         //todas as colunas exceto a de actions
         tableConfigurableColumns(){
             return Vagas.columns().filter(column => column.value !== 'actions')
@@ -589,7 +601,6 @@ export default {
         },        
         customSearch (searchPairs, searchKey, columnToSearch, operador) {
             if (this.isSearchPairsFilled(searchPairs)){
-                console.log(searchPairs)
                 var itemsToSearch = this.originalItems
                 var filteredItems = []
                 itemsToSearch.map((item, index) => {

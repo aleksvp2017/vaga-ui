@@ -5,6 +5,7 @@
         <v-layout row wrap>
             <v-flex xs2>
                 <v-select
+                    
                     v-model="columnToSearch"
                     :items="colunasFiltraveis"
                     label="Filtrar por"

@@ -300,12 +300,12 @@ export default {
       })
 
       //Soma o total por par <ano, mes>
-      if (this.snTotal){
-        this.metricas.push(calcularTotal(this.metricas))
-      }
       if (this.snAcumulados){        
         acumularDados(this.metricas, this.colunasMetricas)
       }
+      if (this.snTotal){
+        this.metricas.push(calcularTotal(this.metricas))
+      }      
     }
   },
 }
@@ -330,10 +330,12 @@ function calcularTotal(metricas){
 }
 
 function acumularDados(metricas, colunasMetricas){
+  console.log('Colunas metricas:', colunasMetricas)
+  console.log('Metricas', metricas)
   metricas.map(metrica => {
     var snAcumular = false
     colunasMetricas.map(colunaMetrica => {
-      if (colunaMetrica.text === metrica.legenda && colunaMetrica.snAcumular){
+      if ((colunaMetrica.text === metrica.legenda || colunasMetricas.length == 1) && colunaMetrica.snAcumular){
         snAcumular = true
       }
     })
@@ -346,6 +348,7 @@ function acumularDados(metricas, colunasMetricas){
     }
   })
 }
+
 function obterAno(data){
   if (data.length === 10){
     return data.substring(6)

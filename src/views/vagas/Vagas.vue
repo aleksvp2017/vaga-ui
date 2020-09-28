@@ -213,7 +213,26 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>                                                                   -->
+            </template>        
+            <!-- REDE -->         
+             <template #item.rede="{item}">
+                <v-edit-dialog
+                    :return-value.sync="item.rede"
+                    @save="saveItem(item)"
+                    @cancel="cancelEditField"
+                    @open="editField"
+                    @close="closeEditField"
+                    > {{ item.rede }}
+                    <template v-slot:input>
+                        <v-text-field :disabled="editDisabled"
+                        v-model="item.rede"
+                        label="Edit"
+                        single-line
+                        counter
+                        ></v-text-field>
+                    </template>
+                </v-edit-dialog>
+            </template>    
         <!-- VALOR HORA-AULA -->        
             <template #item.valorhoraaula="{item}">
                 <v-edit-dialog

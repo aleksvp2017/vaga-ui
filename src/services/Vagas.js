@@ -59,7 +59,7 @@ async function obterPeriodoPactuacaoAberto(){
 }
 
 const fieldsToDetermineEquality = ['instituicao','uf', 'tipodecurso', 'modalidadedeensino', 'municipio', 'curso',
-    'periodopactuacao', 'sncontrapartida', 'dataaprovacao', 'datamatricula', 'nomeplanilha', 'acao']
+    'periodopactuacao', 'sncontrapartida', 'dataaprovacao', 'datamatricula', 'nomeplanilha', 'acao','rede']
 
 function columns(){
     var itemId = 0
@@ -81,7 +81,16 @@ function columns(){
             summable: false,
             colunatempo: false,
             colunadimensao: true,
-        },                          
+        },      
+        {
+            id: itemId++,
+            text: 'REDE',
+            value: 'rede',
+            selected: true,
+            summable: false,
+            colunatempo: false,
+            colunadimensao: true,
+        },                              
         {
             id: itemId++,
             text: 'UF',

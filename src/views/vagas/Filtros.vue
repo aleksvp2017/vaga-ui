@@ -3,14 +3,20 @@
         <v-spacer></v-spacer>
         <v-container grid-list-lg>
         <v-layout row wrap>
-            <v-flex xs2>
+            
+                 <v-col cols="10" sm="5">
                 <v-select
-                    
-                    v-model="columnToSearch"
+                    multiple
+                    chips
+                    deletable-chips
+                    dense
+                    full-width
+                    v-model="colunasParaProcurar"
                     :items="colunasFiltraveis"
                     label="Filtrar por"
                 ></v-select>
-            </v-flex>
+                 </v-col>
+           
             <v-flex xs2 mx-1>
                 <v-select
                     v-model="operador"
@@ -63,7 +69,7 @@ export default {
         return {
             searchKey: '',
             searchPairs: [],
-            columnToSearch: '',
+            colunasParaProcurar: [],
             operador: 'contém',
             operadores: ['contém','maior que','menor que', 'não contém'],
         }
@@ -76,20 +82,27 @@ export default {
         reset(){
             this.searchKey = ''
             this.searchPairs = []
-            this.columnToSearch = ''
+            this.colunasParaProcurar = []
         },
         removePair(searchPair){
             searchPair.show = false
             this.customSearch()
         },        
         addSearchPair(){
-            if (this.searchKey === '' || this.columnToSearch === ''){
+            if (this.searchKey === '' || this.colunasParaProcurar.length === 0){
                 this.$emit('mostrarAlerta', 'Preencha o campo chave e escolha a coluna pela qual filtrar', 'info')
                 return
             }
 
-            if (this.columnToSearch !== null && this.searchKey != ''){
-                var item = this.searchPairs.filter(searchPair => searchPair.field === this.columnToSearch)
+            if (this.colunasParaProcurar !== null && this.colunasParaProcurar.length > 0 && this.searchKey != ''){
+                var item = 
+                    this.searchPairs.filter(searchPair => {
+                        var vetoresSaoIguais = (searchPair.length == this.colunasParaProcurar.length) && searchPair.every(function(campo, index) {
+                            return campo === colunasParaProcurar[index]; 
+                        })
+                        return vetoresSaoIguais
+                    })
+                //o teste é assim porque filter retorna uma array
                 if (item.length > 0){
                     item = item[0]
                     item.key = this.searchKey
@@ -97,7 +110,8 @@ export default {
                     item.operador = this.operador
                 }
                 else {
-                    item = {field: this.columnToSearch, key: this.searchKey, show: true, operador: this.operador}
+                    //tem que fazer o join, porque o field, que será usado nos chips, só pode receber tipos primitivos
+                    item = {field: this.colunasParaProcurar.join(','), key: this.searchKey.toString(), show: true, operador: this.operador}
                     this.searchPairs.push(item)
                 }
                 this.customSearch()
@@ -105,7 +119,7 @@ export default {
             this.searchKey = ''
         },   
         customSearch(){
-            this.$emit('customSearch', this.searchPairs, this.searchKey, this.columnToSearch, this.operador)
+            this.$emit('customSearch', this.searchPairs, this.searchKey, this.colunasParaProcurar, this.operador)
         },
         isSearchPairsFilled(){
             if (this.searchPairs.length > 0){

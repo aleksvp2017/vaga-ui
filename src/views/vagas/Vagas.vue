@@ -602,48 +602,52 @@ export default {
         customSearch (searchPairs, searchKey, columnToSearch, operador) {
             if (this.isSearchPairsFilled(searchPairs)){
                 var itemsToSearch = this.originalItems
+                //itemsToSearch.push(this.originalItems[0])
                 var filteredItems = []
                 itemsToSearch.map((item, index) => {
                     var includeItem = true
                     searchPairs.map(searchPair => {
                         if (searchPair.show){
-                            if (item[searchPair.field] == null){
-                                includeItem = false
-                            }
-                            else{
-                                if (includeItem){ //precisa dessa if, pq se uma condicao de uma chave anterior deu falso, ja nao inclui o item
-                                    if (searchPair.operador === 'contém'){
-                                        if (!isContem(item[searchPair.field].toString(), searchPair.key)){
-                                            includeItem = false
+                            //aqui é um loop pq pode ter escolhido mais de um campo
+                            var condicaoDeInclusaoItemPorCampo = false
+                            if (includeItem){ //precisa dessa if, pq se uma condicao de uma chave anterior deu falso, ja nao inclui o item
+                                searchPair.field.split(',').map(campoABuscar => {
+                                    if (!condicaoDeInclusaoItemPorCampo){
+                                        if (item[campoABuscar] != null){
+                                            if (searchPair.operador === 'contém'){
+                                                condicaoDeInclusaoItemPorCampo = isContem(item[campoABuscar].toString(), searchPair.key)
+                                            }
+                                            else if (searchPair.operador === 'menor que'){
+                                                try{
+                                                    var chave =searchPair.key ? parseFloat(searchPair.key) : 0
+                                                    var valorColuna = item[campoABuscar]? parseFloat(item[campoABuscar]) : 0
+                                                    condicaoDeInclusaoItemPorCampo = valorColuna < chave
+                                                }
+                                                catch (error){
+                                                    displayMessage(this, true, error, 'error')
+                                                    return
+                                                }                            
+                                            }    
+                                            else if (searchPair.operador === 'maior que'){
+                                                try{
+                                                    var chave =searchPair.key ? parseFloat(searchPair.key) : 0
+                                                    var valorColuna = item[campoABuscar]? parseFloat(item[campoABuscar]) : 0
+                                                    condicaoDeInclusaoItemPorCampo = valorColuna > chave
+                                                }
+                                                catch (error){
+                                                    displayMessage(this, true, error, 'error')
+                                                    return
+                                                }                            
+                                            } 
+                                            else if (searchPair.operador === 'não contém'){
+                                                condicaoDeInclusaoItemPorCampo = !isContem(item[campoABuscar].toString(),searchPair.key) ||searchPair.key === ''                           
+                                            }     
+                                                                                       
                                         }
                                     }
-                                    else if (searchPair.operador === 'menor que'){
-                                        try{
-                                            var chave =searchPair.key ? parseFloat(searchPair.key) : 0
-                                            var valorColuna = item[searchPair.field]? parseFloat(item[searchPair.field]) : 0
-                                            includeItem = valorColuna < chave
-                                        }
-                                        catch (error){
-                                            displayMessage(this, true, error, 'error')
-                                            return
-                                        }                            
-                                    }    
-                                    else if (searchPair.operador === 'maior que'){
-                                        try{
-                                            var chave =searchPair.key ? parseFloat(searchPair.key) : 0
-                                            var valorColuna = item[searchPair.field]? parseFloat(item[searchPair.field]) : 0
-                                            includeItem = valorColuna > chave
-                                        }
-                                        catch (error){
-                                            displayMessage(this, true, error, 'error')
-                                            return
-                                        }                            
-                                    } 
-                                    else if (searchPair.operador === 'não contém'){
-                                        includeItem = !isContem(item[searchPair.field].toString(),searchPair.key) ||searchPair.key === ''                           
-                                    }     
-                                }                                                                                         
+                                })
                             }
+                            includeItem = condicaoDeInclusaoItemPorCampo
                         }  
                     })
                     if (includeItem){
@@ -655,42 +659,46 @@ export default {
                 this.searchCellsForKey(searchKey, columnToSearch, operador)
             }
         },        
-        searchCellsForKey(searchKey, columnToSearch, operador){
+        searchCellsForKey(searchKey, columnsToSearch, operador){
             var filteredItems = []
             this.originalItems.map((item, index) => {
                 var includeItem = false
                 //Search for specific column
-                if (columnToSearch){
-                    if (item[columnToSearch] != null){
-                        if (operador === 'contém'){
-                            includeItem = isContem(item[columnToSearch].toString(),searchKey) ||searchKey === ''
-                        }
-                        else if (operador === 'maior que'){
-                            try{
-                                var chave =searchKey ? parseFloat(searchKey) : 0
-                                var valorColuna = item[columnToSearch]? parseFloat(item[columnToSearch]) : 0
-                                includeItem = valorColuna > chave
+                if (columnsToSearch.length > 0){
+                    columnsToSearch.map(columnToSearch => {
+                        if (!includeItem){
+                            if (item[columnToSearch] != null){
+                                if (operador === 'contém'){
+                                    includeItem = isContem(item[columnToSearch].toString(),searchKey) ||searchKey === ''
+                                }
+                                else if (operador === 'maior que'){
+                                    try{
+                                        var chave =searchKey ? parseFloat(searchKey) : 0
+                                        var valorColuna = item[columnToSearch]? parseFloat(item[columnToSearch]) : 0
+                                        includeItem = valorColuna > chave
+                                    }
+                                    catch (error){
+                                        displayMessage(this, true, error, 'error')
+                                        return
+                                    }                            
+                                }
+                                else if (operador === 'menor que'){
+                                    try{
+                                        var chave = parseFloat(searchKey)
+                                        var valorColuna = parseFloat(item[columnToSearch])
+                                        includeItem = valorColuna < chave
+                                    }
+                                    catch (error){
+                                        displayMessage(this, true, error, 'error')
+                                        return
+                                    }                            
+                                }   
+                                else if (operador === 'não contém'){
+                                    includeItem = !isContem(item[columnToSearch].toString(),searchKey) ||searchKey === ''                           
+                                }                                             
                             }
-                            catch (error){
-                                displayMessage(this, true, error, 'error')
-                                return
-                            }                            
                         }
-                        else if (operador === 'menor que'){
-                            try{
-                                var chave = parseFloat(searchKey)
-                                var valorColuna = parseFloat(item[columnToSearch])
-                                includeItem = valorColuna < chave
-                            }
-                            catch (error){
-                                displayMessage(this, true, error, 'error')
-                                return
-                            }                            
-                        }   
-                        else if (operador === 'não contém'){
-                           includeItem = !isContem(item[columnToSearch].toString(),searchKey) ||searchKey === ''                           
-                        }                                             
-                    }
+                    })
                 }
                 //Search all columns
                 else{

@@ -62,16 +62,18 @@
 </template>
 
 <script>
+import {Operacoes} from './OperadoresLogicos.js'
 
 export default {
+    
     props:['colunasFiltraveis'],
     data() {
         return {
             searchKey: '',
             searchPairs: [],
             colunasParaProcurar: [],
-            operador: 'contém',
-            operadores: ['contém','maior que','menor que', 'não contém'],
+            operador: Operacoes.operadores.CONTEM.nome,
+            operadores: Operacoes.listarOperadores()
         }
     },
     computed: {

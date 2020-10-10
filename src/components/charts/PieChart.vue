@@ -20,6 +20,7 @@
   },
   methods: {
     createChart(chartId) {
+      //console.log('Metricas:', this.metric)
       //Calcula percentuais
       var total = 0
       this.metric.map(item => {

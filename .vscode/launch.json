@@ -18,5 +18,6 @@
 
 
 //https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome
+//cd C:\Program Files (x86)\Google\Chrome\Application
 //no poweradmin com permissão de administrador ./chrome.exe --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug
 //no webpack.config.js devtool: '#source-map' no lugar de devtool: '#eval-source-map'

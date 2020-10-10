@@ -11,6 +11,7 @@ import Vagas from './views/vagas/Vagas.vue'
 import Usuario from './views/usuario/Usuario.vue'
 import Auditoria from './views/auditoria/Auditoria.vue'
 import Permissao from './views/permissao/Permissao.vue'
+import Painel from './views/painel/Painel.vue'
 
 
 var routes = [
@@ -31,6 +32,7 @@ var routes = [
    { path: '/usuarios', nome: 'Usuario', component: Usuario, requireAuth:true },
    { path: '/auditoria', nome: 'Auditoria', component: Auditoria, requireAuth:true },
    { path: '/permissao', nome: 'Permissao', component: Permissao, requireAuth:true },
+   { path: '/painel', nome: 'Painel', component: Painel, requireAuth:true },
 ];
 
 Vue.use(VueRouter)

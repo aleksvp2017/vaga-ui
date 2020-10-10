@@ -290,7 +290,11 @@
                         ></v-text-field>
                     </template>
                 </v-edit-dialog>
-            </template>                           
+            </template>     
+            <!-- ANO DA APROVACAO -->        
+            <template #item.anoaprovacao="{item}">
+                {{ item.anoaprovacao }}
+            </template>                                     
         <!-- VALOR APROVADO -->        
             <template #item.valoraprovado="{item}">
                 {{ item.valoraprovado? item.valoraprovado.toLocaleString('pr-BR', { style: 'currency', currency: 'BRL' }) : '' }}
@@ -389,7 +393,8 @@
             </template>                                      
             <template #item.actions="{item}">
                 <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
-            </template>     
+            </template>    
+            <!-- TOTAIS --> 
             <template slot="body.append">
                 <td><b>Totais</b></td>
                 <td v-for="column in tableColumns" :key="column.id">
@@ -435,6 +440,7 @@ import PopupExcluirPlanilha from './PopupExcluirPlanilha.vue'
 import PopupImportarPlanilha from './PopupImportarPlanilha.vue'
 import PopupConfigurarColunas from './PopupConfigurarColunas.vue'
 import Filtros from './Filtros.vue'
+import {Operacoes} from './OperadoresLogicos.js'
 
 
 export default {
@@ -614,10 +620,10 @@ export default {
                                 searchPair.field.split(',').map(campoABuscar => {
                                     if (!condicaoDeInclusaoItemPorCampo){
                                         if (item[campoABuscar] != null){
-                                            if (searchPair.operador === 'contém'){
+                                            if (searchPair.operador === Operacoes.operadores.CONTEM.nome){
                                                 condicaoDeInclusaoItemPorCampo = isContem(item[campoABuscar].toString(), searchPair.key)
                                             }
-                                            else if (searchPair.operador === 'menor que'){
+                                            else if (searchPair.operador === Operacoes.operadores.MENORQUE.nome){
                                                 try{
                                                     var chave =searchPair.key ? parseFloat(searchPair.key) : 0
                                                     var valorColuna = item[campoABuscar]? parseFloat(item[campoABuscar]) : 0
@@ -628,7 +634,7 @@ export default {
                                                     return
                                                 }                            
                                             }    
-                                            else if (searchPair.operador === 'maior que'){
+                                            else if (searchPair.operador === Operacoes.operadores.MAIORQUE.nome){
                                                 try{
                                                     var chave =searchPair.key ? parseFloat(searchPair.key) : 0
                                                     var valorColuna = item[campoABuscar]? parseFloat(item[campoABuscar]) : 0
@@ -639,7 +645,7 @@ export default {
                                                     return
                                                 }                            
                                             } 
-                                            else if (searchPair.operador === 'não contém'){
+                                            else if (searchPair.operador === Operacoes.operadores.NAOCONTEM.nome){
                                                 condicaoDeInclusaoItemPorCampo = !isContem(item[campoABuscar].toString(),searchPair.key) ||searchPair.key === ''                           
                                             }     
                                                                                        
@@ -668,10 +674,10 @@ export default {
                     columnsToSearch.map(columnToSearch => {
                         if (!includeItem){
                             if (item[columnToSearch] != null){
-                                if (operador === 'contém'){
+                                if (operador === Operacoes.operadores.CONTEM.nome){
                                     includeItem = isContem(item[columnToSearch].toString(),searchKey) ||searchKey === ''
                                 }
-                                else if (operador === 'maior que'){
+                                else if (operador === Operacoes.operadores.MAIORQUE.nome){
                                     try{
                                         var chave =searchKey ? parseFloat(searchKey) : 0
                                         var valorColuna = item[columnToSearch]? parseFloat(item[columnToSearch]) : 0
@@ -682,7 +688,7 @@ export default {
                                         return
                                     }                            
                                 }
-                                else if (operador === 'menor que'){
+                                else if (operador === Operacoes.operadores.MENORQUE.nome){
                                     try{
                                         var chave = parseFloat(searchKey)
                                         var valorColuna = parseFloat(item[columnToSearch])
@@ -693,7 +699,7 @@ export default {
                                         return
                                     }                            
                                 }   
-                                else if (operador === 'não contém'){
+                                else if (operador === Operacoes.operadores.NAOCONTEM.nome){
                                     includeItem = !isContem(item[columnToSearch].toString(),searchKey) ||searchKey === ''                           
                                 }                                             
                             }
@@ -758,6 +764,8 @@ export default {
                         ({...vaga,aprovadamaiscontrapartida:(vaga.aprovada + vaga.aprovadacontrapartida)}))                        
                     this.items = this.items.map(vaga => 
                         ({...vaga,dataaprovacao:vaga.dataaprovacao?vaga.dataaprovacao.substring(3):''}))    
+                    this.items = this.items.map(vaga => 
+                        ({...vaga,anoaprovacao:vaga.dataaprovacao?vaga.dataaprovacao.substring(3):''}))                            
                     // this.items = this.items.map((item) => 
                     //         ({...item, datapublicacaoformatada: moment(item.datapublicacao).format("HH:mm:SS DD/MM/YYYY")}))
                     this.originalItems = this.items.slice(0)

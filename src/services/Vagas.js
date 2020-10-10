@@ -30,7 +30,6 @@ function upload(file, planilha){
     }        
     formData.append('sncontrapartida', planilha.snContrapartida)
     formData.append('snAlterarRegistrosExistentes', planilha.snAlterarRegistrosExistentes)
-    console.log('Alterar registros existentes:', planilha.snAlterarRegistrosExistentes)
     return http.post(BASE_BACKEND_URL + 'vagas/importar', formData)
 }
 
@@ -58,8 +57,16 @@ async function obterPeriodoPactuacaoAberto(){
     return http.get(BASE_BACKEND_URL + 'periodopactuacaoaberto')
 }
 
+async function listarColunas(){
+    return http.get(BASE_BACKEND_URL + 'vagas/colunas')
+}
+
+async function listarVagas(colunas, filtros){
+    return http.post(BASE_BACKEND_URL + 'vagas/painel',{colunas, filtros})
+}
+
 const fieldsToDetermineEquality = ['instituicao','uf', 'tipodecurso', 'modalidadedeensino', 'municipio', 'curso',
-    'periodopactuacao', 'sncontrapartida', 'dataaprovacao', 'datamatricula', 'nomeplanilha', 'acao','rede']
+    'periodopactuacao', 'sncontrapartida', 'dataaprovacao', 'datamatricula', 'nomeplanilha', 'acao','rede', 'anoaprovacao']
 
 function columns(){
     var itemId = 0
@@ -204,7 +211,18 @@ function columns(){
                 return item
             },
         },   
-
+        {
+            id: itemId++,
+            text: 'ANO APROVAÇÃO',
+            value: 'anoaprovacao',
+            selected: true,
+            summable: false,
+            colunatempo: true,
+            colunadimensao: true,
+            format: (item) => {
+                return item
+            },
+        },  
         {
             id: itemId++,
             text: 'CARGA HORÁRIA',
@@ -359,5 +377,5 @@ const fieldsToSum = () => {
 
 export {
     upload, list, columns, remove, save, fieldsToSum, fieldsToDetermineEquality, obterIdColuna, obterPeriodoPactuacaoAberto, 
-        removePlanilha, listarPlanilhas, obterColuna
+        removePlanilha, listarPlanilhas, obterColuna, listarColunas, listarVagas
 }

@@ -264,7 +264,8 @@ export default {
             this.colunas = response.body.colunas.map(coluna => 
             ({...coluna, text:coluna.nome}))
             this.colunas =this.colunas.map((coluna,index) => 
-            ({...coluna, id:index}))    
+            ({...coluna, id:index}))   
+            console.log('Colunas:', this.colunas) 
         }).catch(error => {
             displayMessage(this, true, error.body.error, 'error')
             if (error.status === ERROR_SESSION_EXPIRED){

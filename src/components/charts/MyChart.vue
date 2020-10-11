@@ -126,7 +126,7 @@ import HorizontalBarChart from './HorizontalBarChart.vue'
 import LineChart from './LineChart.vue'
 import PolarAreaChart from './PolarAreaChart.vue'
 import MultipleMetricBarChart from './MultipleMetricBarChart.vue'
-import * as Vagas from '../../services/Vagas.js'
+
 
 
 export default {
@@ -192,7 +192,7 @@ export default {
     'polarchart': PolarAreaChart,
     'multiplebarchart': MultipleMetricBarChart,  
   }, 
-  props:['matrizDados', 'colunasMetricas', 'colunasDimensoes'],
+  props:['matrizDados', 'colunasMetricas', 'colunasDimensoes', 'metodoParaObterColuna'],
   watch: { 
       	snAcumulados: function(newVal, oldVal) { // watch it
           //console.log('Prop changed: ', newVal, ' | was: ', oldVal)
@@ -221,7 +221,7 @@ export default {
   methods: {
     gerarGrafico(){
       try{
-        validarSelecao(this.colunasMetricas, this.metricasSelecionadas, this.tipoGraficoSelecionado, this.colunasDimensoes)
+        validarSelecao(this.colunasMetricas, this.metricasSelecionadas, this.tipoGraficoSelecionado, this.colunasDimensoes, this)
         exibirGrafico(this.mostrarTipoGrafico, this.tipoGraficoSelecionado)
         
         displayMessage(this, false)
@@ -342,7 +342,10 @@ function acumularDados(metricas, colunasMetricas){
     if (snAcumular){
       metrica.dados.map((dado, index) =>{
         if (index > 0){
-          metrica.dados[index] = dado + metrica.dados[index-1]
+          if (dado === null){
+            dado = 0
+          }
+          metrica.dados[index] = parseFloat(dado) + parseFloat(metrica.dados[index-1])
         }
       })
     }
@@ -657,7 +660,7 @@ function generateChartWithSingleMetric(matrizDados, metricas, colunasDimensoes, 
   })  
 }
 
-function validarSelecao(colunasMetricas, metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes){
+function validarSelecao(colunasMetricas, metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes, owner){
   //Esse passo tem que ser feito para o caso do usuário volta na tabela de 
   //dados e tirar alguma coluna ja selecionada como metrica. 
   if (metricasSelecionadas.length > 0){
@@ -684,7 +687,7 @@ function validarSelecao(colunasMetricas, metricasSelecionadas, tipoGraficoSeleci
   //As métricas só podem ser as que têm datas associadas
   //Aprovada, Matricula e Valor aprovado e a respectiva data tem que estar na tabela de dados
   if (tipoGraficoSelecionado === 'mostrarGraficoLinha'){
-    validarSelecaoGraficoLinha(colunasMetricas, metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes)
+    validarSelecaoGraficoLinha(colunasMetricas, metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes, owner)
   }
   else if (metricasSelecionadas.length > 1 && tipoGraficoSelecionado !== 'mostrarGraficoBarra'){
     throw 'Seleção de mais de uma métrica só é possível no gráfico de barras'
@@ -692,7 +695,7 @@ function validarSelecao(colunasMetricas, metricasSelecionadas, tipoGraficoSeleci
 
 }
 
-function validarSelecaoGraficoLinha(colunasMetricas, metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes){
+function validarSelecaoGraficoLinha(colunasMetricas, metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes, owner){
   var dimensoesSelecionadas = []
   colunasDimensoes.map(dimensao => dimensoesSelecionadas.push(dimensao.value))
 
@@ -700,13 +703,13 @@ function validarSelecaoGraficoLinha(colunasMetricas, metricasSelecionadas, tipoG
     //e se os campos de data vinculado estao na tabela
     var todasAsMetricasTemDataVinculada = true
     for (var metricaSelecionada of metricasSelecionadas) {          
-      var coluna = Vagas.obterColuna(metricaSelecionada)
+      var coluna = owner.metodoParaObterColuna(metricaSelecionada)
       if (!coluna.datavinculada){
         todasAsMetricasTemDataVinculada = false
         break
       }else{
         if (dimensoesSelecionadas.indexOf(coluna.datavinculada) == - 1){
-          throw 'Coluna ' + Vagas.obterColuna(coluna.datavinculada).text + ' deve estar selecionada em conjunto com a coluna ' + 
+          throw 'Coluna ' + owner.metodoParaObterColuna(coluna.datavinculada).text + ' deve estar selecionada em conjunto com a coluna ' + 
             coluna.text + 
             ' para geração do gráfico de linha'
         }
@@ -721,7 +724,7 @@ function validarSelecaoGraficoLinha(colunasMetricas, metricasSelecionadas, tipoG
     //na tabela de dados, pois as métricas serão as dimensões
     var temOutraDimensaoAlemDasDeTempo = false
     dimensoesSelecionadas.map(dimensao => {
-      var coluna = Vagas.obterColuna(dimensao)
+      var coluna = owner.metodoParaObterColuna(dimensao)
       if (!coluna.colunatempo){
         temOutraDimensaoAlemDasDeTempo = true
       }

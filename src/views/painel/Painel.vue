@@ -5,12 +5,14 @@
       >
       <v-tab>Consulta</v-tab>
       <v-tab>Resultado</v-tab>
+      <v-tab>Gráficos</v-tab>
       <v-tab-item key="consulta">
           
         <v-card>
             
             <v-card-actions >
                 <v-btn color="success" dark class="ma-2" @click="gerarRelatorio">Gerar relatório</v-btn>
+                <v-btn color="success" dark class="ma-2" @click="limpar">Limpar</v-btn>
                 <v-btn class="ma-2" @click="adicionarFiltro" disabled>Salvar consulta</v-btn>
                 <v-btn class="ma-2" @click="adicionarFiltro" disabled>Excluir consulta</v-btn>
                 <v-btn class="ma-2" @click="adicionarFiltro" disabled>Compartilhar consulta</v-btn>
@@ -22,7 +24,13 @@
                 <!-- COLUNAS -->   
                 <v-col sm="2" cols="14" >
                     <v-card class="mx-auto" max-width="344" outlined>
+                        <v-text-field
+                            v-model="chave"
+                            label="Procure as colunas pelo nome..."
+                            class="mx-4"
+                        ></v-text-field>                        
                         <v-data-table
+                            :search="chave"
                             v-model="colunasSelecionadas"
                             class="elevation-1"
                             :headers="header"
@@ -51,6 +59,7 @@
                                     @cancel="cancelarEdicaoFiltro"
                                     @open="editarFiltro"
                                     @close="fecharEdicaoFiltro"
+                                    large 
                                     > {{ item.operador }}
                                     <template v-slot:input>
                                         <v-select
@@ -58,7 +67,7 @@
                                             v-model="item.operador"
                                             :items="operadores"
                                             label=""
-                                        ></v-select>
+                                        ></v-select>                                    
                                     </template>
                                 </v-edit-dialog>
                             </template>                             
@@ -69,6 +78,7 @@
                                     @cancel="cancelarEdicaoFiltro"
                                     @open="editarFiltro"
                                     @close="fecharEdicaoFiltro"
+                                    large
                                     > {{ item.valor }}
                                     <template v-slot:input>
                                         <v-text-field :disabled="editDisabled"
@@ -158,19 +168,30 @@
                 </td>
             </template>                              
         </v-data-table>   
-        
-      
+      </v-tab-item>
+      <!--GRAFICO -->
+      <v-tab-item>
+        <mychart :colunasMetricas='colunasItens.filter(coluna => coluna.snSomavel)'
+                 :colunasDimensoes="colunasItens.filter(coluna => !coluna.snSomavel)"
+                 :matrizDados='itens'
+                 :metodoParaObterColuna="obterColuna"/>
       </v-tab-item>
     </v-tabs>
 </template>
 
 <script>
+import MyChart from '../../components/charts/MyChart.vue'
 import * as Vagas from '../../services/Vagas.js'
 import {Operacoes} from '../vagas/OperadoresLogicos.js'
 import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
 //TABELA COM LINHAS ARRASTAVEISimport Sortable from 'sortablejs'
 
+
+
 export default {
+    components: {
+      'mychart': MyChart,
+    }, 
    /*
    TABELA COM LINHAS ARRASTAVEIS
    mounted () {
@@ -186,6 +207,7 @@ export default {
   */
   data() {
     return {
+        chave:'',
         todasSaidas: false,
         abaSelecionada: 0,
         showAlert: false,
@@ -256,6 +278,15 @@ export default {
     orderNumber (item) {
       return this.saidas.indexOf(item) + 1
     }*/
+    obterColuna(nomeColuna){
+        var coluna = null
+        this.colunasItens.map(colunaItem => {
+            if (colunaItem.nomeColunaBanco = nomeColuna){
+                coluna = colunaItem
+            }
+        })
+        return coluna
+    },
     adicionarFiltro(){
         if (this.colunasSelecionadas.length === 0){
             displayMessage(this, true, 'Selecione alguma coluna', 'info')
@@ -269,6 +300,7 @@ export default {
                 this.filtros.push(colunaSelecionada)
             }
         })
+        this.colunasSelecionadas = []
     },
     excluirFiltro(){
         if (this.filtrosSelecionados.length === 0){
@@ -293,6 +325,7 @@ export default {
                 this.saidas.push({...colunaSelecionada, selecionado: false})
             }
         })
+        this.colunasSelecionadas = []
     },
     excluirSaida(){
         if (this.saidas.length === 0){
@@ -303,6 +336,13 @@ export default {
             let index = this.saidas.indexOf(saidaSelecionada)
             this.saidas.splice(index, 1)
         })
+    },
+    limpar(){
+        this.colunasSelecionadas = []
+        this.filtros = []
+        this.saidas = []
+        this.itens = []
+        this.chave = ''
     },
     gerarRelatorio(){
         displayMessage(this, false, '', 'info')
@@ -330,23 +370,13 @@ export default {
         Vagas.listarVagas(this.saidas, this.filtros).then((response) => {
             this.itens = response.body.vagas
             this.colunasItens = response.body.colunas  
-
-            /*this.itens.map(item => {
-                console.log(item)
-                Object.entries(item).map(campo => {
-                    this.colunasItens.map(colunaItem => {
-                        console.log('Columa item:', colunaItem, 'Campo:', campo, 'Format: ', colunaItem.format)
-                        if (colunaItem.value === campo[0]) {
-                            //console.log(colunaItem, campo, colunaItem.format)
-                            if (colunaItem.format){
-                                campo[1] = colunaItem.format(campo[1])
-                                console.log('Depois:', campo)
-                            }
-                        }
-                    })
-                })
-            })*/
             this.abaSelecionada = 1  
+
+            this.itens = this.itens.map(vaga => 
+                ({...vaga,dataaprovacao:vaga.dataaprovacao?vaga.dataaprovacao.substring(3):''}))    
+            this.itens = this.itens.map(vaga => 
+                ({...vaga,datamatricula:vaga.datamatricula?vaga.datamatricula.substring(3):''}))                    
+
         }).catch(error => {
             displayMessage(this, true, error.body.error, 'error')
             if (error.status === ERROR_SESSION_EXPIRED){

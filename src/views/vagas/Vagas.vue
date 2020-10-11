@@ -408,6 +408,7 @@
       <v-tab-item key="grafico">
         <mychart :colunasMetricas='tableColumns.filter(tableColumn => tableColumn.summable)'
                  :colunasDimensoes="tableColumns.filter(tableColumn => tableColumn.colunadimensao)"
+                 :metodoParaObterColuna="obterColuna"
                  :matrizDados='items'/>
       </v-tab-item>
       <!-- FIM DO GRAFICO -->
@@ -513,6 +514,9 @@ export default {
         }
     },
     methods: {
+        obterColuna(nomeColuna){
+            return Vagas.obterColuna(nomeColuna)
+        },
         customSort(items, index, isDesc) {
             items.sort((a, b) => {
                 if (index[0] === "dataaprovacao" || index[0] === "datamatricula") {
@@ -752,7 +756,10 @@ export default {
                     }
                 })
             }
-            return total / numeroItens
+            if (numeroItens > 0){
+                return total / numeroItens
+            }
+            return 0
         },        
         updateItens() {
             Vagas.list().then((response) => {

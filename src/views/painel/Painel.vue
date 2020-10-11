@@ -6,6 +6,7 @@
       <v-tab>Consulta</v-tab>
       <v-tab>Resultado</v-tab>
       <v-tab>Gráficos</v-tab>
+      <v-tab>Mapa</v-tab>
       <v-tab-item key="consulta">
           
         <v-card>
@@ -176,10 +177,16 @@
                  :matrizDados='itens'
                  :metodoParaObterColuna="obterColuna"/>
       </v-tab-item>
+      <!-- MAPA -->
+      <v-tab-item key="mapa">
+        <mymap :items='itens.map(item => ({...item, valoraprovado:parseFloat(item.valoraprovado)}))' :metrics='colunasItens.filter(coluna => coluna.snSomavel)'/>
+      </v-tab-item>
+
     </v-tabs>
 </template>
 
 <script>
+import MyMap from '../../components/maps/MyMap.vue'
 import MyChart from '../../components/charts/MyChart.vue'
 import * as Vagas from '../../services/Vagas.js'
 import {Operacoes} from '../vagas/OperadoresLogicos.js'
@@ -191,6 +198,7 @@ import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
 export default {
     components: {
       'mychart': MyChart,
+      'mymap': MyMap,
     }, 
    /*
    TABELA COM LINHAS ARRASTAVEIS

@@ -290,7 +290,7 @@ export default {
     obterColuna(nomeColuna){
         var coluna = null
         this.colunasItens.map(colunaItem => {
-            if (colunaItem.nomeColunaBanco = nomeColuna){
+            if (colunaItem.nomeColunaBanco === nomeColuna){
                 coluna = colunaItem
             }
         })
@@ -355,10 +355,10 @@ export default {
     },
     gerarRelatorio(){
         displayMessage(this, false, '', 'info')
-        if (this.filtros.length === 0){
+        /*if (this.filtros.length === 0){
             displayMessage(this, true, 'Selecione algum filtro', 'info')
             return
-        }
+        }*/
         var algumFiltroSemValor = false
         var algumFiltroSemOperador = false
         this.filtros.map(filtro => {

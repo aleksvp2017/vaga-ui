@@ -369,7 +369,10 @@ function obterMes(data){
 
 function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDimensoes, 
   metricasSelecionadas, colunasMetricas){
-  
+  /*console.log(matrizDados)
+  console.log(colunasDimensoes)
+  console.log(metricasSelecionadas)
+  console.log(colunasMetricas)*/
   var dadosFormatadosPorLegendaValoresPorMesAno = []
 
   var dimensoesNaoTemporais = []
@@ -382,7 +385,7 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
         var legenda = ''
         //console.log('Metrica selecionada:', metricaSelecionada)
         colunasMetricas.map(colunaMetrica => {
-          if (metricaSelecionada === colunaMetrica.value){
+          if (metricaSelecionada.toUpperCase() === colunaMetrica.value.toUpperCase()){
             legenda = colunaMetrica.text
           }
         })            
@@ -390,16 +393,17 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
         var legandaJaPreenchida = false
         if (dadosFormatadosPorLegendaValoresPorMesAno.length > 0){
           dadosFormatadosPorLegendaValoresPorMesAno.map(itemMetric => {
-            if (itemMetric.legenda === legenda){
+            if (itemMetric.legenda.toUpperCase() === legenda.toUpperCase()){
               legandaJaPreenchida = true
-              if (item.dataaprovacao){
+              if (item.dataaprovacao && (metricaSelecionada.toUpperCase() == 'APROVADA' || 
+            metricaSelecionada.toUpperCase() == 'APROVADAMAISCONTRAPARTIDA')){
                 itemMetric.dados.push({
                   valor: item[metricaSelecionada],
                   ano: obterAno(item.dataaprovacao),
                   mes: obterMes(item.dataaprovacao),
                 })
               }
-              if (item.datamatricula){
+              if (item.datamatricula && metricaSelecionada.toUpperCase() == 'MATRICULA'){
                 itemMetric.dados.push({
                   valor: item[metricaSelecionada],
                   ano: obterAno(item.datamatricula),
@@ -412,7 +416,8 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
 
         //se nao tiver, inclui no vetor
         if (!legandaJaPreenchida){
-          if (item.dataaprovacao && (metricaSelecionada == 'aprovada' || metricaSelecionada == 'aprovadamaiscontrapartida')){
+          if (item.dataaprovacao && (metricaSelecionada.toUpperCase() == 'APROVADA' || 
+            metricaSelecionada.toUpperCase() == 'APROVADAMAISCONTRAPARTIDA')){
             dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
               dados: [
                 {
@@ -422,7 +427,7 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
                 }
               ]})            
           }
-          if (item.datamatricula && metricaSelecionada == 'matricula'){
+          if (item.datamatricula && metricaSelecionada.toUpperCase() == 'MATRICULA'){
             dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
               dados: [
                 {
@@ -727,6 +732,7 @@ function validarSelecaoGraficoLinha(colunasMetricas, metricasSelecionadas, tipoG
       var coluna = owner.metodoParaObterColuna(dimensao)
       if (!coluna.colunatempo){
         temOutraDimensaoAlemDasDeTempo = true
+        console.log('Outra dimensão é:' + coluna.nomeColunaBanco)
       }
     })
     if (metricasSelecionadas.length > 1 && temOutraDimensaoAlemDasDeTempo){

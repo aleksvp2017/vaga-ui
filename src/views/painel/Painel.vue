@@ -174,7 +174,10 @@
       <v-tab-item>
         <mychart :colunasMetricas='colunasItens.filter(coluna => coluna.snSomavel)'
                  :colunasDimensoes="colunasItens.filter(coluna => !coluna.snSomavel)"
-                 :matrizDados='itens'
+                 :matrizDados='itens.map(item => ({...item, valoraprovado:parseFloat(item.valoraprovado),
+                    aprovadamaiscontrapartida:parseInt(item.aprovadamaiscontrapartida),
+                    aprovada:parseInt(item.aprovada),
+                    matricula:parseInt(item.matricula)}))'
                  :metodoParaObterColuna="obterColuna"/>
       </v-tab-item>
       <!-- MAPA -->

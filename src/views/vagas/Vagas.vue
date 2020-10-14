@@ -406,7 +406,7 @@
       </v-tab-item>
       <!-- GRAFICO -->
       <v-tab-item key="grafico">
-        <mychart :colunasMetricas='tableColumns.filter(tableColumn => tableColumn.summable)'
+        <mychart ref="grafico" :colunasMetricas='tableColumns.filter(tableColumn => tableColumn.summable)'
                  :colunasDimensoes="tableColumns.filter(tableColumn => tableColumn.colunadimensao)"
                  :metodoParaObterColuna="obterColuna"
                  :matrizDados='items'/>
@@ -858,6 +858,7 @@ export default {
             this.snLinhasAgrupadas = false
             initialize(this)
             this.$refs.filtros.reset()
+            this.$refs.grafico.reset()
         },
         atualizarColunas(colunasSelecionadas, updatedColumns){
             this.selectedColumns = colunasSelecionadas

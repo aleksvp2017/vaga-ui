@@ -197,8 +197,7 @@ export default {
       	snAcumulados: function(newVal, oldVal) { // watch it
           //console.log('Prop changed: ', newVal, ' | was: ', oldVal)
         },
-        metricasSelecionadas: function(newVal, oldVal){
-          console.log('trocou métrica')
+        tipoGraficoSelecionado: function(newVal, oldVal){
           this.snAcumulados = false
         }
   }  ,
@@ -223,6 +222,23 @@ export default {
     }
   },
   methods: {
+    reset(){
+        this.metricas = []
+        this.dimensoes = []
+        this.legendas = []
+        this.metricasSelecionadas = []
+        this.tipoGraficoSelecionado = []
+        this.snAcumulados = false
+        this.mostrarOrdenar = false
+        this.mostrarTipoGrafico = {
+          mostrarGraficoBarra: false,
+          mostrarGraficoBarraHorizontal: false,
+          mostrarGraficoLinha: false,
+          mostrarGraficoPizza: false,
+          mostrarGraficoPolar: false,
+          mostrarGraficoBarraMultiplo: false,
+        }
+    },
     gerarGrafico(){
       try{
         //Esse passo tem que ser feito para o caso do usuário volta na tabela de 

@@ -196,6 +196,10 @@ export default {
   watch: { 
       	snAcumulados: function(newVal, oldVal) { // watch it
           //console.log('Prop changed: ', newVal, ' | was: ', oldVal)
+        },
+        metricasSelecionadas: function(newVal, oldVal){
+          console.log('trocou métrica')
+          this.snAcumulados = false
         }
   }  ,
   computed: {
@@ -221,6 +225,21 @@ export default {
   methods: {
     gerarGrafico(){
       try{
+        //Esse passo tem que ser feito para o caso do usuário volta na tabela de 
+        //dados e tirar alguma coluna ja selecionada como metrica. 
+        if (this.metricasSelecionadas.length > 0){
+          var metricasSelecionadasCorrigidas = []
+          this.metricasSelecionadas.map(metricaSelecionada => {
+            for (var colunaMetrica of this.colunasMetricas){
+              if (colunaMetrica.value == metricaSelecionada){
+                metricasSelecionadasCorrigidas.push(metricaSelecionada)
+                break
+              }
+            }
+          })
+          this.metricasSelecionadas = metricasSelecionadasCorrigidas
+        }
+
         validarSelecao(this.colunasMetricas, this.metricasSelecionadas, this.tipoGraficoSelecionado, this.colunasDimensoes, this)
         exibirGrafico(this.mostrarTipoGrafico, this.tipoGraficoSelecionado)
         
@@ -228,6 +247,11 @@ export default {
         this.metricas = []
         this.dimensoes = []
         this.legendas = []
+        /*console.log('Colunas Métricas:', this.colunasMetricas)        
+        console.log('Métricas selecionadas:', this.metricasSelecionadas)   
+        console.log('Colunas dimensões:', this.colunasDimensoes) 
+        console.log('Matriz:', this.matrizDados) 
+        console.log('Metricas:', this.metricas) */
 
         if (this.tipoGraficoSelecionado === 'mostrarGraficoLinha'){
           this.gerarDadosParaGraficoEmLinha()
@@ -502,6 +526,7 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
             legenda += ' ' + item[dimensoes.value]
           }
       })
+      
 
       //verificia se já tem objeto com essa legenda no vetor
       var legandaJaPreenchida = false
@@ -666,21 +691,6 @@ function generateChartWithSingleMetric(matrizDados, metricas, colunasDimensoes, 
 }
 
 function validarSelecao(colunasMetricas, metricasSelecionadas, tipoGraficoSelecionado, colunasDimensoes, owner){
-  //Esse passo tem que ser feito para o caso do usuário volta na tabela de 
-  //dados e tirar alguma coluna ja selecionada como metrica. 
-  if (metricasSelecionadas.length > 0){
-    var metricasSelecionadasCorrigidas = []
-    metricasSelecionadas.map(metricaSelecionada => {
-      for (var colunaMetrica of colunasMetricas){
-        if (colunaMetrica.value == metricaSelecionada){
-          metricasSelecionadasCorrigidas.push(metricaSelecionada)
-          break
-        }
-      }
-    })
-    metricasSelecionadas = metricasSelecionadasCorrigidas
-  }
-
   if (metricasSelecionadas.length == 0){
     throw 'Selecione uma métrica'
   }
@@ -732,7 +742,6 @@ function validarSelecaoGraficoLinha(colunasMetricas, metricasSelecionadas, tipoG
       var coluna = owner.metodoParaObterColuna(dimensao)
       if (!coluna.colunatempo){
         temOutraDimensaoAlemDasDeTempo = true
-        console.log('Outra dimensão é:' + coluna.nomeColunaBanco)
       }
     })
     if (metricasSelecionadas.length > 1 && temOutraDimensaoAlemDasDeTempo){

@@ -5,16 +5,17 @@
         <v-layout row wrap>
             
                  <v-col cols="10" sm="5">
-                <v-select
+               
+                <v-autocomplete
                     multiple
                     chips
                     deletable-chips
                     dense
-                    full-width
+                    full-width                
                     v-model="colunasParaProcurar"
                     :items="colunasFiltraveis"
                     label="Filtrar por"
-                ></v-select>
+                ></v-autocomplete>                     
                  </v-col>
            
             <v-flex xs2 mx-1>

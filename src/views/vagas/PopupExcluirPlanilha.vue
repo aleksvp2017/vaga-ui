@@ -8,11 +8,11 @@
                 <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
                     {{alertMessagePopup}}
                 </v-alert>                            
-                <v-select
+                <v-autocomplete
                     v-model="planilhaAExcluir"
                     :items="planilhasJaCarregadas"
                     label="Selecione a planilha"
-                ></v-select>
+                ></v-autocomplete>                
             </v-card-text>
             <v-card-actions>
             <v-spacer></v-spacer>

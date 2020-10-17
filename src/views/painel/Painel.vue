@@ -182,7 +182,11 @@
       </v-tab-item>
       <!-- MAPA -->
       <v-tab-item key="mapa">
-        <mymap :items='itens.map(item => ({...item, valoraprovado:parseFloat(item.valoraprovado)}))' :metrics='colunasItens.filter(coluna => coluna.snSomavel)'/>
+        <mymap :items='itens.map(item => ({...item, valoraprovado:parseFloat(item.valoraprovado), 
+            aprovadamaiscontrapartida:parseInt(item.aprovadamaiscontrapartida),
+            matricula:parseInt(item.matricula),
+            homologada:parseInt(item.homologada),
+            }))' :metrics='colunasItens.filter(coluna => coluna.snSomavel)'/>
       </v-tab-item>
 
     </v-tabs>

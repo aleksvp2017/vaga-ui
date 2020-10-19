@@ -10,7 +10,6 @@
       <v-tab-item key="consulta">
           
         <v-card>
-            
             <v-card-actions >
                 <v-btn color="success" dark class="ma-2" @click="gerarRelatorio">Gerar relatório</v-btn>
                 <v-btn color="success" dark class="ma-2" @click="limpar">Limpar</v-btn>
@@ -23,8 +22,12 @@
             </v-alert>   
             <v-row no-gutters >   
                 <!-- COLUNAS -->   
-                <v-col sm="2" cols="14" >
-                    <v-card class="mx-auto" max-width="344" outlined>
+                <v-col cols="4" >
+                    <v-card class="mx-auto" max-width="600" outlined>
+                        <v-card-title class="justify-center">
+                            Colunas
+                            <!--<v-icon small @click="explicacao()">mdi-help-circle-outline</v-icon>-->
+                        </v-card-title>                        
                         <v-text-field
                             v-model="chave"
                             label="Procure as colunas pelo nome..."
@@ -43,8 +46,11 @@
                     </v-card>
                 </v-col>
                 <!-- FILTROS -->
-                <v-col cols="14" sm="4">
+                <v-col cols="4">
                     <v-card class="mx-auto" width="600" outlined>
+                        <v-card-title class="justify-center">
+                            Filtros
+                        </v-card-title>                         
                         <v-data-table
                             v-model="filtrosSelecionados"
                             class="elevation-1"
@@ -99,8 +105,11 @@
                     </v-card>
                 </v-col>
                 <!-- COLUNAS PARA SAIDA RELATORIO -->
-                <v-col cols="14" sm="4">
+                <v-col cols="4">
                     <v-card class="mx-1" width="600" outlined>
+                        <v-card-title class="justify-center">
+                            Saídas
+                        </v-card-title> 
                        <!-- TABELA COM LINHAS ARRASTAVEIS 
                        <v-simple-table dense class="mx-1">
                             <thead>
@@ -272,7 +281,6 @@ export default {
             ({...coluna, text:coluna.nome}))
             this.colunas =this.colunas.map((coluna,index) => 
             ({...coluna, id:index}))   
-            console.log('Colunas:', this.colunas) 
         }).catch(error => {
             displayMessage(this, true, error.body.error, 'error')
             if (error.status === ERROR_SESSION_EXPIRED){

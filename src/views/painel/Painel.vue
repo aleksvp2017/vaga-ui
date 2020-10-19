@@ -13,7 +13,29 @@
             <v-card-actions >
                 <v-btn color="success" dark class="ma-2" @click="gerarRelatorio">Gerar relatório</v-btn>
                 <v-btn color="success" dark class="ma-2" @click="limpar">Limpar</v-btn>
-                <v-btn class="ma-2" @click="adicionarFiltro" disabled>Salvar consulta</v-btn>
+                
+                <v-dialog v-model="dialogSalvarConsulta" max-width="600px">
+                    <template v-slot:activator="{ on }">
+                        <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogSalvarConsulta">Salvar consulta</v-btn>
+                    </template>                 
+                    <v-card>
+                        <v-card-text>
+                            <v-alert :type="typeAlertPopup" dense text dismissible v-model="showAlertPopup">
+                                {{alertMessagePopup}}
+                            </v-alert>                            
+                            <v-text-field
+                                v-model="consultaPainel.nome"
+                                label="Nome da consulta"
+                                class="mx-4"
+                            ></v-text-field>                                          
+                        </v-card-text>
+                        <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue darken-1" text @click="salvarConsulta">Salvar</v-btn>
+                        <v-btn color="blue darken-1" text @click="closedialogSalvarConsulta">Fechar</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>                
                 <v-btn class="ma-2" @click="adicionarFiltro" disabled>Excluir consulta</v-btn>
                 <v-btn class="ma-2" @click="adicionarFiltro" disabled>Compartilhar consulta</v-btn>
             </v-card-actions>
@@ -205,6 +227,7 @@
 import MyMap from '../../components/maps/MyMap.vue'
 import MyChart from '../../components/charts/MyChart.vue'
 import * as Vagas from '../../services/Vagas.js'
+import * as Painel from '../../services/Painel.js'
 import {Operacoes} from '../vagas/OperadoresLogicos.js'
 import {ERROR_SESSION_EXPIRED} from '../../services/Constantes.js'
 //TABELA COM LINHAS ARRASTAVEISimport Sortable from 'sortablejs'
@@ -231,6 +254,11 @@ export default {
   */
   data() {
     return {
+        showAlertPopup: false,
+        alertMessagePopup: '',
+        typeAlertPopup: 'error',          
+        dialogSalvarConsulta: false,
+        consultaPainel: {},
         chave:'',
         todasSaidas: false,
         abaSelecionada: 0,
@@ -290,6 +318,29 @@ export default {
     },  
   
   methods: {
+    salvarConsulta(){
+        this.consultaPainel.filtros = this.filtros
+        this.consultaPainel.saidas = this.saidas
+        console.log(this.consultaPainel)
+    },
+    initiateDialogSalvarConsulta(){
+        this.consultaPainel.nome = ''
+        /*console.log('Consulta painel:', this.consultaPainel)
+        Vagas.listarPlanilhas().then(response => {
+                this.planilhasJaCarregadas = response.data.planilhas
+            }).catch(error => {
+                console.log(error)
+                displayMessagePopup(this, true, error.body.error, 'error')
+                if (error.status === ERROR_SESSION_EXPIRED){
+                    this.$store.dispatch('ActionLogout')
+                }                
+            })            
+        displayMessagePopup(this, false, '','error')        */
+    },   
+    closedialogSalvarConsulta(){
+        this.consultaPainel = {}
+        this.dialogSalvarConsulta = false
+    },          
     /* TABELA COM LINHAS ARRASTAVEIS
     itemKey (item) {
       if (!this.itemKeys.has(item)) this.itemKeys.set(item, ++this.currentItemKey)
@@ -437,6 +488,12 @@ function displayMessage(owner, showAlert, message, type){
     owner.showAlert = showAlert
     owner.alertMessage = message
     owner.typeAlert = type
+}
+
+function displayMessagePopup(owner, showAlert, message, type){
+    owner.showAlertPopup = showAlert
+    owner.alertMessagePopup = message
+    owner.typeAlertPopup = type
 }
 
 </script>

@@ -263,11 +263,11 @@ export default {
         this.metricas = []
         this.dimensoes = []
         this.legendas = []
-        /*console.log('Colunas Métricas:', this.colunasMetricas)        
+        console.log('Colunas Métricas:', this.colunasMetricas)        
         console.log('Métricas selecionadas:', this.metricasSelecionadas)   
         console.log('Colunas dimensões:', this.colunasDimensoes) 
         console.log('Matriz:', this.matrizDados) 
-        console.log('Metricas:', this.metricas) */
+        console.log('Metricas:', this.metricas)
 
         if (this.tipoGraficoSelecionado === 'mostrarGraficoLinha'){
           this.gerarDadosParaGraficoEmLinha()
@@ -572,7 +572,9 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
 
       //se nao tiver, inclui no vetor
       if (!legandaJaPreenchida){
-        if (item.dataaprovacao){
+        //Essa checagem é feita porque o usuário pode não ter filtrado os dados corretamente
+        //É preciso eliminar dados que não se refiram à métrica em questão
+        if (item.dataaprovacao && colunasMetricas.filter(colunaMetrica => colunaMetrica.text.indexOf('APROVA') > -1).length > 0){
             dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
               dados: [
                 {
@@ -582,7 +584,7 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
                 }
               ]})
         }
-        if (item.datamatricula){
+        if (item.datamatricula && colunasMetricas.filter(colunaMetrica => colunaMetrica.text.indexOf('MATRI') > -1).length > 0){
             dadosFormatadosPorLegendaValoresPorMesAno.push({legenda, 
               dados: [
                 {
@@ -596,6 +598,12 @@ function montarDadosFormatadosPorLegendaValoresPorMesAno(matrizDados, colunasDim
     })
   }
   return dadosFormatadosPorLegendaValoresPorMesAno
+}
+
+function isItemPossuiMetricaAplicavel(colunasMetricas, item){
+  colunasMetricas.map(colunaMetrica => {
+
+  })
 }
 
 function gerarAnosMesesOrdenados(matrizDados){

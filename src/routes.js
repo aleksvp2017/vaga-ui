@@ -29,7 +29,7 @@ var routes = [
    //componente, que não é uma string é o objeto
    //mantive o nome pela facilidade de usar o obterRota por nome
    { path: '/faleconosco', nome: 'Fale conosco', component: FaleConosco, requireAuth: true, icone: 'mdi-contact-mail'},
-   { path: '/vagas', nome: 'Vagas', component: Vagas, requireAuth:true, icone:'mdi-database-import' },
+   { path: '/vagas', nome: 'Edição de dados', component: Vagas, requireAuth:true, icone:'mdi-database-import' },
    { path: '/usuarios', nome: 'Usuários', component: Usuario, requireAuth:true, icone: 'mdi-account-multiple' },
    { path: '/auditoria', nome: 'Auditoria', component: Auditoria, requireAuth:true, icone: 'mdi-file-document-box-search' },
    { path: '/permissao', nome: 'Permissão', component: Permissao, requireAuth:true, icone: 'mdi-lock' },

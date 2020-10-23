@@ -1,7 +1,7 @@
 <template>    
     <v-dialog v-model="dialogImportar" scrollable width="600">
         <template v-slot:activator="{ on }">
-            <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogImportarPlanilha">Importar</v-btn>
+            <v-btn color="primary" dark class="ma-2" v-on="on" @click="initiateDialogImportarPlanilha">Importar</v-btn>
         </template>         
         <v-card height="600px">
             <v-card-text>
@@ -68,7 +68,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="success" @click="uploadFile()"
+                <v-btn color="primary" @click="uploadFile()"
                     :loading="importandoPlanilha" :disabled="importandoPlanilha">Enviar</v-btn>
                 <v-btn color="info" @click="dialogDetalhesImportacao = true" v-show="resumoImportacao != ''">Detalhes</v-btn>                                
                 <v-btn color="blue darken-1" text @click="closeDialogImportar">Fechar</v-btn>

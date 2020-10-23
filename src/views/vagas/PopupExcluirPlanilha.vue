@@ -1,7 +1,7 @@
 <template>    
     <v-dialog v-model="dialogExcluirPlanilha" max-width="600px">
         <template v-slot:activator="{ on }">
-            <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogExcluirPlanilha">Excluir planilha</v-btn>
+            <v-btn color="primary" dark class="ma-2" v-on="on" @click="initiateDialogExcluirPlanilha">Excluir planilha</v-btn>
         </template>                 
         <v-card>
             <v-card-text>
@@ -16,7 +16,7 @@
             </v-card-text>
             <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click="excluirPlanilha()">Excluir</v-btn>
+            <v-btn color="primary" @click="excluirPlanilha()">Excluir</v-btn>
             <v-btn color="blue darken-1" text @click="closedialogExcluirPlanilha">Fechar</v-btn>
             </v-card-actions>
         </v-card>

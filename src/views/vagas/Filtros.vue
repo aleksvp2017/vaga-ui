@@ -40,7 +40,7 @@
                 <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn icon
-                    color="#4CAF50"
+                    color="primary"
                     dark
                     v-bind="attrs"
                     v-on="on"

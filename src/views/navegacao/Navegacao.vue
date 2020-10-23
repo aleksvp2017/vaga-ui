@@ -1,19 +1,24 @@
 <template>
         <!--<v-app-bar app color="#80CBC4" dark>-->
-        <v-app-bar app color="primary" dark>
+        <v-app-bar app color="#0D2F52" dark v-if="!esconderMenu">
             <v-toolbar-title>
                 <h2>
-                    <v-btn color="primary" dark elevation="0" :to="rotaHome">
-                        <v-icon dark right>mdi-home</v-icon>
+                    <v-btn color="#0D2F52" dark elevation="0" :to="rotaHome">
+                        <v-icon dark right color="#389F9E">mdi-home</v-icon>
                     </v-btn> 
-                    Vagas
+                    <span style="color:#389F9E;font-family: 'Montserrat';" >
+                    Sistema de Vagas
+                    </span>
                 </h2>
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <!--PERMISSAO DO MENU É CHECADA AQUI -->
             <div v-if="loggedIn">
-                <v-btn text rounded v-for="(link, index) in links" :key="index"
-                    :to="link.path"> {{link.nome}} </v-btn>
+                <v-btn color="#0D2F52" x-large v-for="(link, index) in links" :key="index" 
+                    :to="link.path"> 
+                    {{link.nome}}
+                    <!--<v-icon color="white">{{link.icone}}</v-icon>--> 
+                </v-btn>
             </div>
             
             <!-- USER MENU -->
@@ -24,7 +29,7 @@
                 offset-x
                 >
                 <template v-slot:activator="{ on }">
-                    <v-btn color="primary" dark elevation="0" v-on="on">
+                    <v-btn color="#0D2F52" dark elevation="0" v-on="on">
                         <v-icon dark right>mdi-account-circle</v-icon>
                     </v-btn> 
                 </template>
@@ -89,7 +94,8 @@
                         if (itemMenu.path === rota.path){
                             itens.push({
                                 nome: itemMenu.nome,
-                                path: itemMenu.path
+                                path: itemMenu.path,
+                                icone: rota.icone,
                             })
                         }
                     })
@@ -118,7 +124,7 @@
                 return obterRota('AlterarSenha')
             },            
             ...
-            mapGetters(['loggedIn','menu']),
+            mapGetters(['loggedIn','menu', 'esconderMenu']),
             ...
             mapState(['user'])
         },

@@ -26,12 +26,12 @@
                     vertical
                     ></v-divider>
                     <v-spacer></v-spacer> 
-                    <v-btn color="success" dark class="ma-2" @click="gerarNovaSenha">Gerar nova senha</v-btn> 
-                    <v-btn color="success" dark class="ma-2" @click="apagarItensSelecionados">Excluir</v-btn> 
+                    <v-btn color="primary" dark class="ma-2" @click="gerarNovaSenha">Gerar nova senha</v-btn> 
+                    <v-btn color="primary" dark class="ma-2" @click="apagarItensSelecionados">Excluir</v-btn> 
                     <!-- POPUP EDICAO -->
                     <v-dialog v-model="mostrarPopupEdicao" max-width="800px" height="1000px" scrollable>
                         <template v-slot:activator="{ on }">
-                            <v-btn color="success" dark class="ma-2" v-on="on" @click="inicializarPopupCadastro">Adicionar</v-btn>
+                            <v-btn color="primary" dark class="ma-2" v-on="on" @click="inicializarPopupCadastro">Adicionar</v-btn>
                         </template>                
                         <v-card>
                             <v-card-text>

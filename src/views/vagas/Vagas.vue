@@ -1,27 +1,32 @@
 <template>
 <v-card>
     <!-- Tem linhas agrupadas? {{snLinhasAgrupadas ? 'sim' : 'não'}} -->
+    <!--background-color="#d3e6f8"-->
     <v-tabs
       background-color="white"
       color="indigo darken-2"
+      
       >
       <v-tab>Tabela</v-tab>
       <v-tab>Gráfico</v-tab>
       <v-tab>Mapa</v-tab>
       <v-tab>Detalhes</v-tab>
 
-      <v-tab-item key="tabela">
+      <v-tab-item key="tabela" >
         <v-alert :type="typeAlert" dense text dismissible v-model="showAlert">
             {{alertMessage}}
         </v-alert> 
         <!--FILTROS -->
         <filtros ref="filtros" :colunasFiltraveis="colunasFiltraveisOrdenadas" v-on:mostrarAlerta="mostrarAlerta"
-            v-on:customSearch="customSearch"/>        
+            v-on:customSearch="customSearch" class="pb-0"/>    
+
+        <!-- TABELA -->    
         <v-data-table
             show-select
             ref="vagasTable"
             v-model="rowsSelected"
-            class="elevation-1"
+            class="elevation-12"
+            height="65vh"
             :loading="loading"
             :headers="tableColumns"
             :items="items"
@@ -42,8 +47,8 @@
                 vertical
                 ></v-divider>
                 <v-spacer></v-spacer>
-                <v-btn color="success" dark class="ma-2" @click="exportSheet">Exportar</v-btn>
-                <v-btn color="success" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn>
+                <v-btn color="primary" dark class="ma-2" @click="exportSheet">Exportar</v-btn>
+                <v-btn color="primary" dark class="ma-2" @click="deleteSelectedItens">Excluir</v-btn>
 
                 <!-- EXCLUIR PLANILHA -->
                 <popupExcluirPlanilha v-on:updateItens="updateItens"/>
@@ -58,10 +63,12 @@
                     v-on:atualizarColunas="atualizarColunas"
                     :selectedColumns="selectedColumns"/>                
                 <!-- FIM DO CONFIGURAR COLUNAS -->    
-                <v-btn color="success" dark class="ma-2" @click="reset">Limpar</v-btn>                   
+                <v-btn color="primary" dark class="ma-2" @click="reset">Limpar</v-btn>                   
             </v-toolbar>
-            </template>      
+            </template>     
 
+            <!-- COLUNAS -->
+                
             <!--INSTITUICAO DE ENSINO-->
             <template #item.instituicao="{item}">
                 <v-edit-dialog
@@ -402,7 +409,7 @@
                     {{ column.calcularMedia? column.format(calcularMedia(column.value)) : '' }}
                 </td>
             </template>   
-        </v-data-table>            
+        </v-data-table> 
       </v-tab-item>
       <!-- GRAFICO -->
       <v-tab-item key="grafico">

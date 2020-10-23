@@ -14,7 +14,8 @@
                     ></v-select>
                 </v-flex>
                 <v-flex xs2 class="mr-12">
-                    <v-btn color="success" @click="generateMap()">Gerar mapa</v-btn>
+                    <v-btn color="primary" dark @click="generateMap()">Gerar mapa</v-btn>
+                    
                 </v-flex>
                 <v-flex v-if='showMap' class="ml-12">
                     <MyMap

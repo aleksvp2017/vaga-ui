@@ -1,4 +1,8 @@
 export default{
+    //esconder o menu
+    esconderMenu(state){
+        return state.esconderMenu
+    },
     //para saber se o usuário está logado
     loggedIn(state){
         return !!state.user

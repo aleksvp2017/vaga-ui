@@ -4,5 +4,8 @@ export default{
     //ao chamar uma mutation, so passa o playload, o state é passado automaticamente
     [types.SET_USER](state, playload){ //playload é o nome fancy para parâmetro
         state.user = playload
+    },
+    [types.SET_ESCONDER_MENU](state, playload){ //playload é o nome fancy para parâmetro
+        state.esconderMenu = playload
     }
 }

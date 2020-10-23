@@ -11,12 +11,12 @@
           
         <v-card>
             <v-card-actions >
-                <v-btn color="success" dark class="ma-2" @click="gerarRelatorio">Gerar relatório</v-btn>
-                <v-btn color="success" dark class="ma-2" @click="limpar">Limpar</v-btn>
+                <v-btn color="primary" dark class="ma-2" @click="gerarRelatorio">Gerar relatório</v-btn>
+                <v-btn color="primary" dark class="ma-2" @click="limpar">Limpar</v-btn>
                 
                 <v-dialog v-model="dialogSalvarConsulta" max-width="600px">
                     <template v-slot:activator="{ on }">
-                        <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogSalvarConsulta">Salvar consulta</v-btn>
+                        <v-btn color="primary" dark class="ma-2" v-on="on" @click="initiateDialogSalvarConsulta">Salvar consulta</v-btn>
                     </template>                 
                     <v-card>
                         <v-card-text>
@@ -121,8 +121,8 @@
                             </template>  
                         </v-data-table>    
                         <v-card-actions>
-                            <v-btn color="success" small outlined dark class="ma-2" @click="adicionarFiltro">Adicionar</v-btn>
-                            <v-btn color="success" small outlined dark class="ma-2" @click="excluirFiltro">Excluir </v-btn>
+                            <v-btn color="primary" small outlined dark class="ma-2" @click="adicionarFiltro">Adicionar</v-btn>
+                            <v-btn color="primary" small outlined dark class="ma-2" @click="excluirFiltro">Excluir </v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>
@@ -164,8 +164,8 @@
                             >
                         </v-data-table>   
                         <v-card-actions>
-                            <v-btn color="success" small outlined dark class="ma-2" @click="adicionarSaida">Adicionar</v-btn>
-                            <v-btn color="success" small outlined dark class="ma-2" @click="excluirSaida">Excluir </v-btn>
+                            <v-btn color="primary" small outlined dark class="ma-2" @click="adicionarSaida">Adicionar</v-btn>
+                            <v-btn color="primary" small outlined dark class="ma-2" @click="excluirSaida">Excluir </v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>   
@@ -179,7 +179,7 @@
       <v-tab-item key="resultado">
         <v-data-table v-if="itens.length > 0"
             v-model="itensSelecionados"
-            class="elevation-1"
+            class="elevation-12"
             ref="tabelaResultadoPainel"
             :headers="colunasItens"
             :items="itens"

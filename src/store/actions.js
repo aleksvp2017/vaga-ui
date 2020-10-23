@@ -22,12 +22,16 @@ export const ActionLogin = (context, payload) => {
 }
 
 export const ActionLogout = (context, payload) => {
-    console.log('Logging out...')
     localStorage.removeItem(context.getters.cookieName) //remove o cookie
     //context.commit('SET_USER', null) //apaga dados do usuário no state
     location.reload() //como state do vuex não sobrevive ao reload, nem precisa apagar os dados do usuário
 }
 
+export const EsconderMenu = (context, payload) => {
+    context.commit(types.SET_ESCONDER_MENU, payload) //atualiza state com dados
+}
+
+
 export default{
-    ActionSetUser, ActionLogin, ActionLogout
+    ActionSetUser, ActionLogin, ActionLogout, EsconderMenu
 }

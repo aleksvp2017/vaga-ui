@@ -12,12 +12,13 @@ import Usuario from './views/usuario/Usuario.vue'
 import Auditoria from './views/auditoria/Auditoria.vue'
 import Permissao from './views/permissao/Permissao.vue'
 import Painel from './views/painel/Painel.vue'
+import HomePainel from './views/painel/HomePainel.vue'
 
 
 var routes = [
 
    //{ path: '/', nome: 'Bem vindo', component: Bemvindo, alwaysShow: false},
-   { path: '/home', nome: 'Home', component: Home, alwaysShow: false, requireAuth: true},
+   { path: '/home', nome: 'Home', component: HomePainel, alwaysShow: true, requireAuth: true, icone: 'mdi-home', ordem: 0},
    { path: '/', nome: 'Login', component: Login },
    { path: '/registrar', nome: 'Registrar', component: Registrar, requireAuth: false},
    { path: '/dadospessoais', nome: 'DadosPessoais', component: DadosPessoais, requireAuth: true},
@@ -27,12 +28,13 @@ var routes = [
    //foi preciso manter as rotas aqui, e não vir tudo via permissão, por causa do mapeamento do 
    //componente, que não é uma string é o objeto
    //mantive o nome pela facilidade de usar o obterRota por nome
-   { path: '/faleconosco', nome: 'FaleConosco', component: FaleConosco, requireAuth: true},
-   { path: '/vagas', nome: 'Vagas', component: Vagas, requireAuth:true },
-   { path: '/usuarios', nome: 'Usuario', component: Usuario, requireAuth:true },
-   { path: '/auditoria', nome: 'Auditoria', component: Auditoria, requireAuth:true },
-   { path: '/permissao', nome: 'Permissao', component: Permissao, requireAuth:true },
-   { path: '/painel', nome: 'Painel', component: Painel, requireAuth:true },
+   { path: '/faleconosco', nome: 'Fale conosco', component: FaleConosco, requireAuth: true, icone: 'mdi-contact-mail'},
+   { path: '/vagas', nome: 'Vagas', component: Vagas, requireAuth:true, icone:'mdi-database-import' },
+   { path: '/usuarios', nome: 'Usuários', component: Usuario, requireAuth:true, icone: 'mdi-account-multiple' },
+   { path: '/auditoria', nome: 'Auditoria', component: Auditoria, requireAuth:true, icone: 'mdi-file-document-box-search' },
+   { path: '/permissao', nome: 'Permissão', component: Permissao, requireAuth:true, icone: 'mdi-lock' },
+   { path: '/painel', nome: 'Painel', component: Painel, requireAuth:true, icone: 'mdi-chart-multiple' },
+   { path: '/painel/home', nome: 'HomePainel', component: HomePainel, requireAuth:true },
 ];
 
 Vue.use(VueRouter)

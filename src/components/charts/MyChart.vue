@@ -30,7 +30,7 @@
             ></v-select>
           </v-flex>         
           <v-flex xs2 >
-            <v-btn color="success" @click="gerarGrafico()">Gerar gráfico</v-btn>
+            <v-btn color="primary" @click="gerarGrafico()" dark>Gerar gráfico</v-btn>
           </v-flex>
         </v-layout>
         <!-- OPCOES DE CONFIGURACAO DOS GRAFICOS -->

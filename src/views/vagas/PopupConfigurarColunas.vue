@@ -1,7 +1,7 @@
 <template>    
     <v-dialog v-model="dialogConfigurarColunas" width="600px">
         <template v-slot:activator="{ on }">
-            <v-btn color="success" dark class="ma-2" v-on="on" @click="initiateDialogColunas">Escolher colunas</v-btn>
+            <v-btn color="primary" dark class="ma-2" v-on="on" @click="initiateDialogColunas">Escolher colunas</v-btn>
         </template>                
         <v-card>
             <v-card-text>
@@ -18,7 +18,7 @@
             <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" @click="desmarcarTodos()">Desmarcar todos</v-btn>
-            <v-btn color="success" @click="updateColumns()">Ok</v-btn>
+            <v-btn color="primary" @click="updateColumns()">Ok</v-btn>
             <v-btn color="blue darken-1" text @click="closedialogConfigurarColunas">Fechar</v-btn>
             </v-card-actions>
         </v-card>

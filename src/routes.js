@@ -44,6 +44,11 @@ function obterRota(nome){
     return routes.filter(router => router.nome == nome)[0]
 }
 
+function obterRotaPeloCaminho(path){
+    //console.log('Procurando rota:', path)
+    return routes.filter(router => router.path == path)[0]
+}
+
 export {
-    router, routes, obterRota
+    router, routes, obterRota,obterRotaPeloCaminho
 }

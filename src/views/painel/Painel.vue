@@ -47,7 +47,7 @@
                 <v-col cols="4" >
                     <v-card class="mx-auto" max-width="600" outlined>
                         <v-card-title class="justify-center">
-                            Colunas
+                            COLUNAS
                             <!--<v-icon small @click="explicacao()">mdi-help-circle-outline</v-icon>-->
                         </v-card-title>                        
                         <v-text-field
@@ -71,7 +71,7 @@
                 <v-col cols="4">
                     <v-card class="mx-auto" width="600" outlined>
                         <v-card-title class="justify-center">
-                            Filtros
+                            FILTROS
                         </v-card-title>                         
                         <v-data-table
                             v-model="filtrosSelecionados"
@@ -130,7 +130,7 @@
                 <v-col cols="4">
                     <v-card class="mx-1" width="600" outlined>
                         <v-card-title class="justify-center">
-                            Saídas
+                            SAÍDAS
                         </v-card-title> 
                        <!-- TABELA COM LINHAS ARRASTAVEIS 
                        <v-simple-table dense class="mx-1">

@@ -1,4 +1,20 @@
 <template>
+ <div>
+     
+    <v-app-bar
+      v-if="!esconderMenu && loggedIn"
+      color="#0D2F52"
+      dark
+      dense
+      class="ml-10"
+    >
+       
+      <v-toolbar-title class="mx-auto">
+           <span style="color:white; align:center" > {{menuAtual}}</span>
+    </v-toolbar-title>
+
+    </v-app-bar>
+    
     <v-navigation-drawer
     color="#0D2F52" dark v-if="!esconderMenu && loggedIn"
       v-model="drawer"
@@ -66,11 +82,12 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+ </div>
 </template>
 
 <script>
     import { mapGetters, mapState, mapActions } from 'vuex'
-    import { routes, obterRota } from '../../routes.js'
+    import { routes, obterRota, obterRotaPeloCaminho } from '../../routes.js'
     import { obterMenu } from '../../services/Permissao.js'
 
     export default {
@@ -82,6 +99,12 @@
             }
         },
         computed: {
+            menuAtual(){
+                //console.log('Path:', this.$route.path)
+                var rota = obterRotaPeloCaminho(this.$route.path)
+                //console.log('Rota:', rota)
+                return rota.nome.toUpperCase()
+            },
             temAcesso(){
             },
             links (){

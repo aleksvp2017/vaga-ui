@@ -18,7 +18,7 @@
                     <br/><br/><br/>
                     <table width="100%">
                         <tr>
-                            <td :width="largura" v-for="(link, index) in links" :key="index">
+                            <td :width="largura" v-for="(link, index) in links" :key="index" :title="link.hint? link.hint : link.nome">
                                 <v-hover v-slot="{ hover }">
                                     <v-card align="center"
                                         elevation="0"
@@ -65,7 +65,8 @@ export default {
                             nome: itemMenu.nome,
                             path: itemMenu.path,
                             icone: rota.icone,
-                            ordem: itemMenu.ordem
+                            ordem: itemMenu.ordem,
+                            hint: rota.hint
                         })
                     }
                 })

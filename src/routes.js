@@ -29,11 +29,11 @@ var routes = [
    //componente, que não é uma string é o objeto
    //mantive o nome pela facilidade de usar o obterRota por nome
    { path: '/faleconosco', nome: 'Fale conosco', component: FaleConosco, requireAuth: true, icone: 'mdi-contact-mail'},
-   { path: '/vagas', nome: 'Edição de dados', component: Vagas, requireAuth:true, icone:'mdi-database-import' },
+   { path: '/vagas', nome: 'Edição de dados', component: Vagas, requireAuth:true, icone:'mdi-database-import', hint: 'Importe ou exporte planilhas, edite dados diretamente em tela' },
    { path: '/usuarios', nome: 'Usuários', component: Usuario, requireAuth:true, icone: 'mdi-account-multiple' },
    { path: '/auditoria', nome: 'Auditoria', component: Auditoria, requireAuth:true, icone: 'mdi-file-document-box-search' },
    { path: '/permissao', nome: 'Permissão', component: Permissao, requireAuth:true, icone: 'mdi-lock' },
-   { path: '/painel', nome: 'Painel', component: Painel, requireAuth:true, icone: 'mdi-chart-multiple' },
+   { path: '/painel', nome: 'Painel', component: Painel, requireAuth:true, icone: 'mdi-chart-multiple', hint: 'Consulte, agregue ou desagregue os dados, gere gráficos e mapas de calor' },
    { path: '/painel/home', nome: 'HomePainel', component: HomePainel, requireAuth:true },
 ];
 

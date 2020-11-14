@@ -13,6 +13,9 @@ import Auditoria from './views/auditoria/Auditoria.vue'
 import Permissao from './views/permissao/Permissao.vue'
 import Painel from './views/painel/Painel.vue'
 import HomePainel from './views/painel/HomePainel.vue'
+import ComparativoAprovadasMatriculas from './views/painel/ComparativoAprovadasMatriculas.vue'
+import EvolucaoVagasPorRede from './views/painel/EvolucaoVagasPorRede.vue'
+
 
 
 var routes = [
@@ -33,7 +36,11 @@ var routes = [
    { path: '/usuarios', nome: 'Usuários', component: Usuario, requireAuth:true, icone: 'mdi-account-multiple' },
    { path: '/auditoria', nome: 'Auditoria', component: Auditoria, requireAuth:true, icone: 'mdi-file-document-box-search' },
    { path: '/permissao', nome: 'Permissão', component: Permissao, requireAuth:true, icone: 'mdi-lock' },
-   { path: '/painel', nome: 'Painel', component: Painel, requireAuth:true, icone: 'mdi-chart-multiple', hint: 'Consulte, agregue ou desagregue os dados, gere gráficos e mapas de calor' },
+   { path: '/painel', nome: 'Painel', component: Painel, requireAuth:true, icone: 'mdi-align-vertical-bottom', hint: 'Consulte, agregue ou desagregue os dados, gere gráficos e mapas de calor' },
+   { path: '/comparativoaprovadasmatriculas', nome: 'Comparativo Aprovadas Matrículas', component: ComparativoAprovadasMatriculas, requireAuth:true, icone: 'mdi-chart-areaspline', 
+    hint: 'Gráfico comparativo entre evolução de matrículas e vagas aprovadas' },
+    { path: '/evolucaovagasporrede', nome: 'Evolução de Vagas por Rede', component: EvolucaoVagasPorRede, requireAuth:true, icone: 'mdi-chart-snakey', 
+    hint: 'Gráfico que mostra evolução de vagas por rede' },
    { path: '/painel/home', nome: 'HomePainel', component: HomePainel, requireAuth:true },
 ];
 

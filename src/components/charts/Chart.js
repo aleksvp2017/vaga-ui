@@ -28,7 +28,6 @@ Vue.component('line-chart', {
           },
           animation: {
             onComplete: function(chart) {
-              console.log('Completou:', chart)
               chart.options.tooltips.enabled = true;
             }
           },         

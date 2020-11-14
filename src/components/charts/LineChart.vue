@@ -9,8 +9,8 @@ export default {
       //console.log('Prop dimension:', this.dimension)
       var metricas = this.metrics
       var dimensoes = this.dimension
-      //console.log('Var metricas:', metricas)
-      //console.log('Var dimensoes:', dimensoes)
+      console.log('Var metricas:', metricas)
+      console.log('Var dimensoes:', dimensoes)
 
       if (!this.mostrarValoresZerados){
         var {dimensoesSemValoresZerados, metricasSemValoresZerados} = retirarValoresZerados(this.dimension, this.metrics)

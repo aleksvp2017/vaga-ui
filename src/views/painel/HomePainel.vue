@@ -27,8 +27,18 @@
                                         <v-btn color="white"  x-large icon @click="irParaVagas(link.nome)" >
                                             <v-icon>{{link.icone}}</v-icon>
                                         </v-btn>
-                                        <br/>
-                                        <span style="color:white; margin:15px">{{link.nome}}</span>
+                                    </v-card>
+                                </v-hover>                                
+                            </td>
+                        </tr>                          
+                        <tr>
+                            <td :width="largura" v-for="(link, index) in links" :key="index" :title="link.hint? link.hint : link.nome">
+                                <v-hover v-slot="{ hover }">
+                                    <v-card align="center"
+                                        elevation="0"
+                                        :color="hover ? '#264d73' : '#0D2F52'"
+                                        :class="{ 'on-hover': hover }">
+                                        <span style="color:white;">{{link.nome}}</span>
                                     </v-card>
                                 </v-hover>                                
                             </td>

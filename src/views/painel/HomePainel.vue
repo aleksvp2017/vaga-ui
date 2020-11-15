@@ -48,7 +48,7 @@
             </v-row>       
             <v-row>  
                 <v-col>
-                    <p style="color:white; margin:15px" class="text-center">20/10/2020 - última atualização de dados</p>
+                    <p style="color:white; margin:15px" class="text-center">09/11/2020 - última atualização de dados</p>
                 </v-col>
             </v-row>
         </v-container>

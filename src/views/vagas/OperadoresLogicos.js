@@ -1,5 +1,3 @@
-import { listarColunas } from "../../services/Vagas"
-
 const Operacoes = {
     operadores:{
         CONTEM: {

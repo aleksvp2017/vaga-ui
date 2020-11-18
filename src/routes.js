@@ -15,6 +15,7 @@ import Painel from './views/painel/Painel.vue'
 import HomePainel from './views/painel/HomePainel.vue'
 import ComparativoAprovadasMatriculas from './views/painel/ComparativoAprovadasMatriculas.vue'
 import EvolucaoVagasPorRede from './views/painel/EvolucaoVagasPorRede.vue'
+import Projetos from './views/projetos/Projetos.vue'
 
 
 
@@ -40,6 +41,8 @@ var routes = [
    { path: '/comparativoaprovadasmatriculas', nome: 'Comparativo Aprovadas Matrículas', component: ComparativoAprovadasMatriculas, requireAuth:true, icone: 'mdi-chart-areaspline', 
     hint: 'Gráfico comparativo entre evolução de matrículas e vagas aprovadas' },
     { path: '/evolucaovagasporrede', nome: 'Evolução de Vagas por Rede', component: EvolucaoVagasPorRede, requireAuth:true, icone: 'mdi-chart-snakey', 
+    hint: 'Gráfico que mostra evolução de vagas por rede' },
+    { path: '/projetosdaf', nome: 'Projetos DAF', component: Projetos, requireAuth:true, icone: 'mdi-head-lightbulb-outline', 
     hint: 'Gráfico que mostra evolução de vagas por rede' },
    { path: '/painel/home', nome: 'HomePainel', component: HomePainel, requireAuth:true },
 ];

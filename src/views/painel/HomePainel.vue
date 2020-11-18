@@ -14,7 +14,7 @@
         </v-row>        
         <v-container>
             <v-row justify="space-around">
-                <v-card width="1000" color="#0D2F52" height="250">
+                <v-card width="1200" color="#0D2F52" height="250">
                     <br/><br/><br/>
                     <table width="100%">
                         <tr>

@@ -22,7 +22,7 @@
             <ul v-if="!topico.tabelar">
               <li v-for="item in topico.itens" :key="item.nome">
                 <span v-if="!item.link">{{item.nome}}</span>
-                <a v-if="item.link" :href="item.nome">{{item.nome}}</a>
+                <a v-if="item.link" :href="item.link">{{item.nome? item.nome : item.link}}</a>
                 <ul v-if="item.subitens">
                   <li v-for="subitem in item.subitens" :key="subitem">{{subitem}}</li>
                 </ul>

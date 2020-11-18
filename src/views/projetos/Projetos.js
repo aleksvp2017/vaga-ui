@@ -11,7 +11,7 @@ const projetos =
                     {nome:'Foco: cursos técnicos financiados pelo Bolsa Formação;',
                      subitens: ['Presencial e EaD;']},
                     {nome:'Processo SEI original: 23000.006345/2018-18;'},
-                    {nome:'http://moodle.saas.etec.ufsc.br/', link:true},
+                    {nome:'', link:'http://moodle.saas.etec.ufsc.br/'},
                     {nome:'Instituição responsável pelo desenvolvimento e hospedagem: UFSC; Parceria desde 2010;'},
                     {nome:'Público alvo: rede e-tec;Rede e-tec = rede federal + senai/senac + instituições estaduais de ept.'},
                 ],
@@ -81,8 +81,99 @@ const projetos =
         ]
     },
     {
-    nome: 'Plataforma Itinerário',
-    }
+    nome: 'Acordo de gratuidade',
+    topicos: [
+        {
+            nome: 'Informações Gerais',
+            itens: [
+                {   nome:'Contatos',
+                    subitens: ['SENAI: Terezinha Angelica Monteiro Ervilha Gomes - terezinha.gomes@senaicni.com.br',
+                            'SENAC: Inês Pereira - ines.pereira@senac.br']
+                },
+                {
+                    nome: 'Instituído pelos Decretos 6.633/2008 e 6.635/2008;',
+                    subitens: ['Determina que SENAI e SENAC devem vincular ⅔  da receita líquida da contribuição compulsória geral para vagas gratuitas em EPT;'],
+                },
+                {
+                    nome:'Acórdão nº 1067/2017-TCU',
+                    subitens:['DEMORA NA ATUAÇÃO DO MINISTÉRIO DA EDUCAÇÃO PARA VERIFICAÇÃO DE SEU CUMPRIMENTOIMPOSSIBILIDADE DE DELIBERAR, COM RAZOÁVEL CERTEZA, ACERCA DO CUMPRIMENTO DOS PERCENTUAIS APLICADOS NO ACORDO;',
+                              'Resultou na instituição de grupo de trabalho com representantes da SETEC/MEC, SENAI e SENAC, por meio da Portaria SETEC nº 13/2018;',
+                              'Grupo definiu a construção de ferramenta de integração entre os sistemas;',
+                              'Relatório final do grupo: portaria 1.249/2018 09 de novembro de 2018;',
+                              'Fim de 2019: STIC/MEC concluiu o desenvolvimento da ferramenta - SS6148;'],
+                }
+            ],
+        },    
+        {
+            nome: 'Histórico',
+            itens: [
+                {
+                    nome: '2008: Decretos 6.633/2008 e 6.635/2008',
+                },
+                {
+                    nome: '2017: Acórdão nº 1067/2017-TCU',
+                },
+                {
+                    nome: '2018: Portaria SETEC nº 13/2018',
+                },
+                {
+                    nome: '2019: Webservice 12/2019',
+                },                
+                {
+                    nome: '05/2020: Documentação e ambiente de homologação',
+                },                                
+                {
+                    nome: '07/2020: Início da homologação por SENAI e SENAC. Combinado novembro carga de 2019; março carga de 2020;'
+                },
+                {
+                    nome: '10/2020: SENAI levanta primeiras dúvidas já resppondidas;'
+                },
+                {
+                    nome: '11/2020: SENAC indica que ainda precisa resolver coisas internas antes de começar o processo;'
+                }                
+            ]
+        },
+        {
+            nome:'Processos SEI envolvidos',
+            itens:[{nome:'23000.023376/2017-44: SENAI encaminha à SETEC/MEC dados do Acordo de Gratuidade dos exercícios de 2011 a 2015;'},
+                    {nome:'23000.022358/2019-15: disponíveis os três relatórios desenvolvidos pelo consultor Rodrigo Proença em novembro de 2019 referente à homologação do WebService;'},
+                    {nome:'23000.020287/2016-65: acompanhamento Acordo de Gratuidade SENAI;'},
+                    {nome:'23000.020288/2016-18: acompanhamento Acordo de Gratuidade SENAC;'},
+                    {nome:'23000.027272/2017-17: Acórdão nº 1067/2017-TCU-Plenário, o qual deu origem à necessidade de desenvolver o WebService.'}
+                ],
+        },
+        {
+            nome:'Requisições (STIC) associadas',
+            itens:[{nome:'REQ328214 e REQ328218 (02/2020) - documentação e ambiente - ambas atendidas;'}]
+        },
+        {
+            nome: 'Dados publicados por SENAI/SENAC',
+            itens:[
+                {nome:'SENAI', link: 'https://www.portaldaindustria.com.br/senai/canais/transparencia/gratuidade/'},
+            ]
+        },
+        {
+            nome: 'Detalhamento técnico',
+            itens:[{nome: 'No sistec, envolvem o Ciclo de Matrícula (não o Bolsa Formação);'},
+                    {nome: 'O que diferencia é o campo CO_MODALIDADE_PAGAMENTO que deve ter valor gratuito (código equivalente 3);'}]
+        }          
+    ]
+    },
+    /*
+    {
+    nome: 'Acordo de gratuidade',
+    topicos: [
+        {
+            nome: 'Informações Gerais',
+            itens: [
+                {nome:'Contatos',
+                 subitens: ['SENAI: Terezinha Angelica Monteiro Ervilha Gomes - terezinha.gomes@senaicni.com.br',
+                            'SENAC: Inês Pereira - ines.pereira@senac.br']
+                },
+            ],
+        },    
+    ]
+    }*/
 ]
 
 const listarProjetos = () => {

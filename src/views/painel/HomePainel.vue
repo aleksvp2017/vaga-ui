@@ -14,7 +14,7 @@
         </v-row>        
         <v-container>
             <v-row justify="space-around">
-                <v-card width="1200" color="#0D2F52" height="250">
+                <v-card :width="larguraPainel" color="#0D2F52" :height="alturaPainel">
                     <br/><br/><br/>
                     <table width="100%">
                         <tr>
@@ -31,7 +31,7 @@
                                 </v-hover>                                
                             </td>
                         </tr>                          
-                        <tr>
+                        <tr class="hidden-sm-and-down">
                             <td :width="largura" v-for="(link, index) in links" :key="index" :title="link.hint? link.hint : link.nome">
                                 <v-hover v-slot="{ hover }">
                                     <v-card align="center"
@@ -62,6 +62,26 @@ import {mapActions, mapGetters} from 'vuex'
 
 export default {
     computed: {
+        larguraPainel(){
+            switch (this.$vuetify.breakpoint.name) {
+                case 'xs': return '500px'
+                case 'sm': return '600px'
+                case 'md': return '900px'
+                case 'lg': return '900px'
+                case 'xl': return '1200px'
+            }
+            return '1200px'
+        },
+        alturaPainel(){
+            switch (this.$vuetify.breakpoint.name) {
+                case 'xs': return '150px'
+                case 'sm': return '150px'
+                case 'md': return '250px'
+                case 'lg': return '250px'
+                case 'xl': return '250px'
+            }
+            return '250px'
+        },        
         links (){
             var itens = []
             //Precisa do arquivo de rotas por causa do mapeamento com o componente, que não pode ser

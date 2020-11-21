@@ -159,6 +159,119 @@ const projetos =
         }          
     ]
     },
+    {
+        nome: 'Comitê EaD',
+        topicos: [
+            {
+                nome: 'Informações Gerais',
+                itens:[{nome: 'Comitê Técnico para o Acompanhamento da Política de Educação a Distância da Secretaria de Educação Profissional e Tecnológica;'},
+                    {nome: 'SEI: 23000.023669/2019-93;'},
+                    {nome: 'Portaria SETEC nº 480, de 24 de agosto de 2020 - designa os membros.', link: 'https://www.jusbrasil.com.br/diarios/313697401/dou-secao-2-26-08-2020-pg-13'},
+                ],
+            },
+            {
+                nome: 'Composição',
+                itens:[{nome: '15 membros;'},
+                    {nome: '2 membros do gabinete;'},
+                    {nome: '2 por cada diretoria da SETEC, totalizando 6 pessoas;'},
+                    {nome: '4 membros do CONIF (Conselho Nacional das Instituições da Rede Federal de Educação Profissional e Tecnológica);'},
+                    {nome: '2 membros do CONDETUF (Conselho Nacional de Diretores de Escolas Técnicas Vinculadas às Universidades Federais);'},
+                    {nome: '1 Secretário Executivo - DAF.'},
+                ],
+            },  
+            {
+                nome: 'Normativos',
+                itens:[{nome: 'Portaria MEC 573 (03/07/2020) - Criação do Comitê;'},
+                    {nome: 'Portaria SETEC 480 (24/08/2020) - Nomeação dos membros;'},
+                ],
+            }, 
+            {
+                nome: 'Atribuições',
+                itens:[{nome: 'Acompanhamento dos resultados;'},
+                    {nome: 'Levantamento de demanda;'},
+                    {nome: 'Ampliar oferta de cursos;'},
+                    {nome: 'Ampliar e identificar produção de material didático;'},
+                    {nome: 'Articulação.'},
+                ],
+            },  
+            {
+                nome: 'Reuniões / Trabalhos',
+                itens:[{nome: '28/08 apresentações, cronogramas, método de trabalho, divisão em grupos temáticos;'},
+                    {nome: '11/09 proposta de ações pelos grupos;'},
+                    {nome: '02/10 apresentação do comitê EaD do CONIF;'},
+                    {nome: '20/11 Apresentação do ProEdu - Professor Raymundo Carlos.'}
+                ],
+            }, 
+            {
+                nome: 'Próximos passos',
+                itens:[{nome: 'Painel sobre a Oferta de Educação à Distância no âmbito da EPT;',
+                        subitens:['Originalmente para dia 26/11/2020 - véspera do dia da EaD;', 'Mudado para dia 09 e 10/12/2020.']},
+                ],
+            },  
+            {
+                nome: 'Documentos compartilhados',
+                itens:[{nome: 'One drive da SETEC sobre Comitê', 
+                    link: 'https://mecbrasil-my.sharepoint.com/:f:/g/personal/emersoncorazza_mec_gov_br/ElVzxP7Q11FNhpepT7h95SABv2w6EFFlX0eLthnUFnXT6A'},
+                ],
+            },                         
+        ],
+    },   
+    {
+        nome: 'Novo módulo de pactuação',
+        topicos: [
+            {
+                nome: 'Informações Gerais',
+                itens:[],
+            },
+            {
+                nome:'Requisições (STIC) associadas',
+                itens:[{nome:'REQ313350 (11/2019 - SS6482).'}]
+            },
+            {
+                nome:'Riscos',
+                itens:[{nome:'Processo pactuação de forma precária;'},
+                        {nome:'execução indireta feita através de unidade remota;'},
+                        {nome:'preço variável através de um controle manual.'}]
+            },            
+        ],
+    },     
+    {
+        nome: 'ProEDU',
+        topicos: [
+            {
+                nome: 'Informações Gerais',
+                itens:[
+                    {
+                        nome: 'O ProEdu é o repositório de objetos educacionais da rede profissional e tecnológica (Rede e-Tec Brasil) da Secretaria de Educação Profissional e Tecnológica (SETEC) do Ministério da Educação;'
+                    },
+                    {
+                        nome: 'Desenvolvido pelo IFSul - Representante: Professor Raymundo Carlos.'
+                    },
+                    {
+                        nome: '', link: 'http://proedu.rnp.br/'
+                    },
+                    {
+                        nome: 'Hospedagem via RNP (está no contrato de gestão).'
+                    }
+                ],
+            },
+            {
+                nome:'TEDs (Fase 3)',
+                itens:[{nome:'8004.1.',
+                    subitens:['Vigência inicial em 30/11/2018 e vigência final em 30/12/2020.',
+                        'Valor previsto: R$ 965.200,00',
+                        'Valor descentralizado (2018): R$ 965.200,00',
+                        'Metas: Meta 1 - Manter o PROEDU atualizado, atendendo a requisitos de segurança, operacionalidade, atualizado em suas tecnologias e com melhoramentos na experiência do usuário; Meta 2 - Estruturar um Curso de Produção de Conteúdo Didático Digital Acessível (CDDA). Meta 3 - Desenvolver sistema de acompanhamento de produção de Conteúdo Didático Digital Acessível (CDDA).']}]
+            },
+            {
+                nome: 'Detalhamento técnico',
+                itens:[{nome: 'Permite integração via API, ou links embutidos (não existe ninguém usando via API);'},
+                        {nome: 'Armazenamento de cursos moodles inteiros já formatados;'},
+                        {nome: 'Não tem política de curadoria oficial;'},
+                        {nome: 'Acesso é todo não identificado. Fazem sugestão de conteúdo via IP.'}]
+            }             
+        ],
+    },
     /*
     {
     nome: 'Acordo de gratuidade',

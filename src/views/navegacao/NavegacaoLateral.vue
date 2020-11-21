@@ -8,6 +8,12 @@
       dense
       class="ml-10"
     >
+
+      <!--<span class="hidden-sm-and-up">
+        <v-btn @click.stop="drawer = !drawer">
+          Menu
+        </v-btn>
+      </span>-->
        
       <v-toolbar-title class="mx-auto">
            <span style="color:white; align:center" > {{menuAtual}}</span>
@@ -16,13 +22,13 @@
     </v-app-bar>
     
     <v-navigation-drawer
-    color="#0D2F52" dark v-if="!esconderMenu && loggedIn"
-      v-model="drawer"
-      :mini-variant.sync="mini"
-      expand-on-hover
-      app
-            floating
-    >
+        absolute permanent
+        color="#0D2F52" dark v-if="!esconderMenu && loggedIn"
+          v-model="drawer"
+        :mini-variant.sync="mini"
+        expand-on-hover
+        app
+        floating>
         <!--TOPO DO MENU -->
       <v-list-item class="px-0">
         <!-- USER MENU -->

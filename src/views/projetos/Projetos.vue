@@ -8,41 +8,43 @@
       {{tab.nome}}
     </v-tab>
 
-    <v-tab-item v-for="tab in tabs" :key="tab.nome" >
-      <div class="text-center d-flex pb-4">
-        <v-btn @click="expandirTodos" icon><v-icon>mdi-arrow-down-bold</v-icon></v-btn>
-        <v-btn @click="recolherTodos" icon><v-icon>mdi-arrow-up-bold</v-icon></v-btn>
-    </div>
-      <v-expansion-panels v-model="panel" multiple>
-        <v-expansion-panel v-for="topico in tab.topicos" :key="topico.nome">
-          <v-expansion-panel-header>
-            <span style="color:#00264d;font-weight:bold">{{topico.nome}}</span>
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <ul v-if="!topico.tabelar">
-              <li v-for="item in topico.itens" :key="item.nome">
-                <span v-if="!item.link">{{item.nome}}</span>
-                <a v-if="item.link" :href="item.link">{{item.nome? item.nome : item.link}}</a>
-                <ul v-if="item.subitens">
-                  <li v-for="subitem in item.subitens" :key="subitem">{{subitem}}</li>
-                </ul>
-              </li>
-            </ul>
-            <table v-if="topico.tabelar">
-              <tr v-if="topico.header">
-                <th v-for="header in topico.header" :key="header">
-                  {{header}}
-                </th>
-              </tr>
-              <tr v-for="(item,index) in topico.itens" :key="index">
-                <td v-for="subitem in item.subitens" :key="subitem">
-                  {{subitem}}
-                </td>
-              </tr>
-            </table>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+    <v-tab-item v-for="tab in tabs" :key="tab.nome">
+      <v-col cols="12">
+        <div class="text-center d-flex pb-4">
+          <v-btn @click="expandirTodos" icon><v-icon>mdi-arrow-down-bold</v-icon></v-btn>
+          <v-btn @click="recolherTodos" icon><v-icon>mdi-arrow-up-bold</v-icon></v-btn>
+        </div>
+        <v-expansion-panels v-model="panel" multiple>
+          <v-expansion-panel v-for="topico in tab.topicos" :key="topico.nome">
+            <v-expansion-panel-header>
+              <span style="color:#00264d;font-weight:bold">{{topico.nome}}</span>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <ul v-if="!topico.tabelar">
+                <li v-for="item in topico.itens" :key="item.nome">
+                  <span v-if="!item.link">{{item.nome}}</span>
+                  <a v-if="item.link" :href="item.link">{{item.nome? item.nome : item.link}}</a>
+                  <ul v-if="item.subitens">
+                    <li v-for="subitem in item.subitens" :key="subitem">{{subitem}}</li>
+                  </ul>
+                </li>
+              </ul>
+              <table v-if="topico.tabelar">
+                <tr v-if="topico.header">
+                  <th v-for="header in topico.header" :key="header">
+                    {{header}}
+                  </th>
+                </tr>
+                <tr v-for="(item,index) in topico.itens" :key="index">
+                  <td v-for="subitem in item.subitens" :key="subitem">
+                    {{subitem}}
+                  </td>
+                </tr>
+              </table>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-col>
     </v-tab-item>
   </v-tabs>
   

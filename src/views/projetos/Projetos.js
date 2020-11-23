@@ -181,7 +181,7 @@ const projetos =
             },  
             {
                 nome: 'Normativos',
-                itens:[{nome: 'Portaria MEC 573 (03/07/2020) - Criação do Comitê;'},
+                itens:[{nome: 'Portaria MEC 573 (03/07/2020) - Criação do Comitê;', link: 'https://www.in.gov.br/en/web/dou/-/portaria-n-573-de-3-de-julho-de-2020-265061930'},
                     {nome: 'Portaria SETEC 480 (24/08/2020) - Nomeação dos membros;'},
                 ],
             }, 

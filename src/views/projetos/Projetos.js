@@ -1,8 +1,15 @@
 const projetos = 
 [
     {
+        //SAAS
         nome: 'SAAS',
         topicos: [
+            {
+                nome: 'Situação atual',
+                itens:[
+                    {nome: 'Processo de obtenção de documentação e habilitação do Webservice junto à STIC desde o dia 19/10/2020.'},
+                ]
+            },
             {
                 nome: 'Informações Gerais',
                 itens: [
@@ -81,8 +88,17 @@ const projetos =
         ]
     },
     {
+    //ACORDO DE GRATUIDADE
     nome: 'Acordo de gratuidade',
     topicos: [
+        {
+            nome: 'Situação atual',
+            itens:[
+                {nome: 'Contato com a Terezinha do SENAI para tirar algumas dúvidas sobre os dados do acordo em novembro;'},
+                {nome: 'Inês do SENAC avisou dia 16/11 que ainda estão se organizando internamente para iniciar os trabalhos;'},
+                {nome: 'Desde o dia 12/11 tentando obter informações, junto à STIC, dos dados do acordo que constam na página inicial do SISTEC (REQ368735).'},
+            ]
+        },        
         {
             nome: 'Informações Gerais',
             itens: [
@@ -160,8 +176,17 @@ const projetos =
     ]
     },
     {
+        //COMITÊ
         nome: 'Comitê EaD',
         topicos: [
+            {
+                nome: 'Situação Atual',
+                itens:[{nome: 'Painel sobre a Oferta de Educação à Distância no âmbito da EPT;',
+                        subitens:['Originalmente para dia 26/11/2020 - véspera do dia da EaD;', 'Modificado para dia 09 e 10/12/2020.']},
+                        {nome: 'Mudança na coordenação com a saída do Weber. Deve ficar com a DPR (Joelma);'},
+                        {nome: 'Próxima reunião ordinária ainda não marcada.'}
+                ],
+            },              
             {
                 nome: 'Informações Gerais',
                 itens:[{nome: 'Comitê Técnico para o Acompanhamento da Política de Educação a Distância da Secretaria de Educação Profissional e Tecnológica;'},
@@ -203,12 +228,6 @@ const projetos =
                 ],
             }, 
             {
-                nome: 'Próximos passos',
-                itens:[{nome: 'Painel sobre a Oferta de Educação à Distância no âmbito da EPT;',
-                        subitens:['Originalmente para dia 26/11/2020 - véspera do dia da EaD;', 'Mudado para dia 09 e 10/12/2020.']},
-                ],
-            },  
-            {
                 nome: 'Documentos compartilhados',
                 itens:[{nome: 'One drive da SETEC sobre Comitê', 
                     link: 'https://mecbrasil-my.sharepoint.com/:f:/g/personal/emersoncorazza_mec_gov_br/ElVzxP7Q11FNhpepT7h95SABv2w6EFFlX0eLthnUFnXT6A'},
@@ -217,8 +236,59 @@ const projetos =
         ],
     },   
     {
+        //Rede e-TEC Brasil
+        nome: 'Rede e-tec Brasil',
+        topicos: [
+            {
+                nome: 'Situação atual',
+                itens:[
+                    {
+                        nome: 'Incluir na pauta de discussão na próxima reunião do Comitê de Ead;'
+                    },
+                    {
+                        nome: 'Conversa inicial com coordenador e secretário executivo sobre a inclusão desse tópico na próxima reunião do Comitê (que ainda não tem data);'
+                    },
+                    {
+                        nome: 'Definir uma linha nesse trabalho. Possibilidades:',
+                        subitens: ['Levar o tema geral ao Comitê e deixar que ele decida como proceder. Quais normativos revisar, quais pontos relevantes, etc;',
+                            'Definir na DAF o escopo e direção dessa revisão.'],
+                    },   
+                    {
+                        nome: 'Planilhados os dois principais normativos envolvidos (DECRETO Nº 7.589, DE 26 DE OUTUBRO DE 2011 e PORTARIA Nº 1.152, DE 22 DE DEZEMBRO DE 2015) de modo a facilitar os comentários',
+                        subitens:['Algumas obvservações já feitas']
+                    },
+                    {
+                        nome: 'Normativos planilhados', link:'https://drive.google.com/file/d/1LXDtlaPiuT--T9XqVYnRcaNkdAirxSLI/view?usp=sharing'
+                    },
+                ],
+            },            
+            {
+                nome: 'Informações Gerais',
+                itens:[{nome: 'Elaboração de proposta de atualização da base normativa da Rede e-tec Brasil;'},
+                    {nome: 'SEI: 23000.021813/2020-91;'},
+                    {nome: 'Análise do Decreto 7589 e comparação com portaria de instituição do Comitê de Ead.', 
+                        link: 'https://docs.google.com/document/d/1TuJCy5cSbJr9kGUjsIoLoPXV4X5_wA8UTQCwBXaTefo/edit?usp=sharing'}
+                ],
+            },       
+        ],
+    },       
+    {
+        //NOVO MÓDULO
         nome: 'Novo módulo de pactuação',
         topicos: [
+            {
+                nome: 'Situação Atual',
+                itens:[{nome: 'Trabalhos estão andando, porém de forma bem mais lenta e confusa do que o desejado;'},
+                        {nome: 'O projeto foi dividido em 5 partes, chamadas de releases. Ontem, a STIC entregou as duas primeiras para testarmos (a primeira na verdade já haviam entregue, mas rapidamente testamos e apontamos problemas). Além disso, estamos no processo de detalhamento da penúltima parte;'},
+                        {nome: 'Não existe cronograma ou planejamento que tenha sido compartilhado conosco. Faz mais ou menos 6 meses que pedimos isso para diferentes pessoas da fábrica e da STIC. Nunca foi concretizado;'},
+                        {nome: 'Ocorrências relevantes:',
+                            subitens:['Haviam combinado entregar a release 1 e 2 no dia 13/11. Cobrei no dia 16/11 e somente no dia 19/11 recebi resposta de que a STIC tinha mudado a prioridade para atender uma outra demanda sem qualquer aviso. Somente concretizaram a entrega no dia 26/11;',
+                                'O detalhamento dos requisitos está bem lento. Por exemplo, faz duas semanas que não recebemos nenhum documento para validar. A pessoa responsável por esse trabalho, mesmo depois de meses no projeto, continua conhecendo muito pouco do SISTEC e não é muito eficiente. Muitas vezes, a Cilene acaba escrevendo os documentos;',
+                                'Houve mais uma mudança STIC diretamente relacionada ao projeto. Como você sabe, a Suyanne foi substituída pelo André que até esse momento, não deu sinal de vida, sequer se apresentou para falar a verdade. Na reunião de ontem, Ibsen apresentou o Alexandre como substituto da Suyanne. Quando perguntei se não era o André, ele ficou confuso;',
+                                'Apesar da propaganda inicial de 7 desenvolvedores, ontem tivemos a certeza de que só dois desenvolvedores estão trabalhando no projeto; e só um analista de negócio compartilhado com outros projetos.'
+                            ]}
+                ],
+            },            
             {
                 nome: 'Informações Gerais',
                 itens:[],
@@ -234,8 +304,97 @@ const projetos =
                         {nome:'preço variável através de um controle manual.'}]
             },            
         ],
+    },   
+    {
+        //PLATAFORMA DO ITINERÁRIO FORMATIVO
+        nome: 'Plataforma do Itinerário',
+        topicos: [
+            {
+                nome: 'Situação Atual',
+                itens:[{nome: 'TED com a UFG estava pronto para assinatura, mas houve uma decisão do Secretário em aguardar definição do projeto dos cursos;'},
+                        {nome: 'UFG foi notificada da situação no dia 18/11/2020;'},
+                        {nome: 'No dia 18/11/2020, Joedna me procurou para saber detalhes da plataforma a serem repassado à quem vai elaborar os cursos.'}
+                ],
+            },
+            {
+                nome: 'Informações Gerais',
+                itens:[
+                    {
+                        nome:'Plataforma EaD do MEC para ofertar cursos técnicos elaborados sobre a supervisão do mesmo para apoiar as redes públicas de ensino na oferta do Itinerário Formativo da EPT.'
+                    },
+                    {
+                        nome: 'Projeto foi dividido em duas frentes:',
+                        subitens:['Cursos: elaboração de cursos técnicos diferenciados sobre a supervisão do MEC seguindo o Currículo de Referência - Responsabilidade: DPR (Joelma e Joedna);',
+                            'Plataforma tecnológica: desenvolvimento de uma plataforma EaD para suportar os referidos cursos - Responsabilidade: DAF (Aleks);']
+                    },
+                    {
+                        nome: 'AVAMEC: a solução encontrada foi através de uma parceria (via TED) com a UFG para customizar o AVAMEC (plataforma já utilizada pela SEB).'
+                    }
+                ],
+            }, 
+            {
+                nome: 'SEI e outros documentos',
+                itens:[
+                    {
+                        nome: 'TED com a UFG: 9839, SEI: 23000.027984/2020-23;'
+                    },
+                    {
+                        nome: 'TED do AVAMEC original: 9223;'
+                    },
+                ]
+            } ,
+            {
+                nome: 'Orçamento e cronograma',
+                itens:[
+                    {
+                        nome: 'Orçamento: R$984.000,00 (hospedagem 216 + desenvolvimento 768);'
+                    },
+                    {
+                        nome: 'TED para 12 meses com entregas parciais ao longo do período;'
+                    }
+                ]
+            }        
+        ],
+    },   
+    {
+        //SISTEMA DE VAGAS
+        nome: 'Sistema de vagas',
+        topicos: [
+            {
+                nome: 'Situação Atual',
+                itens:[{nome: 'Dados sendo atualizados semanalmente de acordo com as planilhas do Leonardo, mas sem atualizações na ferramenta.'},
+                ],
+            },
+            {
+                nome: 'Informações Gerais',
+                itens:[
+                ],
+            },          
+        ],
+    },           
+    {
+        //MONITORAMENTO
+        nome: 'Monitoramento',
+        topicos: [
+            {
+                nome: 'Situação Atual',
+                itens:[{nome: 'Painel feito no PowerBI sendo entregue ao final de novembro pelos AEEs;'},
+                        {nome: 'Como dar continuidade e melhorar o trabalho com o fim do contrato com os AEEs;'},
+                        {nome: 'Iniciando estudo no PowerBI que podem vir a ser utilizados também no Mapa de Minas.'}
+                ],
+            },
+            {
+                nome: 'Informações Gerais',
+                itens:[
+                    {
+                        nome:'Painel interno e boletim de monitoramento.'
+                    }
+                ],
+            },          
+        ],
     },     
     {
+        //PROEDU
         nome: 'ProEDU',
         topicos: [
             {

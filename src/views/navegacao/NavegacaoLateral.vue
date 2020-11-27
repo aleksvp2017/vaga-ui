@@ -16,7 +16,7 @@
       </span>-->
        
       <v-toolbar-title class="mx-auto">
-           <span style="color:white; align:center" > {{menuAtual}}</span>
+           <span style="color:0D2F52; align:center" > {{menuAtual}}</span>
     </v-toolbar-title>
 
     </v-app-bar>

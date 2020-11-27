@@ -1,6 +1,7 @@
 <template>
         <!--<v-app-bar app color="#80CBC4" dark>-->
         <v-app-bar app color="#0D2F52" dark v-if="!esconderMenu">
+            oi
             <v-toolbar-title>
                 <h2>
                     <v-btn color="#0D2F52" dark elevation="0" :to="rotaHome">

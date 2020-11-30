@@ -7,7 +7,7 @@ const projetos =
             {
                 nome: 'Situação atual',
                 itens:[
-                    {nome: 'Processo de obtenção de documentação e habilitação do Webservice junto à STIC desde o dia 19/10/2020.'},
+                    {nome: 'Processo de obtenção de documentação e habilitação do Webservice junto à STIC (Alexandre e Ibsen) desde o dia 19/10/2020.'},
                 ]
             },
             {
@@ -96,7 +96,10 @@ const projetos =
             itens:[
                 {nome: 'Contato com a Terezinha do SENAI para tirar algumas dúvidas sobre os dados do acordo em novembro;'},
                 {nome: 'Inês do SENAC avisou dia 16/11 que ainda estão se organizando internamente para iniciar os trabalhos;'},
-                {nome: 'Desde o dia 12/11 tentando obter informações, junto à STIC, dos dados do acordo que constam na página inicial do SISTEC (REQ368735).'},
+                {nome: 'Desde o dia 12/11 tentando obter informações, junto à STIC, dos dados do acordo que constam na página inicial do SISTEC (REQ368735);'},
+                {nome: 'Existem hoje dados no SISTEC cadastrado pelas filiais:',
+                    subitens:['SENAI: 110k no SISTEC em 2019 (modalidade de pagamento gratuito). No portal deles em 2020, 320k matrículas;',
+                        'SENAC: 240k no SISTEC em 2019 (modalidade de pagamento gratuito);']}
             ]
         },        
         {
@@ -125,18 +128,23 @@ const projetos =
             itens: [
                 {
                     nome: '2008: Decretos 6.633/2008 e 6.635/2008',
+                    subitens:['Determina que SENAI e SENAC devem vincular ⅔  da receita líquida da contribuição compulsória geral para vagas gratuitas em EPT (Técnico e FIC);']
                 },
                 {
                     nome: '2017: Acórdão nº 1067/2017-TCU',
+                    subitens: ['Demora para verificação de seu cumprimento e impossibilidade de deliberar sobre o cumprimento dos percentuais;']
                 },
                 {
                     nome: '2018: Portaria SETEC nº 13/2018',
+                    subitens:['Representantes da SETEC, SENAI e SENAC -  Portaria SETEC nº 13/2018;']
                 },
                 {
                     nome: '2019: Webservice 12/2019',
+                    subitens: ['Definida a construção de ferramenta de integração entre os sistemas (entregue ao fim de 2019);']
                 },                
                 {
                     nome: '05/2020: Documentação e ambiente de homologação',
+                    subitens: ['Etapa de configuração de acesso ao ambiente (liberar regras no firewall para os IPs de SENAI e SENAC);']
                 },                                
                 {
                     nome: '07/2020: Início da homologação por SENAI e SENAC. Combinado novembro carga de 2019; março carga de 2020;'
@@ -160,7 +168,8 @@ const projetos =
         },
         {
             nome:'Requisições (STIC) associadas',
-            itens:[{nome:'REQ328214 e REQ328218 (02/2020) - documentação e ambiente - ambas atendidas;'}]
+            itens:[{nome:'REQ328214 e REQ328218 (02/2020) - documentação e ambiente - ambas atendidas;'},
+            {nome: 'REQ368735: investigar dados do acordo constantes na página inicial do SISTEC de 2009 até 2012;'}]
         },
         {
             nome: 'Dados publicados por SENAI/SENAC',
@@ -171,7 +180,10 @@ const projetos =
         {
             nome: 'Detalhamento técnico',
             itens:[{nome: 'No sistec, envolvem o Ciclo de Matrícula (não o Bolsa Formação);'},
-                    {nome: 'O que diferencia é o campo CO_MODALIDADE_PAGAMENTO que deve ter valor gratuito (código equivalente 3);'}]
+                    {nome: 'O que diferencia é o campo CO_MODALIDADE_PAGAMENTO que deve ter valor gratuito (código equivalente 3). É por aluno (informa ao fazer a matrícula);'},
+                    {nome: 'Mesmo que haja impedimento para matricular o mesmo CPF duas vezes no mesmo ciclo, não existe impedimento para cadastrar o mesmo CPF em ciclos distintos (unidades criam ciclos livremente);'},
+                    {nome: 'Como fazer para evitar duplicidade? Não adianta tirar da tela a escolha da modalidade gratuita, pois poderia mandar 2x via WS;'},
+                    {nome: 'Ciclo = conjunto de turmas do mesmo curso, mesmo início e fim, mesma forma de ensino (concomitante, subsequente, integrado).'}]
         }          
     ]
     },
@@ -291,7 +303,47 @@ const projetos =
             },            
             {
                 nome: 'Informações Gerais',
-                itens:[],
+                itens:[
+                    {
+                        nome:' Motivado pela Portaria 1720 de 8/10/2019',
+                        subitens: ['Principais inovações: oferta indireta e valor variável da hora aula;',
+                            'Motivação inicial:  saldos financeiros não utilizados nas contas dos parceiros da Bolsa-Formação;',
+                            'As ofertas de vagas  deverão estar em consonância com as necessidades do setor produtivo local, devendo ser subsidiadas por um mapa de ofertas de vagas e demandas da região;',
+                            'Fala sobre monitoramento;',
+                        ]
+                    },
+                    {
+                        nome: 'Por que não no SISTEC 2.0? Além de um horizonte mais distante não iria contemplar Bolsa-Formação (só a regulação).'
+                    }
+                ],
+            },
+            {
+                nome: 'Histórico',
+                itens: [
+                    {
+                        nome:'2019',
+                        subitens:['Emitiu um parecer indicando novo módulo',
+                            'Levantamento básico das funcionalidades; troca da fábrica;']
+                    },
+                    {
+                        nome: 'Fev/2020 - retomada dos trabalhos - prazo maio/2020;',
+                    },
+                    {
+                        nome: 'Mar/2020 - trabalhos andaram lentamente;'
+                    },
+                    {
+                        nome: 'Abr/2020 - pandemia, troca de equipes (STIC e Basis), atrasos;',
+                        subitens:['Equipe era totalmente nova, sem conhecimento do sistema;',
+                            'Prazo definido para setembro; nunca apresentaram um cronograma;']
+                    },
+                    {
+                        nome: 'Jun/2020 - retomam os trabalhos com a decisão da equipe de revisar o que havia sido escrito com participação da GPIS;'
+                    },
+                    {
+                        nome: 'Out/2020 - 70% detalhado; 30% implementado sem testar;',
+                        subitens:['Ambiente de testes disponibilizado.']
+                    }
+                ]
             },
             {
                 nome:'Requisições (STIC) associadas',
@@ -368,8 +420,48 @@ const projetos =
             {
                 nome: 'Informações Gerais',
                 itens:[
+                    {
+                        nome: 'Solução para sistematizar a consolidação e o processo de armazenamento, consulta e divulgação de dados relativos à vagas dos processos de pactuação e repactuação;'
+                    },{
+                        nome: 'Envolve dois grandes grupos de informação:',
+                        subitens:['Repactuação com Estados e Municípios;','Pactuações com a rede federal.']
+                    }
                 ],
-            },          
+            },     
+            {
+                nome: 'Fonte de dados',
+                itens:[
+                    {
+                        nome: 'Relatórios SISTEC;'
+                    },
+                    {
+                        nome: 'Planilhas CGFS;'
+                    },
+                    {
+                        nome: 'Planilhas GPIS.'
+                    }
+                ],
+            },   
+            {
+                nome:'Premissas',
+                itens:[
+                    {
+                        nome: 'STIC: Não envolvimento da TI do MEC;'
+                    },
+                    {
+                        nome: 'Internet: dados publicados na internet, mas não públicos;'
+                    },
+                    {
+                        nome: 'Eficiência: evitar retrabalho por parte das equipes;'
+                    },
+                    {
+                        nome: 'Granularidade: extração de dados detalhados ou consolidados;'
+                    },   
+                    {
+                        nome: 'Caminho baseado nas premissas: desenvolvimento de uma ferramenta experimental com recursos da própria diretoria.'
+                    }                                                         
+                ]
+            }               
         ],
     },           
     {

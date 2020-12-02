@@ -219,7 +219,7 @@ const projetos =
             {
                 nome: 'Normativos',
                 itens:[{nome: 'Portaria MEC 573 (03/07/2020) - Criação do Comitê;', link: 'https://www.in.gov.br/en/web/dou/-/portaria-n-573-de-3-de-julho-de-2020-265061930'},
-                    {nome: 'Portaria SETEC 480 (24/08/2020) - Nomeação dos membros;'},
+                    {nome: 'Portaria SETEC 480 (24/08/2020) - Nomeação dos membros;', link: 'https://www.jusbrasil.com.br/diarios/313697401/dou-secao-2-26-08-2020-pg-13'},
                 ],
             }, 
             {
@@ -540,8 +540,16 @@ const projetos =
     }*/
 ]
 
+import Vue from 'vue'
+import VueResource from 'vue-resource'
+import {BASE_BACKEND_URL} from './Constantes.js'
+
+Vue.use(VueResource)
+const http = Vue.http
+
 const listarProjetos = () => {
-    return projetos
+    var projetosJSON = http.get(BASE_BACKEND_URL + 'projeto')
+    return projetosJSON
 }
 
 

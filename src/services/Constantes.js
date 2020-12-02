@@ -11,7 +11,7 @@ export {
 }
 
 function getBaseURL() {
-    if (window.location.href.indexOf('localhost') > -1) {
+    if (window.location.href.indexOf('localhost') > -1 || window.location.href.indexOf('192.168.0.30') > -1) {
         console.log('Desenv')
         return BASE_BACKEND_URL_DESENV
     }

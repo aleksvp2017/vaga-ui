@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { listarProjetos } from './Projetos.js'
+import { listarProjetos } from '../../services/Projetos.js'
 
 export default {
   data() {
@@ -64,7 +64,14 @@ export default {
       }
   },
   created () {
-    this.tabs = listarProjetos()
+     listarProjetos().then(response => {
+       this.tabs = response.data.projetos.map((projeto) => projeto.detalhe)
+    }).catch(error => {
+      atualizarMensagem(this, true, error.body.error, 'error')
+                        if (error.status === ERROR_SESSION_EXPIRED){
+                            this.$store.dispatch('ActionLogout')
+      }   
+    })
   },
   methods: {
     // Create an array the length of our items
@@ -80,6 +87,12 @@ export default {
       this.panel = []
     },
   },
+}
+
+function atualizarMensagem(owner, mostraAlerta, message, type){
+    owner.mostraAlerta = mostraAlerta
+    owner.mensagemAlerta = message
+    owner.tipoAlerta = type
 }
 </script>
 

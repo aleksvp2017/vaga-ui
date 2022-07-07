@@ -29,7 +29,7 @@
     "express-load": "^1.1.16",
     "fibers": "^4.0.2",
     "jquery": "^3.5.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "nodemon": "^2.0.2",
     "numeral": "^2.0.6",
     "parser": "^0.1.4",
